@@ -368,7 +368,7 @@ function calcConcreteBreakout(model){
   var psire=model.dense?1:Math.min(1,0.5+hef/200);
   function grp(gx,gy,eL,eR,eT,eB){
     var Lx=Math.min(eL,h15)+Math.min(eR,h15)+(gx-1)*Math.min(sx,scr);
-    var Ly=Math.min(eT,h15)+Math.min(eR,h15)+(gy-1)*Math.min(sy,scr);
+    var Ly=Math.min(eT,h15)+Math.min(eB,h15)+(gy-1)*Math.min(sy,scr);
     var c=Math.min(eL,eR,eT,eB),ps=Math.min(1,0.7+0.3*c/h15);
     return {Ac:Lx*Ly,ps:ps,N:N0*(Lx*Ly/A0)*ps*psire};
   }

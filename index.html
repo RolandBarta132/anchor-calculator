@@ -461,6 +461,14 @@ function calcShearEdgeBreakout(model){
   return {VRdc:VRdc,edgeGov:edgeGov,edgeTxt:edgeTxt,c1V:edgeGov?edgeGov.c1:0};
 }
 
+function calcInteraction(model){
+  var bN=Math.max(model.useReinforcement?model.NEdre/model.NRdre:model.NEd/model.NRd,model.N1/model.NRdp,isFinite(model.NRdcb)?model.N1/model.NRdcb:0);
+  var bV=Math.max(model.VEd/model.VRd,isFinite(model.VRdc)?model.VEd/model.VRdc:0);
+  var intS=Math.pow(model.N1/model.NRds,2)+Math.pow(model.V1/model.VRds,2);
+  var intC=Math.pow(bN,1.5)+Math.pow(bV,1.5);
+  return {bN:bN,bV:bV,intS:intS,intC:intC};
+}
+
 function calculateDesignLegacy(){
 syncEngineeringGeometry();solveLoadTransfer();
 var fck=v("fck"),hef=v("hef"),gm=v("gm")||1.5,NEd=v("NEd"),VEd=v("VEd");
@@ -521,8 +529,8 @@ if(LS.on){
     VRcL=V0L*(AcL/A0L)*psL*phL*(+$("rev").value)/gm;}
   LG={on:true,Vl:Vl,dir:dirL,alX:LS.alX,prof:$("lugp").value,ori:$("lugo").value,lb:lb,lh:lh,lt:lt,fy:lfy,lg:lgg,lk:lk,c1:c1L,c2a:c2a,c2b:c2b,sig:sigL,fRd:fRdL,MEd:MEdL,MRd:MRdL,VRs:VRsL,VRc:VRcL,V0:V0L,Ac:AcL,A0:A0L,ps:psL,ph:phL,lf:lfL,dq:dq};
 }
-var bN=Math.max($("usere").checked?NEdre/NRdre:NEd/NRd,N1/NRdp,isFinite(NRdcb)?N1/NRdcb:0),bV=Math.max(VEd/VRd,isFinite(VRdc)?VEd/VRdc:0);
-var intS=Math.pow(N1/NRds,2)+Math.pow(V1/VRds,2),intC=Math.pow(bN,1.5)+Math.pow(bV,1.5);
+var ix=calcInteraction({useReinforcement:$("usere").checked,NEdre:NEdre,NRdre:NRdre,NEd:NEd,NRd:NRd,N1:N1,NRdp:NRdp,NRdcb:NRdcb,VEd:VEd,VRd:VRd,VRdc:VRdc,NRds:NRds,V1:V1});
+var bN=ix.bN,bV=ix.bV,intS=ix.intS,intC=ix.intC;
 var bars=[
 ["Concrete breakout, unreinforced",NEd,NRd,"kN"],
 ["Anchor reinforcement carries tension",NEdre,NRdre,"kN"],["Reinforcement steel (legs in reach)",NEdre,NRdreS,"kN"],["Reinforcement anchorage (bond above cone)",NEdre,NRdreA,"kN"],

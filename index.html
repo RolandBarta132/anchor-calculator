@@ -412,6 +412,28 @@ function calcSupplementaryReinforcement(model){
     reOn:reOn,legsReq:legsReq};
 }
 
+function calcPullout(model){
+  var NRdp=(model.cracked?7.5:10.5)*model.Ah*model.fck/model.gm/1000;
+  return {NRdp:NRdp};
+}
+
+function calcSideFaceBlowout(model){
+  var eh=Math.min(model.eg.l,model.eg.r),ev=Math.min(model.eg.t,model.eg.b),c1b=Math.min(eh,ev),c2b=(c1b===eh)?ev:eh;
+  var NRdcb=(c1b>0&&c1b<=0.5*model.hef)?(model.cracked?8.7:12.2)*c1b*Math.sqrt(model.Ah)*Math.sqrt(model.fck)*(1+Math.min(c2b,3*c1b)/c1b)/4/model.gm/1000:Infinity;
+  return {NRdcb:NRdcb,c1b:c1b,c2b:c2b};
+}
+
+function calcAnchorSteel(model){
+  var gMsN=Math.max(1.4,1.2*model.fuk/model.fy2),gMsV=(model.fuk<=800&&model.fy2/model.fuk<=0.8)?Math.max(1.25,model.fuk/model.fy2):1.5;
+  var NRds=model.Asa*model.fuk/gMsN/1000;
+  return {gMsN:gMsN,gMsV:gMsV,NRds:NRds};
+}
+
+function calcPryout(model){
+  var k8auto=model.hef>=60?2:1,k8s=model.k8s,k8=(k8s!==""&&+k8s>0)?+k8s:k8auto,VRd=k8*model.GallN/model.gm;
+  return {k8auto:k8auto,k8:k8,VRd:VRd};
+}
+
 function calculateDesignLegacy(){
 syncEngineeringGeometry();solveLoadTransfer();
 var fck=v("fck"),hef=v("hef"),gm=v("gm")||1.5,NEd=v("NEd"),VEd=v("VEd");
@@ -425,7 +447,8 @@ var cb=calcConcreteBreakout({
 var k1=cb.k1,N0=cb.N0,h15=cb.h15,scr=cb.scr,A0=cb.A0,psire=cb.psire;
 var tx=cb.tx,ty=cb.ty,hs=cb.hs,vs=cb.vs,eg=cb.eg,G=cb.G,Gall=cb.Gall;
 var Ac=cb.Ac,psis=cb.psis,NRk=cb.NRk,NRd=cb.NRd;
-var k8auto=hef>=60?2:1,k8s=$("k8in").value.trim(),k8=(k8s!==""&&+k8s>0)?+k8s:k8auto,VRd=k8*Gall.N/gm;
+var pr=calcPryout({hef:hef,k8s:$("k8in").value.trim(),GallN:Gall.N,gm:gm});
+var k8auto=pr.k8auto,k8=pr.k8,VRd=pr.VRd;
 var sr=calcSupplementaryReinforcement({
   ds:v("dvb"),fyk:v("fyk"),eta:+$("eta").value,amp:v("amp")||1,Hb:v("hb"),cv:v("cv"),
   fck:fck,hef:hef,NEd:NEd,nx:nx,ny:ny,sx:sx,sy:sy,
@@ -437,13 +460,14 @@ var fctm=sr.fctm,fctd=sr.fctd,fbd=sr.fbd,fsd=sr.fsd,Fs=sr.Fs,lbd=sr.lbd,al1=sr.a
 var TA=sr.TA,Tt=sr.Tt,QL=sr.QL,nre=sr.nre,NEdre=sr.NEdre,mS=sr.mS,mA=sr.mA,mG=sr.mG,shM=sr.shM,leg=sr.leg;
 var NRdre=sr.NRdre,Fb=sr.Fb,l1m=sr.l1m,NRdreS=sr.NRdreS,NRdreA=sr.NRdreA,reOn=sr.reOn,legsReq=sr.legsReq;
 var gp=$("gr").value.split("|"),fuk=+gp[0],fy2=+gp[1],dp=$("dia").value.split("|"),Asa=+dp[0],da=+dp[1],N1=v("N1"),V1=v("V1");
-var gMsN=Math.max(1.4,1.2*fuk/fy2),gMsV=(fuk<=800&&fy2/fuk<=0.8)?Math.max(1.25,fuk/fy2):1.5;
-var NRds=Asa*fuk/gMsN/1000;
+var as=calcAnchorSteel({fuk:fuk,fy2:fy2,Asa:Asa});
+var gMsN=as.gMsN,gMsV=as.gMsV,NRds=as.NRds;
 var PCc=$("ht").value==="c",tpc=v("ptp"),ofc=v("pofs"),pfy=v("pfy")||355,PLc=(nx-1)*sx+2*ofc,PWc=(ny-1)*sy+2*ofc,dh=v("hd"),Ah=PCc?Math.max(0,(PLc*PWc-nx*ny*Math.PI/4*da*da)/(nx*ny)):Math.max(0,$("ht").value==="r"?Math.PI/4*(dh*dh-da*da):dh*dh-Math.PI/4*da*da);
 var ccP=Math.max(0,ofc-da/2),ppP=N1*1000/(Ah+Math.PI/4*da*da),MEdP=ppP*ccP*ccP/2,MRdP=tpc*tpc/6*pfy;
-var NRdp=(cracked?7.5:10.5)*Ah*fck/gm/1000;
-var eh=Math.min(eg.l,eg.r),ev=Math.min(eg.t,eg.b),c1b=Math.min(eh,ev),c2b=(c1b===eh)?ev:eh;
-var NRdcb=(c1b>0&&c1b<=0.5*hef)?(cracked?8.7:12.2)*c1b*Math.sqrt(Ah)*Math.sqrt(fck)*(1+Math.min(c2b,3*c1b)/c1b)/4/gm/1000:Infinity;
+var po=calcPullout({cracked:cracked,Ah:Ah,fck:fck,gm:gm});
+var NRdp=po.NRdp;
+var sb=calcSideFaceBlowout({cracked:cracked,Ah:Ah,fck:fck,gm:gm,hef:hef,eg:eg});
+var NRdcb=sb.NRdcb,c1b=sb.c1b,c2b=sb.c2b;
 var dsa=Math.sqrt(4*Asa/Math.PI),Wel=Math.PI*Math.pow(dsa,3)/32;
 var k6=fuk<=500?0.6:0.5,k7=$("duc").checked?1:0.8;
 var VRds=($("sm").value==="l")?(+$("am").value)*1.2*Wel*fuk*(1-Math.min(1,N1/NRds))/(v("tg")+0.5*da)/gMsV/1000:k7*k6*Asa*fuk/gMsV/1000;

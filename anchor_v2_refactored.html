@@ -1,0 +1,1199 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anchor breakout, pryout and anchor reinforcement check (EN 1992-4)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#edf0f3;--panel:#fff;--ink:#1d2733;--mute:#5d6b7a;--line:#cfd6dd;--acc:#2f5d8a;--ok:#2b7a4b;--bad:#b3382c;--okbg:#e2f1e8;--badbg:#f7e1de;--field:#f6f8fa;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14191f;--panel:#1c232b;--ink:#e6ebf0;--mute:#98a5b3;--line:#33404d;--acc:#7fb0e0;--ok:#6fc28f;--bad:#ef8f84;--okbg:#1b3326;--badbg:#3a1f1c;--field:#161c22;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14191f;--panel:#1c232b;--ink:#e6ebf0;--mute:#98a5b3;--line:#33404d;--acc:#7fb0e0;--ok:#6fc28f;--bad:#ef8f84;--okbg:#1b3326;--badbg:#3a1f1c;--field:#161c22;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Source Sans 3",system-ui,sans-serif}
+header{padding:22px 20px 6px;max-width:1100px;margin:0 auto}
+h1{font-size:1.45rem;margin:0 0 4px;font-weight:700}
+header p{margin:0;color:var(--mute);max-width:70ch}
+main{max-width:1100px;margin:0 auto;padding:14px 20px 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:820px){main{grid-template-columns:1fr}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin-bottom:14px}
+h2{font-size:1.02rem;margin:0 0 10px;font-weight:700;color:var(--acc)}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+label{display:block;font-size:.86rem;color:var(--mute);line-height:1.3}
+label.chk{grid-column:1/-1;color:var(--ink)}
+input,select{display:block;margin-top:3px;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:4px;padding:6px 8px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+input[type=checkbox]{display:inline-block;width:auto;margin:0 8px 0 0;vertical-align:middle}
+input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.u{display:inline-block;color:var(--mute);font-weight:400}
+.bar{margin:6px 0 12px}
+.bar .t{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.bar .track{height:10px;background:var(--field);border:1px solid var(--line);border-radius:5px;overflow:hidden;margin-top:4px}
+.bar .fill{height:100%;background:var(--ok);transition:width .2s}
+.bar.bad .fill{background:var(--bad)}
+.bar .v{font-variant-numeric:tabular-nums}
+.tag{padding:1px 8px;border-radius:10px;font-size:.82rem;background:var(--okbg);color:var(--ok)}
+.bad .tag{background:var(--badbg);color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:10px}
+td small{color:var(--mute)}
+.note{font-size:.85rem;color:var(--mute);margin:8px 0 0}
+.top{display:flex;justify-content:flex-end;max-width:1100px;margin:0 auto;padding:10px 20px 0}
+button{font:inherit;font-size:.85rem;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:4px 10px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--acc)}
+.sv{width:100%;height:auto;display:block;margin-bottom:6px}
+.sv .conc{fill:var(--field);stroke:var(--line)}
+.sv .ac{fill:var(--acc);fill-opacity:.22}
+.sv .cone{fill:var(--acc);fill-opacity:.1;stroke:var(--acc);stroke-dasharray:4 3}
+.sv .anc{fill:var(--ink)}
+.sv .st{stroke:var(--ink);stroke-width:2}
+.sv .edge{stroke:var(--bad);stroke-width:3}
+.sv .rb{stroke:var(--ok);stroke-width:2.5}
+.sv .dim{stroke:var(--mute);stroke-width:1}
+.sv text{fill:var(--ink);font-size:11px;font-family:inherit}
+.sv text.m{fill:var(--mute)}
+.cap{font-size:.86rem;color:var(--mute);margin:2px 0 4px}
+.sv .cmp{fill:var(--panel);stroke:var(--ink);stroke-width:1.5}
+.sv .fp{fill:var(--acc);fill-opacity:.16;stroke:var(--acc);stroke-dasharray:4 3}
+.sv .pl{fill:none;stroke:var(--mute);stroke-dasharray:2 3}
+.sv .hd{fill:none;stroke:var(--mute);stroke-dasharray:2 2}
+.sv .ext{stroke:var(--mute);stroke-dasharray:2 3;stroke-width:.8}
+.sv .edge2{stroke:var(--ink);stroke-width:3}
+.sv .rb{fill:none}
+.sv .grt{fill:var(--line)}
+.sv .plt{fill:var(--mute)}
+.sv .wsh{fill:var(--mute)}
+.sv .nut{fill:var(--ink);opacity:.75}
+.sv text.sm{font-size:10px;fill:var(--mute)}
+.sv text.tg{font-size:12px;font-weight:700}
+.v3bar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.v3bar button[aria-pressed=true]{background:var(--acc);color:var(--panel);border-color:var(--acc)}
+.v3bar .sp{flex:1 1 12px}
+.v3wrap{position:relative;height:min(70vh,560px);min-height:340px;border:1px solid var(--line);border-radius:4px;background:var(--field);overflow:hidden}
+.v3wrap canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.v3wrap canvas:active{cursor:grabbing}
+#v3lab{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#v3lab span,#v3tip{position:absolute;font-size:11px;line-height:1.3;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:0 5px;white-space:nowrap;pointer-events:none}
+#v3lab span{transform:translate(-50%,-100%)}
+#v3tip{display:none;padding:3px 7px;z-index:2}
+#v3msg{display:none;position:absolute;inset:0;margin:0;padding:20px;color:var(--bad)}
+.v3leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.82rem;color:var(--mute);margin:8px 0 0}
+.v3leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+#v3secl{margin-top:8px;max-width:420px}
+#v3secl input{padding:0}
+.usum{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin:0 0 6px;font-weight:600}
+.cr{display:grid;grid-template-columns:minmax(0,1fr) 64px 44px 76px;gap:2px 8px;align-items:center;padding:4px 0;border-top:1px solid var(--line);font-size:.9rem}
+.cr .cl{min-width:0;overflow-wrap:anywhere}
+.cr .ctr{height:6px;background:var(--field);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.cr .ctr i{display:block;height:100%;background:var(--ok)}
+.cr.bad .ctr i{background:var(--bad)}
+.cr .cp{text-align:right;font-variant-numeric:tabular-nums}
+.cr .tag{text-align:center}
+.cr .cv{grid-column:1/-1;color:var(--mute);font-size:.8rem;font-variant-numeric:tabular-nums}
+details.more>summary,#stepsd>summary{cursor:pointer;color:var(--acc);padding:4px 0}
+#stepsd>summary h2{margin:0}
+#lcall{margin-top:6px}
+#v3ax{position:absolute;left:8px;bottom:8px;width:84px;height:84px;pointer-events:none}
+.lcbar{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-bottom:10px;align-items:end}
+.lcb{display:flex;flex-wrap:wrap;gap:6px;grid-column:1/-1}
+.lcb button:disabled{opacity:.5;cursor:default}
+.lcm{overflow-x:auto}
+.lcm table{font-size:.84rem}
+.lcm td{padding:4px 6px}
+.lcm td:not(:first-child){text-align:right;white-space:nowrap}
+.lcm td.bd,.lcm td.bd small{color:var(--bad);font-weight:600}
+.lcm small{color:var(--mute);font-weight:400}
+.lcsel.on{background:var(--acc);color:var(--panel);border-color:var(--acc)}
+[data-hint]{cursor:help}
+.bad .tag[data-hint],td.bd[data-hint]{text-decoration:underline dotted;text-underline-offset:2px}
+[data-hint]:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+#tip{position:fixed;z-index:60;max-width:min(340px,calc(100vw - 32px));padding:7px 10px;font-size:.85rem;line-height:1.4;background:var(--panel);color:var(--ink);border:1px solid var(--acc);border-radius:5px;box-shadow:0 4px 14px rgba(0,0,0,.22);pointer-events:none}
+#steps{table-layout:fixed}#steps td,.stp td{padding:5px 8px 5px 0;vertical-align:top}#steps td:nth-child(2),.stp td:nth-child(2){text-align:right;white-space:nowrap;font-weight:600;padding-left:8px}#steps td:last-child,.stp td:last-child{text-align:left;white-space:normal;color:var(--mute);font-size:.82rem;font-weight:400;padding-left:10px}
+#steps tr.gh th,.stp tr.gh th{text-align:left;color:var(--acc);background:var(--field);padding:6px 8px;border-bottom:2px solid var(--acc);font-size:.92rem}
+.tb2{display:flex;gap:10px;align-items:center;max-width:1100px;margin:0 auto;padding:6px 20px 0}.tb2 .note{margin:0}
+#rep{display:none}
+@media print{@page{size:A4;margin:14mm}:root:root:root{--bg:#fff;--panel:#fff;--ink:#000;--mute:#444;--line:#bbb;--acc:#2f5d8a;--ok:#2b7a4b;--bad:#b3382c;--okbg:#e2f1e8;--badbg:#f7e1de;--field:#f4f6f8;color-scheme:light}
+body>*:not(#rep){display:none!important}body{background:#fff}#rep{display:block!important;font-size:10pt;color:#000}#rep h1{font-size:17pt}#rep h2{font-size:12.5pt;border-bottom:1px solid var(--line);padding-bottom:2px;margin:14px 0 6px}#rep h3{font-size:10.5pt;margin:8px 0 3px}#rep table{font-size:9pt;width:100%}#rep tr{break-inside:avoid}#rep .figs{display:grid;grid-template-columns:1fr 1fr;gap:8px}#rep .figs>div,#rep .im{break-inside:avoid}#rep .im img{width:100%}#rep .pb{break-before:page}#rep .cr{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+<h1>Cast-in anchors: breakout, pryout and anchor reinforcement</h1>
+<p>Hand-check to EN 1992-4 using forces taken from IDEA StatiCa. Enter the group tension and shear of the governing load case. Results update as you type.</p>
+</header>
+<div class="tb2"><button type="button" id="pdfbtn">Export PDF report</button><p class="note">Opens the print dialog with the full report (inputs, forces, figures, utilisation and calculation steps). Choose “Save as PDF”.</p></div>
+<main>
+<div>
+<section><h2>Concrete and anchors</h2><div class="g">
+<label>f<sub>ck</sub> (MPa)<input id="fck" type="number" value="30"></label>
+<label>h<sub>ef</sub> (mm)<input id="hef" type="number" value="500"></label>
+<div hidden><input id="type" value="c"></div>
+<label>Concrete<select id="cr"><option value="1">Cracked</option><option value="0">Uncracked</option></select></label>
+<label>Anchors in x<select id="nx"><option>1</option><option selected>2</option><option>3</option></select></label>
+<label>Anchors in y<select id="ny"><option selected>1</option><option>2</option><option>3</option></select></label>
+
+<label>Spacing s<sub>x</sub> (mm)<input id="sx" type="number" value="280"></label>
+<label>Spacing s<sub>y</sub> (mm)<input id="sy" type="number" value="200"></label>
+<div hidden><input id="cl" value="300"><input id="cr2" value="300"><input id="ct" value="300"><input id="cb" value="300"></div>
+<label>γ<sub>Mc</sub><input id="gm" type="number" step="0.1" value="1.5"></label>
+
+<label class="chk"><input id="dense" type="checkbox"> Dense reinforcement (spacing ≥ 150 mm, or ≥ 100 mm with bars ≤ 10 mm): ψ<sub>re,N</sub> = 1</label>
+</div></section>
+<section><h2>Foundation and rebar cage</h2><div class="g">
+<label>Foundation width B<sub>x</sub> (mm)<input id="Bx" type="number" value="500"></label>
+<label>Foundation width B<sub>y</sub> (mm)<input id="By" type="number" value="500"></label>
+<label>Foundation height h (mm)<input id="hb" type="number" value="1000"></label>
+<label>Concrete cover to stirrups c<sub>nom</sub> (mm)<input id="cv" type="number" value="50"></label>
+<label>Vertical bar Ø (mm)<input id="dvb" type="number" value="12"></label>
+
+<label>Stirrup Ø (mm)<input id="dst" type="number" value="8"></label>
+<label>Bars per x face (with corners)<input id="nbx" type="number" min="2" value="4"></label>
+<label>Bars per y face (with corners)<input id="nby" type="number" min="2" value="4"></label>
+<label>Stirrup spacing (mm)<input id="sst" type="number" value="150"></label>
+<label>Required clearance to bars (mm)<input id="mcl" type="number" value="20"></label>
+<label class="chk"><input id="clchk" type="checkbox" checked> Include the cage clearance check in the utilisation (untick to show it as a reference only)</label>
+<p class="note" style="grid-column:1/-1">The anchor group and the plate are assumed centred in the foundation. The edge distances follow from the foundation size.</p>
+</div></section>
+<section><h2>Anchor bolt, head and shear</h2><div class="g">
+<label>Steel grade<select id="gr"><option value="400|240">4.6</option><option value="500|300">5.6</option><option value="500|400">5.8</option><option value="800|640" selected>8.8</option><option value="1000|900">10.9</option></select></label>
+<label>Anchor size<select id="dia"><option value="84.3|12">M12</option><option value="157|16">M16</option><option value="245|20">M20</option><option value="353|24">M24</option><option value="459|27" selected>M27</option><option value="561|30">M30</option><option value="817|36">M36</option><option value="1120|42">M42</option><option value="1473|48">M48</option></select></label>
+<label>Head type<select id="ht"><option value="r">Round head or washer</option><option value="s">Square plate</option><option value="c" selected>Common plate with stiffener</option></select></label>
+<label>Head diameter or side (mm)<input id="hd" type="number" value="100"></label>
+<label>Common plate thickness t (mm)<input id="ptp" type="number" value="10"></label>
+<label>Plate offset from the anchor axes (mm)<input id="pofs" type="number" value="50"></label>
+<label>Stiffener height (mm)<input id="phs" type="number" value="100"></label>
+<label>Stiffener thickness (mm)<input id="pts" type="number" value="10"></label>
+<label>Plate steel f<sub>y</sub> (MPa)<input id="pfy" type="number" value="355"></label>
+<label>Shear transfer<select id="sm"><option value="n">No lever arm (full grout)</option><option value="l" selected>Lever arm with grout gap</option></select></label>
+<label>Grout gap t<sub>g</sub> (mm)<input id="tg" type="number" value="50"></label>
+<label>Head restraint<select id="am"><option value="1">Free (α<sub>M</sub> = 1)</option><option value="2">Fixed (α<sub>M</sub> = 2)</option></select></label>
+<label class="chk"><input id="duc" type="checkbox"> Ductile steel, A<sub>5</sub> &gt; 8 % (k<sub>7</sub> = 1.0, otherwise 0.8)</label>
+
+<label>k<sub>8</sub> for pryout (blank = automatic from h<sub>ef</sub>)<input id="k8in" type="number" step="0.1" placeholder="auto"></label>
+<label>Edge reinforcement ψ<sub>re,V</sub> (you confirm the bars exist)<select id="rev"><option value="1">None (1.0)</option><option value="1.2">Bars ≥ ø12 (1.2)</option><option value="1.4" selected>With stirrups (1.4)</option></select></label>
+</div></section>
+<section id="lugsec"><h2>Shear lug</h2>
+<div class="g"><label class="chk"><input id="lug" type="checkbox" checked> Use a shear lug under the base plate (needs the rigid-plate analysis)</label></div>
+<div class="g" id="lugf" hidden>
+<label>Share of the shear taken by the lug (%)<input id="lugsh" type="number" min="0" max="100" value="100"></label>
+<label>Lug profile<select id="lugp"><option>HEA 100</option><option selected>HEA 120</option><option>HEA 140</option><option>HEA 160</option><option>HEA 180</option><option>HEA 200</option><option>HEA 220</option><option>HEA 240</option><option>HEA 260</option><option>HEA 280</option><option>HEA 300</option><option>HEA 320</option><option>HEA 340</option><option>HEA 360</option><option>HEA 400</option></select></label>
+<label>Orientation<select id="lugo"><option value="s">Flanges face the shear (strong axis)</option><option value="w">Web faces the shear (weak axis)</option></select></label>
+<label>Embedment h<sub>l</sub> below the grout (mm)<input id="lugh" type="number" value="200"></label>
+<label>Lug steel<select id="lugfy"><option value="235">S235 (f<sub>y</sub> = 235)</option><option value="355" selected>S355 (f<sub>y</sub> = 355)</option></select></label>
+<label>Grout thickness under the plate (mm)<input id="lugg" type="number" value="50"></label>
+<label>Bearing factor k<sub>lug</sub> (1 to 3)<input id="lugk" type="number" step="0.1" value="1"></label>
+</div>
+<p class="note" id="lugnote">The lug is an HEA profile welded under the base plate at the centre of the anchor group. It takes the chosen share of the larger shear component and the anchors take the rest, plus the whole of the other component. Section values include the root radii. Bending uses the plastic modulus and γ<sub>M0</sub> = 1.0, shear uses the shear area of EN 1993-1-1 6.2.6. EN 1992-4 has no clause for lugs, so the bearing and edge breakout checks are an engineering model (edge breakout uses the EN 1992-4 shear edge expression with the profile width as the group extent). Weld, plate punching and local grout failure are not checked.</p></section>
+<section><h2>Forces at the plate centre</h2>
+<div class="lcbar"><label>Load case<select id="lc"><option value="0">LC1</option></select></label><label>Name<input id="lcn" type="text" value="atlo max N"></label>
+<div class="lcb"><button type="button" id="lcadd">Add case</button><button type="button" id="lcdup">Duplicate</button><button type="button" id="lcdel" disabled>Delete</button></div></div>
+<p class="note" id="lcnote" style="margin:0 0 10px"></p>
+<div class="g">
+<label class="chk"><input id="useF" type="checkbox" checked> Compute the anchor forces from these actions (rigid base plate). Untick to type the group and anchor forces by hand.</label>
+<label>N axial (kN, compression +)<input id="Nc" type="number" value="-168.9"></label>
+<label>V<sub>x</sub> (kN)<input id="Vx" type="number" value="71.6"></label>
+<label>V<sub>y</sub> (kN)<input id="Vy" type="number" value="12.5"></label>
+<label>M<sub>y</sub> (kNm, + = tension on right column)<input id="My" type="number" value="10.9"></label>
+<label>M<sub>x</sub> (kNm, + = tension on bottom row)<input id="Mx" type="number" value="0"></label>
+<label>Torsion about vertical axis T (kNm)<input id="Mz" type="number" value="0"></label>
+<label>Plate size L<sub>x</sub> (mm)<input id="Lpx" type="number" value="420"></label>
+<label>Plate size L<sub>y</sub> (mm)<input id="Lpy" type="number" value="320"></label>
+<label>Friction coefficient μ (0 = ignore)<input id="mu" type="number" step="0.05" value="0"></label>
+<label>Bearing factor k<sub>j</sub><input id="kj" type="number" step="0.1" value="1"></label>
+<label class="chk"><input id="bear" type="checkbox" checked> Plate bears on grout and concrete, so anchors take tension only. Untick if the plate sits on levelling nuts and the anchors also take compression.</label>
+</div><p class="note">Plan axes are as in the plan view: x to the right, y downward. The plate is assumed centred on the anchor group.</p></section>
+<section id="manF"><h2>Forces on the anchors (manual input)</h2><div class="g">
+<label>Anchors in tension, x direction<select id="tx"><option>1</option><option selected>2</option><option>3</option></select></label>
+<label>Anchors in tension, y direction<select id="ty"><option>1</option><option selected>2</option><option>3</option></select></label>
+<label>Tension side (x)<select id="hs"><option value="l">Left</option><option value="r">Right</option></select></label>
+<label>Tension side (y)<select id="vs"><option value="t">Top</option><option value="b">Bottom</option></select></label>
+<label>N<sub>Ed</sub> total tension on the tension anchors (kN)<input id="NEd" type="number" value="150"></label>
+<label>V<sub>Ed</sub> shear (kN)<input id="VEd" type="number" value="60"></label>
+<label>Max tension in one anchor N<sub>Ed,1</sub> (kN)<input id="N1" type="number" value="75"></label>
+<label>Max shear on one anchor V<sub>Ed,1</sub> (kN)<input id="V1" type="number" value="15"></label>
+</div></section>
+<section><h2>Anchor reinforcement (the stirrups of the cage)</h2><div class="g">
+
+<label>Max. leg distance from anchor axis (× h<sub>ef</sub>)<input id="kre" type="number" step="0.05" value="0.75"></label>
+<label>f<sub>yk</sub> (MPa)<input id="fyk" type="number" value="500"></label>
+
+<label>Bond condition<select id="eta"><option value="1">Good (η₁ = 1.0)</option><option value="0.7">Poor (η₁ = 0.7)</option></select></label>
+<label>Load-sharing length d<sub>0</sub> (× h<sub>ef</sub>, smaller = stricter)<input id="dsh" type="number" step="0.05" min="0.05" value="0.25"></label>
+<div hidden><input id="amp" value="1"></div>
+<label class="chk"><input id="usere" type="checkbox" checked> Use supplementary reinforcement instead of concrete breakout in the interaction check</label>
+</div>
+<p class="note">Legs must be ribbed, ≤ 20 mm, placed within about 0.75·h<sub>ef</sub> of the anchor axis and anchored on both sides of the cone. Legs are counted automatically: vertical cage bars within the distance factor of a tension anchor that cross the cone. The force of each tension anchor is shared only among the legs within its reach, weighted by distance with the length d₀ (an assumption, not an EN rule). A leg serving two anchors carries both shares, and every leg is checked against its own steel, upper anchorage and lower anchorage. A tension anchor with no leg in reach gives zero reinforcement resistance. When supplementary reinforcement is selected, the unreinforced concrete-cone result is retained as a reference result; the active tension load path is the reinforcement, subject to its steel and anchorage resistance.</p></section>
+</div>
+
+<div>
+<section><h2>Anchor forces (rigid plate)</h2><div id="fres"></div></section>
+<section><h2>Geometry</h2>
+<p class="cap">Plan view: every tension anchor has its own labelled cone footprint (3·h<sub>ef</sub> squares clipped by edges; overlaps look darker). Orange arrows are the shear on each anchor, purple arrows and symbols are the applied N, V, M, T at the plate centre. Red lines are edges closer than 1.5·h<sub>ef</sub>.</p>
+<svg id="plan" class="sv" viewBox="0 0 320 280" role="img" aria-label="Plan view of anchors"></svg>
+<p class="cap">Section: dashed lines are the breakout cone, green lines are the reinforcement legs, l<sub>1</sub> is the anchorage beyond the cone.</p>
+<svg id="sec" class="sv" viewBox="0 0 320 250" role="img" aria-label="Section through anchors"></svg></section>
+<section><h2>Rebar cage fit (to scale)</h2>
+<p class="cap">Plan view at the anchor heads and front elevation. Anchors drawn in red do not keep the required clearance to the bars or stirrups.</p>
+<div id="cgres"></div>
+<svg id="cage" class="sv" viewBox="0 0 420 400" role="img" aria-label="Plan of the rebar cage with anchors"></svg>
+<svg id="cageE" class="sv" viewBox="0 0 420 340" role="img" aria-label="Elevation of the rebar cage with anchors"></svg></section>
+<section id="lcsum" hidden><h2>Load case summary</h2><div id="lcsumbody"></div></section>
+<section><h2>Utilisation <span id="lcshow" class="u"></span></h2><div id="bars"></div></section>
+<section><details id="stepsd"><summary><h2 style="display:inline">Calculation steps</h2> <span class="u">(expand)</span></summary><table id="steps"></table>
+<p class="note">Formulas follow EN 1992-4 (DIN EN 1992-4 with its German National Annex in Germany). Verify coefficients and partial factors, especially k<sub>6</sub>, k<sub>7</sub>, γ<sub>Ms</sub> and γ<sub>Mc</sub>, against your copy and annex. Pryout is calculated from the unreinforced cone capacity, since the standard does not credit surface reinforcement there. If it fails, increase h<sub>ef</sub>, take shear off the anchors with a lug or grout bearing, or enlarge the block. With bending, enter in N<sub>Ed</sub> the sum of the tension forces of the tensioned anchors only. Compressed anchors add no breakout capacity, and pryout here uses all anchors, assuming they share the shear. ψ<sub>ec,N</sub> is included when the rigid-plate analysis is on. This is a checking aid and not a substitute for engineering judgement.</p></details></section>
+</div>
+<section id="v3" style="grid-column:1/-1"><h2>3D view of foundation, cage and anchors</h2>
+<p class="cap">Drag to rotate, right-drag or shift-drag to pan, wheel or pinch to zoom. Geometry follows the inputs above; the green bars are the ones counted as anchor reinforcement. Axes: x to the right, y down in plan, z down into the concrete (right-handed).</p>
+<div class="v3bar" id="v3bar">
+<button type="button" data-l="conc" aria-pressed="true">Concrete</button>
+<button type="button" data-l="stir" aria-pressed="true">Stirrups</button>
+<button type="button" data-l="bars" aria-pressed="true">Bars</button>
+<button type="button" data-l="anch" aria-pressed="true">Anchors and plate</button>
+<button type="button" data-l="cone" aria-pressed="true">Breakout cones</button>
+<button type="button" data-l="vec" aria-pressed="true">Forces and moments</button>
+<button type="button" data-l="lab" aria-pressed="true">Labels</button>
+<button type="button" data-act="sec" aria-pressed="false">Section plane</button>
+<span class="sp"></span>
+<button type="button" data-p="iso">Isometric</button>
+<button type="button" data-p="plan">Plan</button>
+<button type="button" data-p="front">Front</button>
+<button type="button" data-act="fit">Fit</button>
+</div>
+<div class="v3wrap" id="v3wrap"><canvas id="v3c" aria-label="3D model of the foundation, rebar cage and anchors"></canvas><canvas id="v3ax" aria-hidden="true"></canvas><div id="v3lab"></div><div id="v3tip"></div><p id="v3msg"></p></div>
+<label id="v3secl" style="display:none">Section position across the block (plan y)<input type="range" id="v3sec" min="0" max="100" value="50"></label>
+<div class="v3leg"><span><i style="background:var(--acc)"></i>tension anchor</span><span><i style="background:var(--mute)"></i>compression anchor</span><span><i style="background:var(--bad)"></i>stirrup, or anchor violating clearance</span><span><i style="background:var(--ok)"></i>bar within reach of a tension anchor</span><span><i style="background:#9a6b3f"></i>other vertical bar</span><span><i style="background:#c28a2c"></i>shear lug</span><span><i style="background:#d9822b"></i>anchor shear</span><span><i style="background:#8e44ad"></i>applied N, V and moments (curved arrow = sense of rotation)</span></div>
+<p class="note" id="v3note"></p>
+<h2 style="margin-top:12px">Bending schedule (centreline lengths)</h2><table id="v3sched"></table>
+<p class="note">Bend mandrels are automatic: the larger of the code minimum (4·Ø up to Ø16, 7·Ø above) and the size needed for bearing inside the bend (EN 1992-1-1 8.3), taken over all load cases. Vertical bars are inverted U-bars that join opposite faces across the top (x-direction bars over y-direction bars) and end straight at the bottom; each corner has two bars, one per direction, 2·Ø apart, stirrups have two 135° hooks with 10·Ø tails. Bend shapes are drawn for visual checking; confirm them against your detailing code.</p></section>
+<section id="femprep" style="grid-column:1/-1"><h2>Numerical model — FEM preparation (v1)</h2>
+<p class="cap">This first FEM layer builds a structured 3D concrete mesh and explicit anchor/reinforcement line geometry from the same inputs used by the EN 1992-4 checks. It does not yet solve the finite-element equations; it prepares and exports the model so the numerical solver can be added without changing the design input model.</p>
+<div class="g">
+<label>Target concrete element size (mm)<input id="femh" type="number" min="25" step="5" value="100"></label>
+<label>Concrete Poisson ratio<input id="femnu" type="number" min="0.05" max="0.49" step="0.01" value="0.20"></label>
+<label>Concrete E<sub>cm</sub> (MPa)<input id="femE" type="number" step="100" value="0"></label>
+<label class="chk"><input id="femusebars" type="checkbox" checked> Include explicit reinforcement line elements</label>
+<label class="chk"><input id="femuseanchors" type="checkbox" checked> Include explicit anchor elements</label>
+</div>
+<div class="btns"><button type="button" id="fembuild">Build FEM model</button><button type="button" id="femexport" disabled>Export FEM model JSON</button><button type="button" id="femsolve">Solve linear-elastic</button></div>
+<div id="femstatus" class="note">FEM model not built yet.</div>
+<div id="femstats"></div><div id="femres"></div>
+</section>
+</main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+window.HEA={"HEA 100":[96,100,5,8,12],"HEA 120":[114,120,5,8,12],"HEA 140":[133,140,5.5,8.5,12],"HEA 160":[152,160,6,9,15],"HEA 180":[171,180,6,9.5,15],"HEA 200":[190,200,6.5,10,18],"HEA 220":[210,220,7,11,18],"HEA 240":[230,240,7.5,12,21],"HEA 260":[250,260,7.5,12.5,24],"HEA 280":[270,280,8,13,24],"HEA 300":[290,300,8.5,14,27],"HEA 320":[310,300,9,15.5,27],"HEA 340":[330,300,9.5,16.5,27],"HEA 360":[350,300,10,17.5,27],"HEA 400":[390,300,11,19,27]};
+function heaProps(n){var p=HEA[n]||HEA["HEA 200"],h=p[0],b=p[1],tw=p[2],tf=p[3],r=p[4],k=0.2234,af=(1-Math.PI/4)*r*r,A=2*b*tf+(h-2*tf)*tw+(4-Math.PI)*r*r;
+return {h:h,b:b,tw:tw,tf:tf,r:r,A:A,Wy:b*tf*(h-tf)+tw*Math.pow(h-2*tf,2)/4+4*af*(h/2-tf-k*r),Wz:tf*b*b/2+(h-2*tf)*tw*tw/4+4*af*(tw/2+k*r),Avy:A-2*b*tf+(tw+2*r)*tf,Avz:A-(h-2*tf)*tw};}
+window.heaProps=heaProps;
+function lugGeom(n,o){var s=heaProps(n);return o==="w"?{bw:s.h,dl:s.b,W:s.Wz,Av:s.Avz,s:s}:{bw:s.b,dl:s.h,W:s.Wy,Av:s.Avy,s:s};}
+function lugNext(MEd,Vl,fy,o){var names=Object.keys(HEA);for(var i=0;i<names.length;i++){var g=lugGeom(names[i],o);if(g.W*fy/1e6>=MEd&&g.Av*fy/Math.sqrt(3)/1000>=Vl)return names[i];}return null;}
+window.GEO={vbars:function(Bx,By,c0,nbx,nby,dvb){var raw=[],out=[],gap=2*dvb,k;
+for(k=0;k<nbx;k++){var bx=c0+k*(Bx-2*c0)/(nbx-1);raw.push([bx,c0]);raw.push([bx,By-c0]);}
+for(k=1;k<nby-1;k++){var by=c0+k*(By-2*c0)/(nby-1);raw.push([c0,by]);raw.push([Bx-c0,by]);}
+raw.forEach(function(b){var dx=Math.abs(b[0]-c0)<1?1:(Math.abs(b[0]-(Bx-c0))<1?-1:0),dz=Math.abs(b[1]-c0)<1?1:(Math.abs(b[1]-(By-c0))<1?-1:0);
+if(dx&&dz){out.push({x:b[0],y:b[1]+dz*gap,dx:dx,dz:0,dy:0});out.push({x:b[0]+dx*gap,y:b[1],dx:0,dz:dz,dy:dvb});}else out.push({x:b[0],y:b[1],dx:dx,dz:dz,dy:0});});
+return out;},anc:function(B,n,sp,i){return (B-(n-1)*sp)/2+i*sp;}};
+var MANC={vb:0};window.MAN={vb:0};
+function axTri(kind){
+var L=24,cx='var(--bad)',cy='var(--ok)',cz='var(--acc)';
+var aR=function(c){return '<line x1="0" y1="0" x2="'+L+'" y2="0" style="stroke:'+c+';stroke-width:1.6"/><path d="M'+L+' 0l-6 -3.2v6.4z" style="fill:'+c+'"/>'};
+var aD=function(c){return '<line x1="0" y1="0" x2="0" y2="'+L+'" style="stroke:'+c+';stroke-width:1.6"/><path d="M0 '+L+'l-3.2 -6h6.4z" style="fill:'+c+'"/>'};
+var tx=function(t,x,y,c){return '<text x="'+x+'" y="'+y+'" style="fill:'+c+';font-size:12px;font-weight:700">'+t+'</text>'};
+var into=function(c){return '<circle r="5.5" cx="0" cy="0" style="fill:var(--panel);stroke:'+c+';stroke-width:1.5"/><path d="M-3.4 -3.4L3.4 3.4M3.4 -3.4L-3.4 3.4" style="stroke:'+c+';stroke-width:1.5"/>'};
+var outo=function(c){return '<circle r="5.5" cx="0" cy="0" style="fill:var(--panel);stroke:'+c+';stroke-width:1.5"/><circle r="2" cx="0" cy="0" style="fill:'+c+'"/>'};
+var s='<g class="axt" transform="translate(22,20)" aria-hidden="true"><title>Axes: x right, '+(kind==='plan'?'y down, z into the page (down into the concrete)':'z down into the concrete, y out of the page')+'</title>';
+if(kind==='plan')s+=aR(cx)+aD(cy)+into(cz)+tx('x',L+4,4,cx)+tx('y',-4,L+14,cy)+tx('z',-15,-7,cz);
+else s+=aR(cx)+aD(cz)+outo(cy)+tx('x',L+4,4,cx)+tx('z',-4,L+14,cz)+tx('y',-15,-7,cy);
+return s+'</g>';}
+var OV=null;var v=function(i){var x=parseFloat(OV&&OV[i]!==undefined?OV[i]:$(i).value);return isFinite(x)?x:0};
+var f=function(x,d){return isFinite(x)?x.toFixed(d===undefined?1:d):"–"};
+var esc=function(t){return String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
+function edges(nx,ny,tx,ty,hs,vs){var sx=v("sx"),sy=v("sy");return{l:(tx<nx&&hs=="r")?(nx-tx)*sx+v("cl"):v("cl"),r:(tx<nx&&hs=="l")?(nx-tx)*sx+v("cr2"):v("cr2"),t:(ty<ny&&vs=="b")?(ny-ty)*sy+v("ct"):v("ct"),b:(ty<ny&&vs=="t")?(ny-ty)*sy+v("cb"):v("cb")};}
+function gs(A,b){var n=3,M=A.map(function(r,i){return r.concat(b[i])}),i,j,k;for(i=0;i<n;i++){var pv=i;for(j=i+1;j<n;j++)if(Math.abs(M[j][i])>Math.abs(M[pv][i]))pv=j;var t=M[i];M[i]=M[pv];M[pv]=t;if(Math.abs(M[i][i])<1e-300)continue;for(j=i+1;j<n;j++){var f2=M[j][i]/M[i][i];for(k=i;k<=n;k++)M[j][k]-=f2*M[i][k];}}var x=[0,0,0];for(i=n-1;i>=0;i--){var s=M[i][n];for(j=i+1;j<n;j++)s-=M[i][j]*x[j];x[i]=Math.abs(M[i][i])<1e-300?0:s/M[i][i];}return x;}
+var FA=[],psecG=1,SIG=0,RES=[];
+function solveLoadTransfer(){
+var on=$('useF').checked;
+$('manF').style.display=on?'none':'';var lev=$('sm').value==='l';$('tg').parentNode.style.display=lev?'':'none';$('am').parentNode.style.display=lev?'':'none';$('duc').parentNode.style.display=lev?'none':'';
+if(!on){window.VEC=null;FA=[];psecG=1;SIG=0;$('fres').innerHTML='';return;}
+var nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),As=+$('dia').value.split('|')[0],fck=v('fck'),hef=v('hef'),bear=$('bear').checked;
+var Ec=22000*Math.pow((fck+8)/10,0.3),kA=210000/Ec*As,Lx=v('Lpx'),Ly=v('Lpy'),nc=24,dA=Lx*Ly/(nc*nc);
+var Nt=v('Nc')*1000/Ec,Mxt=v('Mx')*1e6/Ec,Myt=v('My')*1e6/Ec,an=[],cells=[],i,j,k;
+for(j=0;j<ny;j++)for(i=0;i<nx;i++)an.push([(i-(nx-1)/2)*sx,(j-(ny-1)/2)*sy,i,j]);
+if(bear)for(i=0;i<nc;i++)for(j=0;j<nc;j++)cells.push([-Lx/2+(i+.5)*Lx/nc,-Ly/2+(j+.5)*Ly/nc]);
+var res=function(p){var r=[-Nt,Myt,Mxt],e;
+cells.forEach(function(c){e=p[0]+p[1]*c[0]+p[2]*c[1];if(e>0){var F=e*dA;r[0]+=F;r[1]+=F*c[0];r[2]+=F*c[1];}});
+an.forEach(function(a){e=p[0]+p[1]*a[0]+p[2]*a[1];var F=(bear&&e>0)?0:kA*e;r[0]+=F;r[1]+=F*a[0];r[2]+=F*a[1];});
+return r;};
+var nrm=function(r){return Math.abs(r[0])+Math.abs(r[1])/100+Math.abs(r[2])/100},tol=1e-9*(Math.abs(Nt)+Math.abs(Myt)/100+Math.abs(Mxt)/100+1e-9),p=[Nt/(Lx*Ly)||0,0,0],ok=false;
+for(var it=0;it<80;it++){var r=res(p),n0=nrm(r);if(n0<tol){ok=true;break;}
+var hh=[1e-8,1e-11,1e-11],J=[[0,0,0],[0,0,0],[0,0,0]];
+for(k=0;k<3;k++){var q=p.slice();q[k]+=hh[k];var r2=res(q);for(var m=0;m<3;m++)J[m][k]=(r2[m]-r[m])/hh[k];}
+for(k=0;k<3;k++)J[k][k]+=1e-9*Math.abs(J[k][k])+1e-30;
+var d=gs(J,r),t=1,pn=p;for(var ls=0;ls<30;ls++){pn=[p[0]-t*d[0],p[1]-t*d[1],p[2]-t*d[2]];if(nrm(res(pn))<n0)break;t/=2;}p=pn;}
+var Fk=Ec/1000,T=an.map(function(a){var e=p[0]+p[1]*a[0]+p[2]*a[1],F=(bear&&e>0)?0:kA*e;return -F*Fk;}),C=0,emax=0;
+cells.forEach(function(c){var e=p[0]+p[1]*c[0]+p[2]*c[1];if(e>0){C+=e*dA*Fk;emax=Math.max(emax,e);}});
+SIG=emax*Ec;
+var LSs=lugSplit(v('Vx'),v('Vy')),Vx=LSs.ax,Vy=LSs.ay,Mz=v('Mz')*1000,Vm=Math.hypot(Vx,Vy),Vr=Math.max(0,Vm-v('mu')*C),sc=Vm>0?Vr/Vm:0,n=an.length,rr=an.reduce(function(s,a){return s+a[0]*a[0]+a[1]*a[1]},0)||1;
+var S=an.map(function(a){var qx=sc*Vx/n-Mz*a[1]/rr,qy=sc*Vy/n+Mz*a[0]/rr;return [qx,qy,Math.hypot(qx,qy)]});
+var tn=[],TT=0,Tmax=0,sxx=0,syy=0;
+an.forEach(function(a,q){if(T[q]>1e-6){tn.push(q);TT+=T[q];Tmax=Math.max(Tmax,T[q]);sxx+=T[q]*a[0];syy+=T[q]*a[1];}});
+FA=T;psecG=1;window.VEC={T:T.slice(),qx:S.map(function(q){return q[0]}),qy:S.map(function(q){return q[1]}),N:v('Nc'),Vx:v('Vx'),Vy:v('Vy'),Mx:v('Mx'),My:v('My'),Mz:v('Mz')};
+if(tn.length){var cols=[],rows=[],gx=0,gy=0;tn.forEach(function(q){var a=an[q];if(cols.indexOf(a[2])<0)cols.push(a[2]);if(rows.indexOf(a[3])<0)rows.push(a[3]);gx+=a[0];gy+=a[1];});
+$('tx').value=String(cols.length);$('ty').value=String(rows.length);$('hs').value=Math.min.apply(null,cols)===0?'l':'r';$('vs').value=Math.min.apply(null,rows)===0?'t':'b';
+var ex=Math.abs(sxx/TT-gx/tn.length),ey=Math.abs(syy/TT-gy/tn.length),s3=3*hef;psecG=Math.min(1,1/(1+2*ex/s3))*Math.min(1,1/(1+2*ey/s3));}
+var R1=function(x){return Math.round(x*10)/10};
+$('NEd').value=R1(TT);$('N1').value=R1(Tmax);$('VEd').value=R1(S.reduce(function(s,q){return s+q[2]},0));$('V1').value=R1(Math.max.apply(null,S.map(function(q){return q[2]})));
+var rowsH=an.map(function(a,q){return `<tr><td>A${q+1}</td><td>${f(T[q],1)}</td><td>${f(S[q][0],1)}</td><td>${f(S[q][1],1)}</td><td>${f(S[q][2],1)}</td></tr>`}).join('');
+$('fres').innerHTML=(ok?'':`<p class='note' style='color:var(--bad)'>No equilibrium found: check the plate size and the loads.</p>`)+`<table><tr><td><b>Anchor</b></td><td><b>N (kN, + tension)</b></td><td><b>V<sub>x</sub></b></td><td><b>V<sub>y</sub></b></td><td><b>V</b></td></tr>${rowsH}</table><p class='note'>Compression under the plate ${f(C,1)} kN, maximum bearing stress ${f(SIG,1)} MPa. Friction takes ${f(Math.min(Vm,v('mu')*C),1)} kN of the shear. With bearing on grout, anchors in the compression zone show 0 because the concrete carries the compression.</p>`;
+}
+function cbars(){var c0=v('cv')+v('dst')+v('dvb')/2;return GEO.vbars(v('Bx'),v('By'),c0,Math.max(2,+$('nbx').value),Math.max(2,+$('nby').value),v('dvb')).map(function(b){return [b.x,b.y]});}
+function qual(){var nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),x0=v('cl'),y0=v('ct'),hef=v('hef'),kre=v('kre'),tx=Math.min(+$('tx').value,nx),ty=Math.min(+$('ty').value,ny),hs=$('hs').value,vs=$('vs').value,ta=[],i,j;
+for(j=0;j<ny;j++)for(i=0;i<nx;i++)if((hs=='l'?i<tx:i>=nx-tx)&&(vs=='t'?j<ty:j>=ny-ty))ta.push([x0+i*sx,y0+j*sy]);
+return cbars().map(function(b){var d=1e9;ta.forEach(function(a){d=Math.min(d,Math.hypot(a[0]-b[0],a[1]-b[1]))});return {x:b[0],y:b[1],d:d,ok:d<=kre*hef};});}
+function syncF(){var nx=+$('nx').value,ny=+$('ny').value,ex=Math.round((v('Bx')-(nx-1)*v('sx'))/2),ey=Math.round((v('By')-(ny-1)*v('sy'))/2);$('cl').value=ex;$('cr2').value=ex;$('ct').value=ey;$('cb').value=ey;}
+function lugSplit(Vx,Vy){var alX=Math.abs(Vx)>=Math.abs(Vy);
+if(!($('lug').checked&&$('useF').checked))return {on:false,alX:alX,vl:0,ax:Vx,ay:Vy};
+var sh=Math.max(0,Math.min(100,v('lugsh')))/100,vl=(alX?Vx:Vy)*sh;
+return {on:true,alX:alX,vl:vl,ax:alX?Vx-vl:Vx,ay:alX?Vy:Vy-vl};}
+function calculateDesignLegacy(){
+syncEngineeringGeometry();solveLoadTransfer();
+var fck=v("fck"),hef=v("hef"),gm=v("gm")||1.5,NEd=v("NEd"),VEd=v("VEd");
+var cracked=$("cr").value==="1",cast=$("type").value==="c";
+var nx=+$("nx").value,ny=+$("ny").value,sx=v("sx"),sy=v("sy");
+var k1=cast?(cracked?8.9:12.7):(cracked?7.7:11.0);
+var N0=k1*Math.sqrt(fck)*Math.pow(hef,1.5)/1000;
+var h15=1.5*hef,scr=3*hef;
+var A0=scr*scr;
+var psire=$("dense").checked?1:Math.min(1,0.5+hef/200);
+function grp(gx,gy,eL,eR,eT,eB){
+var Lx=Math.min(eL,h15)+Math.min(eR,h15)+(gx-1)*Math.min(sx,scr);
+var Ly=Math.min(eT,h15)+Math.min(eB,h15)+(gy-1)*Math.min(sy,scr);
+var c=Math.min(eL,eR,eT,eB),ps=Math.min(1,0.7+0.3*c/h15);
+return {Ac:Lx*Ly,ps:ps,N:N0*(Lx*Ly/A0)*ps*psire};}
+var tx=Math.min(+$("tx").value,nx),ty=Math.min(+$("ty").value,ny),hs=$("hs").value,vs=$("vs").value;
+var eg=edges(nx,ny,tx,ty,hs,vs);
+var G=grp(tx,ty,eg.l,eg.r,eg.t,eg.b),Gall=grp(nx,ny,v("cl"),v("cr2"),v("ct"),v("cb"));
+var Ac=G.Ac,psis=G.ps,NRk=G.N*psecG,NRd=NRk/gm;
+var k8auto=hef>=60?2:1,k8s=$("k8in").value.trim(),k8=(k8s!==""&&+k8s>0)?+k8s:k8auto,VRd=k8*Gall.N/gm;
+var ds=v("dvb"),fyk=v("fyk"),eta=+$("eta").value,amp=v("amp")||1;
+var Hb=v("hb"),cv=v("cv");
+var As=Math.PI*ds*ds/4;
+var fctm=fck<=50?0.3*Math.pow(fck,2/3):2.12*Math.log(1+(fck+8)/10);
+var fctd=0.7*fctm/1.5,fbd=2.25*eta*fctd;
+var fsd=fyk/1.15;
+var Fs=As*fsd/1000,lbd=ds/4*fsd/fbd,al1=(cv+v('dst')>3*ds)?0.7:1,lbmin=Math.max(0.3*al1*lbd,10*ds,100),lbdes=Math.max(al1*lbd,lbmin);
+var TA=[],kre_=v('kre'),dsh=Math.max(0.05,v('dsh')||0.25);
+(function(){var tx_=Math.min(+$('tx').value,nx),ty_=Math.min(+$('ty').value,ny),hs_=$('hs').value,vs_=$('vs').value,i,j;
+for(j=0;j<ny;j++)for(i=0;i<nx;i++){var ten=FA.length?FA[j*nx+i]>1e-6:((hs_=='l'?i<tx_:i>=nx-tx_)&&(vs_=='t'?j<ty_:j>=ny-ty_));if(ten)TA.push({x:GEO.anc(v('Bx'),nx,sx,i),y:GEO.anc(v('By'),ny,sy,j),T:FA.length?FA[j*nx+i]:1});}})();
+var Tt=TA.reduce(function(s,a){return s+a.T},0);
+var QL=cbars().map(function(b){var dq=TA.map(function(a){return Math.hypot(b[0]-a.x,b[1]-a.y)}),d=dq.length?Math.min.apply(null,dq):1e9,zq=hef-d/1.5,lt=Math.max(0,zq-cv);
+  return {d:d,zq:zq,lt:lt,Fb:Math.min(Math.PI*ds*lt*fbd/al1,Math.PI*ds*Math.max(0,Hb-cv-zq)*fbd)/1000,wq:dq.map(function(x){return x<=kre_*hef?1/(1+Math.pow(x/(dsh*hef),2)):0})};}).filter(function(q){return q.d<=kre_*hef&&q.lt>0});
+var nre=QL.length,NEdre=NEd*amp,mS=0,mA=0,mG=0,shM=0,leg=0,Wq=TA.map(function(a,k){return QL.reduce(function(s,q){return s+q.wq[k]},0)}),noLeg=Wq.some(function(w){return !(w>0)});
+QL.forEach(function(q){var sh=0;TA.forEach(function(a,k){if(Wq[k]>0)sh+=(Tt>0?a.T/Tt:1/TA.length)*q.wq[k]/Wq[k]});shM=Math.max(shM,sh);mS=Math.max(mS,sh/Fs);mA=Math.max(mA,sh/q.Fb);mG=Math.max(mG,sh/Math.min(Fs,q.Fb));leg+=Math.min(Fs,q.Fb)/nre;});
+var NRdre=!TA.length?Infinity:(noLeg?0:(mG>0?1/mG:0));
+var Fb=nre?QL.reduce(function(s,q){return s+q.Fb},0)/nre:0,l1m=nre?QL.reduce(function(s,q){return s+q.lt},0)/nre:0;
+var NRdreS=!TA.length?Infinity:(noLeg?0:(mS>0?1/mS:0)),NRdreA=!TA.length?Infinity:(noLeg?0:(mA>0?1/mA:0)),reOn=$('usere').checked;
+var legsReq=leg>0?Math.ceil(NEdre/leg):0;
+var gp=$("gr").value.split("|"),fuk=+gp[0],fy2=+gp[1],dp=$("dia").value.split("|"),Asa=+dp[0],da=+dp[1],N1=v("N1"),V1=v("V1");
+var gMsN=Math.max(1.4,1.2*fuk/fy2),gMsV=(fuk<=800&&fy2/fuk<=0.8)?Math.max(1.25,fuk/fy2):1.5;
+var NRds=Asa*fuk/gMsN/1000;
+var PCc=$("ht").value==="c",tpc=v("ptp"),ofc=v("pofs"),pfy=v("pfy")||355,PLc=(nx-1)*sx+2*ofc,PWc=(ny-1)*sy+2*ofc,dh=v("hd"),Ah=PCc?Math.max(0,(PLc*PWc-nx*ny*Math.PI/4*da*da)/(nx*ny)):Math.max(0,$("ht").value==="r"?Math.PI/4*(dh*dh-da*da):dh*dh-Math.PI/4*da*da);
+var ccP=Math.max(0,ofc-da/2),ppP=N1*1000/(Ah+Math.PI/4*da*da),MEdP=ppP*ccP*ccP/2,MRdP=tpc*tpc/6*pfy;
+var NRdp=(cracked?7.5:10.5)*Ah*fck/gm/1000;
+var eh=Math.min(eg.l,eg.r),ev=Math.min(eg.t,eg.b),c1b=Math.min(eh,ev),c2b=(c1b===eh)?ev:eh;
+var NRdcb=(c1b>0&&c1b<=0.5*hef)?(cracked?8.7:12.2)*c1b*Math.sqrt(Ah)*Math.sqrt(fck)*(1+Math.min(c2b,3*c1b)/c1b)/4/gm/1000:Infinity;
+var dsa=Math.sqrt(4*Asa/Math.PI),Wel=Math.PI*Math.pow(dsa,3)/32;
+var k6=fuk<=500?0.6:0.5,k7=$("duc").checked?1:0.8;
+var VRds=($("sm").value==="l")?(+$("am").value)*1.2*Wel*fuk*(1-Math.min(1,N1/NRds))/(v("tg")+0.5*da)/gMsV/1000:k7*k6*Asa*fuk/gMsV/1000;
+var VRdc=Infinity,LS=lugSplit(v('Vx'),v('Vy')),vx=LS.ax,vy=LS.ay,Vres=Math.hypot(vx,vy),c1V=0,edgeGov=null,edgeTxt=[];
+var shL=v('cl'),shR=v('cr2'),shT=v('ct'),shB=v('cb'),eVv=Vres>0?Math.abs(v('Mz'))*1000/Vres:0;
+[{k:'right',nx:1,ny:0,c:shR,c2:[shT,shB],np:ny,sp:sy},{k:'left',nx:-1,ny:0,c:shL,c2:[shT,shB],np:ny,sp:sy},{k:'bottom',nx:0,ny:1,c:shB,c2:[shL,shR],np:nx,sp:sx},{k:'top',nx:0,ny:-1,c:shT,c2:[shL,shR],np:nx,sp:sx}].forEach(function(E){
+  var comp=vx*E.nx+vy*E.ny,c1=E.c;
+  if(Vres<=0||comp<=1e-9*Vres||!(c1>0)||c1>=Math.max(10*hef,60*da))return;
+  var cosA=Math.min(1,comp/Vres),sinA=Math.sqrt(Math.max(0,1-cosA*cosA));
+  var lf=Math.min(hef,8*da),al=0.1*Math.pow(lf/c1,0.5),be=0.1*Math.pow(da/c1,0.2);
+  var V0=(cracked?1.7:2.4)*Math.pow(da,al)*Math.pow(lf,be)*Math.sqrt(fck)*Math.pow(c1,1.5)/1000;
+  var c2=Math.min(E.c2[0],E.c2[1]),wid=Math.min(E.c2[0],1.5*c1)+(E.np-1)*Math.min(E.sp,3*c1)+Math.min(E.c2[1],1.5*c1);
+  var Acv=Math.min(1.5*c1,Hb)*wid,A0v=4.5*c1*c1;
+  var pS=Math.min(1,0.7+0.3*c2/(1.5*c1)),pH=Math.max(1,Math.sqrt(1.5*c1/Hb)),pE=Math.min(1,1/(1+2*eVv/(3*c1))),pA=Math.max(1,Math.sqrt(1/(cosA*cosA+0.25*sinA*sinA))),pR=+$("rev").value;
+  var vrd=V0*(Acv/A0v)*pS*pH*pE*pA*pR/gm;
+  edgeTxt.push(E.k+" "+f(vrd)+" kN");
+  if(vrd<VRdc){VRdc=vrd;edgeGov={k:E.k,c1:c1,c2:c2,Ac:Acv,A0:A0v,V0:V0,lf:lf,pS:pS,pH:pH,pE:pE,pA:pA,pR:pR,ang:Math.acos(cosA)*180/Math.PI};}
+});
+if(edgeGov)c1V=edgeGov.c1;
+var LG={on:false,Vl:0};
+if(LS.on){
+  var LGm=lugGeom($("lugp").value,$("lugo").value),lb=LGm.bw,lh=v("lugh"),lt=LGm.dl,lfy=+$("lugfy").value||235,lgg=v("lugg"),lk=v("lugk")||1;
+  var dirL=LS.vl>=0?1:-1,Vl=Math.abs(LS.vl);
+  var halfL=LS.alX?(nx-1)*sx/2:(ny-1)*sy/2,halfT=LS.alX?(ny-1)*sy/2:(nx-1)*sx/2;
+  var c1L=(LS.alX?(dirL>0?shR:shL):(dirL>0?shB:shT))+halfL-lt/2;
+  var c2a=(LS.alX?shT:shL)+halfT-lb/2,c2b=(LS.alX?shB:shR)+halfT-lb/2;
+  var sigL=(lb*lh>0)?Vl*1000/(lb*lh):(Vl>0?Infinity:0),fRdL=lk*0.85*fck/gm;
+  var MEdL=Vl*(lgg+lh/2)/1000,MRdL=LGm.W*lfy/1e6,VRsL=LGm.Av*lfy/Math.sqrt(3)/1000;
+  var VRcL=Infinity,dq=Math.min(lb,60),lfL=Math.min(lh,8*dq),V0L=0,AcL=0,A0L=0,psL=1,phL=1;
+  if(c1L<=0)VRcL=0;
+  else if(c1L<Math.max(10*lh,60*dq)){
+    var alL=0.1*Math.pow(lfL/c1L,0.5),beL=0.1*Math.pow(dq/c1L,0.2);
+    V0L=(cracked?1.7:2.4)*Math.pow(dq,alL)*Math.pow(lfL,beL)*Math.sqrt(fck)*Math.pow(c1L,1.5)/1000;
+    AcL=Math.min(1.5*c1L,Hb)*(Math.min(Math.max(c2a,0),1.5*c1L)+lb+Math.min(Math.max(c2b,0),1.5*c1L));A0L=4.5*c1L*c1L;
+    psL=Math.min(1,0.7+0.3*Math.max(0,Math.min(c2a,c2b))/(1.5*c1L));phL=Math.max(1,Math.sqrt(1.5*c1L/Hb));
+    VRcL=V0L*(AcL/A0L)*psL*phL*(+$("rev").value)/gm;}
+  LG={on:true,Vl:Vl,dir:dirL,alX:LS.alX,prof:$("lugp").value,ori:$("lugo").value,lb:lb,lh:lh,lt:lt,fy:lfy,lg:lgg,lk:lk,c1:c1L,c2a:c2a,c2b:c2b,sig:sigL,fRd:fRdL,MEd:MEdL,MRd:MRdL,VRs:VRsL,VRc:VRcL,V0:V0L,Ac:AcL,A0:A0L,ps:psL,ph:phL,lf:lfL,dq:dq};
+}
+var bN=Math.max($("usere").checked?NEdre/NRdre:NEd/NRd,N1/NRdp,isFinite(NRdcb)?N1/NRdcb:0),bV=Math.max(VEd/VRd,isFinite(VRdc)?VEd/VRdc:0);
+var intS=Math.pow(N1/NRds,2)+Math.pow(V1/VRds,2),intC=Math.pow(bN,1.5)+Math.pow(bV,1.5);
+var bars=[
+["Concrete breakout, unreinforced",NEd,NRd,"kN"],
+["Anchor reinforcement carries tension",NEdre,NRdre,"kN"],["Reinforcement steel (legs in reach)",NEdre,NRdreS,"kN"],["Reinforcement anchorage (bond above cone)",NEdre,NRdreA,"kN"],
+["Concrete pryout",VEd,VRd,"kN"],
+["Block depth: h_ef + cover must fit in h",hef+cv,Hb,"mm"],
+["Anchor steel, tension (one anchor)",N1,NRds,"kN"],
+["Pull-out of the head (one anchor)",N1,NRdp,"kN"],
+["Side blow-out (only if c ≤ 0.5·h_ef)",N1,NRdcb,"kN"],
+["Anchor steel, shear (one anchor)",V1,VRds,"kN"],
+["Concrete edge breakout in shear (needs c₁)",VEd,VRdc,"kN"],
+["Concrete bearing under plate",SIG,2/3*v('kj')*0.85*fck/1.5,"MPa"],
+["Interaction, steel (N² + V²)",intS,1,""],
+["Interaction, concrete (N^1.5 + V^1.5)",intC,1,""],["Cage clearance: required / available",(window.CLR||{req:0}).req,(window.CLR||{mn:1e9}).mn,"mm"],["Common plate: bending of the overhang",PCc?MEdP:0,PCc?MRdP:1,"Nmm/mm"]];
+var bdD=(ds<=16?4:7)*ds,bdC0=cv+v("dst")+ds/2,bdSp=Math.min((v("Bx")-2*bdC0)/(Math.max(2,+$("nbx").value)-1),(v("By")-2*bdC0)/(Math.max(2,+$("nby").value)-1)),bdAb=Math.max(1,Math.min(bdC0,bdSp/2)),bdF=($("usere").checked&&nre)?Math.min(NEdre/nre,leg):0,bdReq=bdF*1000*(1/bdAb+1/(2*ds))/(0.85*fck/gm),bdUse=Math.max(bdD,bdReq);MANC.vb=Math.max(MANC.vb,bdUse);
+if(LG.on){bars.push(["Shear lug: bearing on concrete",LG.sig,LG.fRd,"MPa"],["Shear lug: plate bending",LG.MEd,LG.MRd,"kNm"],["Shear lug: plate shear",LG.Vl,LG.VRs,"kN"],["Shear lug: concrete edge breakout",LG.Vl,LG.VRc,"kN"]);}
+
+
+var P=function(u){return isFinite(u)?Math.round((u-1)*100)+" %":"a large amount"};
+var szTxt=function(fac,pw){var need=Asa*Math.pow(fac,pw),o=$("dia").options,t=null;for(var i=0;i<o.length;i++){if(+o[i].value.split("|")[0]>=need){t=o[i].text;break;}}return t?"use at least "+t+" (or a higher steel grade)":"use a higher steel grade or more anchors";};
+var lev=$("sm").value==="l",kr=v("kre");
+var H=[
+function(u){return "Capacity must rise by about "+P(u)+". Options: increase h_ef; increase edge distances or spacing, or enlarge the block, so the cone area grows (now "+f(Ac/100,0)+" of "+f(A0/100,0)+" cm² possible, ψs,N = "+f(psis,2)+"); reduce the eccentricity of the tension forces (ψec,N = "+f(psecG,2)+"); or provide anchor reinforcement and tick the option to use it.";},
+function(u){var g=Fb<Fs;return "N_Rd,re = "+f(NRdre)+" kN is below the required "+f(NEdre)+" kN. "+(nre?nre+" bar(s) are counted, each carrying about "+f(leg)+" kN"+(legsReq?" (about "+legsReq+" needed)":"")+". "+(g?"Anchorage above the cone governs: increase h_ef or reduce the cover so l₁ grows (now about "+f(l1m,0)+" mm). ":"Bar steel governs: use a larger bar (max Ø20) or a higher f_yk. "):"No bar lies within "+f(kr*hef,0)+" mm of a tension anchor. ")+"Add bars or stirrup legs close to the tension anchors (within "+f(kr*hef,0)+" mm).";},
+function(u){return "Steel of the "+nre+" leg(s) in reach is "+f(NRdreS)+" kN against "+f(NEdre*amp)+" kN. Use a larger bar (max Ø20), a higher f_yk, or add legs within "+f(kr*hef,0)+" mm of the tension anchors.";},
+function(u){return "Bond anchorage above the cone gives "+f(NRdreA)+" kN against "+f(NEdre*amp)+" kN. Available l₁ is about "+f(l1m,0)+" mm, required l_bd = "+f(lbdes,0)+" mm (l_b,rqd = "+f(lbd,0)+", α₁ = "+f(al1,2)+(al1<1?"":": cover at the bend is not above 3Ø, so no bend credit")+"). Increase h_ef, reduce cover, increase cover at the bend above 3Ø, or use more legs.";},
+function(u){return "Capacity must rise by about "+P(u)+". Options: increase h_ef; increase edge distances or enlarge the block; add an anchor row or column; or keep shear off the anchors (shear lug, grout bearing, friction μ above).";},
+function(u){return "Increase the foundation height h to at least "+f(hef+cv,0)+" mm, or reduce h_ef to at most "+f(Hb-cv,0)+" mm.";},
+function(u){return "The most loaded anchor is overstressed by about "+P(u)+". "+szTxt(u,1)+"; or share the tension between more anchors.";},
+function(u){if(PCc)return "Bearing area per anchor is "+f(Ah,0)+" mm² (plate area less the bolts, shared by the anchors), too small by about "+P(u)+". Increase the plate offset or width, or use more anchors.";var r=$("ht").value==="r",Ar=Ah*u,dr=r?Math.sqrt(4*Ar/Math.PI+da*da):Math.sqrt(Ar+Math.PI/4*da*da);return "The head bearing area is too small by about "+P(u)+". Enlarge the head or washer to about "+f(Math.ceil(dr/5)*5,0)+" mm ("+(r?"diameter":"side")+"), or use more anchors to cut the force per anchor.";},
+function(u){return "The edge distance c₁ = "+f(c1b,0)+" mm is at most 0.5·h_ef = "+f(0.5*hef,0)+" mm. Increase the edge distance above "+f(0.5*hef,0)+" mm (larger block) so this check no longer applies, or enlarge the head.";},
+function(u){return "The most loaded anchor is overstressed in shear by about "+P(u)+". "+(lev?"Reduce the grout gap t_g, use full grout bearing, or detail a fixed head (α_M = 2). "+szTxt(u,2/3):"Use ductile steel (A₅ > 8 %, k₇ = 1.0) if available; "+szTxt(u,1))+". Alternatively take the shear with a lug, friction or grout bearing.";},
+function(u){return "Capacity must rise by about "+P(u)+". Options: increase the edge distance c₁ in the shear direction (now "+f(c1V,0)+" mm, resistance grows with c₁^1.5); select edge reinforcement ψre,V (1.2 / 1.4) if it is really provided; make the block taller (h ≥ 1.5·c₁ = "+f(1.5*c1V,0)+" mm); add anchors along the edge; or add a shear lug (section Shear lug) so the anchors carry less shear.";},
+function(u){return "Bearing stress "+f(SIG,1)+" MPa exceeds "+f(2/3*v("kj")*0.85*fck/1.5,1)+" MPa. Enlarge the base plate (L_x, L_y), reduce the moment, or raise k_j only if the concrete around the plate justifies it.";},
+function(u){return "Combined tension and shear on the anchor steel is too high (sum "+f(u,2)+"). Reduce either force, or "+szTxt(Math.sqrt(u),1)+".";},
+function(u){return "Combined concrete tension and shear is too high (β_N = "+f(bN,2)+", β_V = "+f(bV,2)+"). Improve the larger one first: check the breakout, pull-out, pryout and edge breakout bars above.";},
+function(u){var C=window.CLR||{mn:0,req:0};return "Smallest clearance between anchors or heads and the bars or stirrups is "+f(C.mn,0)+" mm, required "+f(C.req,0)+" mm. Reduce the head size, move the anchors, change the bar count or stirrup spacing so bars pass between the anchors, or widen the block.";},
+function(u){return "Plate overhang bending: M_Ed = "+f(MEdP,0)+" Nmm/mm against M_Rd = "+f(MRdP,0)+" Nmm/mm (cantilever "+f(ccP,0)+" mm beyond the bolt, bearing pressure "+f(ppP,1)+" MPa). Use a plate of at least "+f(tpc*Math.sqrt(u),0)+" mm, a higher steel grade, or a smaller offset.";},
+function(u){return "Lug bearing stress "+f(LG.sig,1)+" MPa exceeds "+f(LG.fRd,1)+" MPa. The bearing area b·h_l must grow to about "+f(LG.Vl*1000/LG.fRd,0)+" mm² (now "+f(LG.lb*LG.lh,0)+"): increase the lug embedment h_l or use a wider HEA, raise k_lug only if confinement justifies it, or lower the lug share of the shear.";},
+function(u){var n1=lugNext(LG.MEd,LG.Vl,LG.fy,LG.ori),n2=lugNext(LG.MEd,LG.Vl,355,LG.ori);return LG.prof+": lug bending M_Ed = "+f(LG.MEd,2)+" kNm against M_Rd = "+f(LG.MRd,2)+" kNm. "+(n1?"Use "+n1+" or larger.":(n2?"Use S355 with "+n2+" or larger.":"No HEA up to HEA 400 is enough in this orientation. Use the strong axis or reduce the lug share."))+" You can also reduce the lever arm (grout "+f(LG.lg,0)+" mm plus half the embedment) or share the shear with the anchors.";},
+function(u){var n1=lugNext(LG.MEd,LG.Vl,LG.fy,LG.ori),n2=lugNext(LG.MEd,LG.Vl,355,LG.ori);return LG.prof+": the shear area is too small for "+f(LG.Vl)+" kN (V_Rd = "+f(LG.VRs)+" kN). "+(n1?"Use "+n1+" or larger.":(n2?"Use S355 with "+n2+" or larger.":"No HEA up to HEA 400 is enough in this orientation. Use the strong axis or reduce the lug share."));},
+function(u){return "Lug edge breakout capacity "+f(LG.VRc)+" kN is below "+f(LG.Vl)+" kN (c₁ = "+f(LG.c1,0)+" mm to the edge, side edges "+f(Math.min(LG.c2a,LG.c2b),0)+" mm). Increase the block size so c₁ and the side distances grow, reduce the lug share, or make the lug embedment h_l larger (up to the limit l_f).";}
+];
+bars.forEach(function(b,i){var u=b[2]>0?b[1]/b[2]:Infinity;b[4]=u>1?H[i](u):"";});
+
+var wasOpen=$("bars").querySelector("details")&&$("bars").querySelector("details").open;
+/* When supplementary reinforcement is explicitly selected, the unreinforced
+   cone remains visible as a reference result but is not an active failure.
+   The reinforcement load path must pass its own resistance check. */
+var UR=bars.map(function(b,i){var u=b[2]>0?b[1]/b[2]:Infinity;var reference=($("usere").checked&&i===0)||(!$("usere").checked&&i>=1&&i<=3)||(i===14&&!$("clchk").checked);return {b:b,u:u,reference:reference,bad:reference?false:!(u<=1)};});
+var active=UR.filter(function(x){return !x.reference;});
+var nBad=active.filter(function(x){return x.bad}).length,gvU=active.reduce(function(m,x){return x.u>m.u?x:m},active[0]||UR[0]);
+var crow=function(x){var b=x.b;var tag=x.reference?'Reference':(x.bad?'Fails':'OK');return '<div class="cr'+(x.bad?' bad':'')+'"><span class="cl">'+b[0]+'</span><span class="ctr"><i style="width:'+Math.min(100,(isFinite(x.u)?x.u:1)*100)+'%"></i></span><span class="cp">'+(isFinite(x.u)?Math.round(x.u*100)+' %':'∞')+'</span><span class="tag"'+(x.bad&&b[4]?' tabindex="0" data-hint="'+esc(b[4])+'"':'')+'>'+tag+'</span>'+(x.bad||x.reference?'<span class="cv">'+f(b[1])+' / '+f(b[2])+' '+b[3]+'</span>':'')+'</div>';};
+var crit=UR.filter(function(x){return x.reference||x.bad||x.u>=0.8}),rest=UR.filter(function(x){return !(x.reference||x.bad||x.u>=0.8)});
+setH($("bars"),'<div class="usum'+(nBad?' bad':'')+'"><span class="tag">'+(nBad?nBad+(nBad>1?' active checks fail':' active check fails'):'All active checks OK')+'</span><span>Governing: '+gvU.b[0]+', '+(isFinite(gvU.u)?Math.round(gvU.u*100)+' %':'∞')+'</span></div>'+crit.map(crow).join("")+(rest.length?'<details class="more"'+(wasOpen?' open':'')+'><summary>'+rest.length+' more active checks, all below 80 %</summary>'+rest.map(crow).join("")+'</details>':'') );
+RES=UR.map(function(x){return {l:x.b[0],u:x.u,h:x.b[4]||"",reference:x.reference};});
+var rows=[
+["#Tension: concrete cone breakout"],["k₁ (cracked / type)",f(k1,1),""],
+["N⁰<sub>Rk,c</sub> = k₁·√f<sub>ck</sub>·h<sub>ef</sub><sup>1.5</sup>",f(N0),"kN",f(k1,1)+" · √"+fck+" · "+hef+"^1.5 / 1000"],
+["A⁰<sub>c,N</sub> = (3·h<sub>ef</sub>)²",f(A0/100,0),"cm²"],
+["A<sub>c,N</sub> actual projected area",f(Ac/100,0),"cm²"],
+["ψ<sub>s,N</sub> (edge)",f(psis,2),""],
+["ψ<sub>re,N</sub> (shell spalling)",f(psire,2),""],
+["ψ<sub>ec,N</sub> (eccentricity of tension)",f(psecG,2),""],
+["N<sub>Rk,c</sub> tension group ("+tx*ty+" anchors)",f(NRk),"kN",f(N0)+" · "+f(Ac/A0,2)+" · "+f(psis,2)+" · "+f(psire,2)+" · "+f(psecG,2)],
+["N<sub>Rd,c</sub> = N<sub>Rk,c</sub> / γ<sub>Mc</sub>",f(NRd),"kN",f(NRk)+" / "+f(gm,2)],
+["#Shear: concrete pryout"],["k₈ (pryout)",f(k8,1),k8s===""?"automatic from h<sub>ef</sub>; confirm with the product approval":"user input"],
+["N<sub>Rk,c</sub> all "+nx*ny+" anchors (for pryout)",f(Gall.N),"kN"],
+["V<sub>Rd,cp</sub> = k₈·N<sub>Rk,c</sub> / γ<sub>Mc</sub>",f(VRd),"kN",f(k8,1)+" · "+f(Gall.N)+" / "+f(gm,2)],
+["#Tension: anchor reinforcement (stirrup legs)"],["f<sub>bd</sub> design bond stress",f(fbd,2),"MPa"],
+["Steel per leg A<sub>s</sub>·f<sub>yk</sub>/1.15",f(Fs),"kN"],
+["Mean anchorage capacity per bar (end bend) π·d<sub>s</sub>·l₁·f<sub>bd</sub>",f(Fb),"kN"],
+["Required l<sub>b,rqd</sub> for full yield",f(lbd,0),"mm"],["α₁ (bend; needs cover > 3Ø: "+f(cv+v("dst"),0)+" vs "+f(3*ds,0)+" mm)",f(al1,2),""],["l<sub>bd</sub> = max(α₁·l<sub>b,rqd</sub>, l<sub>b,min</sub>)",f(lbdes,0),"mm","l<sub>b,min</sub> = "+f(lbmin,0)+" mm"],
+["Legs counted (within reach, crossing the cone)",String(nre),""],["Largest leg share of N<sub>Ed,re</sub> (shared per tension anchor, weight 1/(1+(d/d₀)²), d₀ = "+f(dsh*hef,0)+" mm)",f(shM*100,0),"%"],
+["Mean anchorage length above the cone, l₁",f(l1m,0),"mm"],
+["N<sub>Rd,re,s</sub> steel / N<sub>Rd,re,a</sub> anchorage (load level at which the most loaded leg is full)",f(NRdreS)+" / "+f(NRdreA),"kN"],["N<sub>Rd,re</sub> = n<sub>re</sub> · min(steel, anchorage) per leg",f(NRdre),"kN"],
+["Active tension load path",$("usere").checked?"Supplementary reinforcement":"Concrete breakout",""] ,
+["Legs needed for N<sub>Ed,re</sub> = "+f(NEdre)+" kN",String(legsReq),""],
+["#Steel, pull-out and side blow-out"],["γ<sub>Ms,N</sub> / γ<sub>Ms,V</sub>",f(gMsN,2)+" / "+f(gMsV,2),""],
+["N<sub>Rd,s</sub> anchor steel",f(NRds),"kN"],
+["A<sub>h</sub> head bearing area per anchor",f(Ah,0),"mm²"],["Common plate L × W × t / offset",PCc?f(PLc,0)+" × "+f(PWc,0)+" × "+f(tpc,0)+" / "+f(ofc,0):"not used","mm"],["Plate overhang M<sub>Ed</sub> / M<sub>Rd</sub> (cantilever beyond the bolt, S = f<sub>y</sub>)",PCc?f(MEdP,0)+" / "+f(MRdP,0):"–","Nmm/mm"],
+["N<sub>Rd,p</sub> pull-out",f(NRdp),"kN"],
+["N<sub>Rd,cb</sub> side blow-out",isFinite(NRdcb)?f(NRdcb):"not required",isFinite(NRdcb)?"kN":""],
+["#Shear: steel and concrete edge breakout"],["V<sub>Rd,s</sub> anchor steel shear",f(VRds),"kN"],
+["V<sub>Rd,c</sub> edge breakout",isFinite(VRdc)?f(VRdc):"no edge",isFinite(VRdc)?"kN":""],
+["#Interaction"],["Interaction steel / concrete",f(intS,2)+" / "+f(intC,2),""]];
+var shearRows=[["Shear split: lug / anchors",f(Math.abs(LS.vl))+" / "+f(Math.hypot(LS.ax,LS.ay))+" kN",LS.on?"share "+f(v("lugsh"),0)+" %":"no lug"]];
+if(edgeGov){shearRows.push(["Shear edge breakout, edges checked",edgeTxt.join(" · "),""],["Governing edge: "+edgeGov.k+", c₁ / c₂ (side)",f(edgeGov.c1,0)+" / "+f(edgeGov.c2,0),"mm"],["A<sub>c,V</sub> / A⁰<sub>c,V</sub>",f(edgeGov.Ac/100,0)+" / "+f(edgeGov.A0/100,0),"cm²"],["V⁰<sub>Rk,c</sub> (l<sub>f</sub> = "+f(edgeGov.lf,0)+" mm)",f(edgeGov.V0),"kN"],["ψ<sub>s,V</sub> · ψ<sub>h,V</sub> · ψ<sub>ec,V</sub> · ψ<sub>α,V</sub> · ψ<sub>re,V</sub>",f(edgeGov.pS,2)+" · "+f(edgeGov.pH,2)+" · "+f(edgeGov.pE,2)+" · "+f(edgeGov.pA,2)+" · "+f(edgeGov.pR,2),"α<sub>V</sub> = "+f(edgeGov.ang,0)+"°"]);}
+if(LG.on){shearRows.push(["Lug c₁ / side edges",f(LG.c1,0)+" / "+f(LG.c2a,0)+", "+f(LG.c2b,0),"mm"],["Lug bearing σ / f<sub>Rd</sub>",f(LG.sig,1)+" / "+f(LG.fRd,1),"MPa"],["Lug plate M<sub>Ed</sub> / M<sub>Rd</sub>",f(LG.MEd,2)+" / "+f(LG.MRd,2),"kNm"],["Lug plate V<sub>Rd</sub>",f(LG.VRs),"kN"],["Lug A<sub>c,V</sub> / A⁰<sub>c,V</sub>, ψ<sub>s,V</sub>",isFinite(LG.VRc)?f(LG.Ac/100,0)+" / "+f(LG.A0/100,0)+", "+f(LG.ps,2):"no edge",""],["V<sub>Rd,c</sub> lug edge breakout",isFinite(LG.VRc)?f(LG.VRc):"no edge",isFinite(LG.VRc)?"kN":""]);}
+rows.splice(rows.length-2,0,...shearRows);rows.splice(rows.length-2,0,["#Cage detailing"],["Bend mandrel D of the vertical bars (automatic)",f(Math.ceil(bdUse/5)*5,0)+" mm","code minimum "+f(bdD,0)+" mm; bearing in the bend (EN 1992-1-1 8.3) needs "+f(bdReq,0)+" mm (F<sub>bt</sub> = "+f(bdF)+" kN, a<sub>b</sub> = "+f(bdAb,0)+" mm)"]);
+
+$("steps").innerHTML='<colgroup><col style="width:44%"><col style="width:19%"><col></colgroup>'+rows.map(function(r){if(r[0][0]==="#")return '<tr class="gh"><th colspan="3">'+r[0].slice(1)+'</th></tr>';var u=r[2]||"",lg=u.length>8;return "<tr><td>"+r[0]+"</td><td>"+r[1]+(lg||!u?"":" <small>"+u+"</small>")+"</td><td>"+(r[3]||(lg?u:""))+"</td></tr>"}).join("");
+}
+/* ---------- FEM preparation layer (v1) ----------
+   Deliberately separate from the EN 1992-4 resistance calculations.
+   The first version generates a deterministic 3D solid mesh plus line
+   geometry for anchors and reinforcement. A solver can consume this model
+   later without changing the engineering input model. */
+var FEMMODEL=null;
+function femVal(id,def){var z=parseFloat($(id).value);return isFinite(z)?z:def;}
+function femNodeKey(i,j,k,nx,ny){return k*(ny+1)*(nx+1)+j*(nx+1)+i;}
+function buildFEMModel(){
+  var Bx=femVal('Bx',600),By=femVal('By',600),H=femVal('hb',1000),h=Math.max(25,femVal('femh',100));
+  var bw=femVal('dvb',12),cov=femVal('cv',50),dstv=femVal('dst',8),zc0=cov+dstv+bw/2,hefv=v('hef'),nA=+$('nx').value,mA=+$('ny').value,AX=[],AY=[];
+  for(i=0;i<nA;i++)AX.push(GEO.anc(Bx,nA,v('sx'),i));for(j=0;j<mA;j++)AY.push(GEO.anc(By,mA,v('sy'),j));
+  var BR=$('femusebars').checked?cbars():[];
+  var gl=function(L,pts){var a=[0,L].concat(pts.filter(function(p){return p>0&&p<L})).sort(function(p,q){return p-q}),u=[a[0]];a.forEach(function(p){if(p-u[u.length-1]>1)u.push(p)});u[u.length-1]=L;var o=[u[0]];for(var q=1;q<u.length;q++){var n=Math.max(1,Math.ceil((u[q]-u[q-1])/h)),st=(u[q]-u[q-1])/n;for(var t=1;t<=n;t++)o.push(t==n?u[q]:u[q-1]+t*st);}return o;};
+  var xs=gl(Bx,AX.concat(BR.map(function(b){return b[0]}))),ys=gl(By,AY.concat(BR.map(function(b){return b[1]}))),zs=gl(H,[hefv,zc0,H-cov]);
+  var nx=xs.length-1,ny=ys.length-1,nz=zs.length-1,dx=Bx/nx,dy=By/ny,dz=H/nz,nodes=[],elements=[];
+  for(k=0;k<=nz;k++)for(j=0;j<=ny;j++)for(i=0;i<=nx;i++)nodes.push({id:nodes.length+1,x:xs[i]-Bx/2,y:ys[j]-By/2,z:zs[k]});
+  for(k=0;k<nz;k++)for(j=0;j<ny;j++)for(i=0;i<nx;i++){
+    var n000=femNodeKey(i,j,k,nx,ny),n100=femNodeKey(i+1,j,k,nx,ny),n110=femNodeKey(i+1,j+1,k,nx,ny),n010=femNodeKey(i,j+1,k,nx,ny);
+    var n001=femNodeKey(i,j,k+1,nx,ny),n101=femNodeKey(i+1,j,k+1,nx,ny),n111=femNodeKey(i+1,j+1,k+1,nx,ny),n011=femNodeKey(i,j+1,k+1,nx,ny);
+    elements.push({id:elements.length+1,type:'hex8',nodes:[n000+1,n100+1,n110+1,n010+1,n001+1,n101+1,n111+1,n011+1]});
+  }
+  var material={name:'Concrete',fck:femVal('fck',30),Ecm:femVal('femE',0),nu:femVal('femnu',0.20)};
+  if(!material.Ecm) material.Ecm=Math.round(22000*Math.pow((material.fck+8)/10,0.3));
+  var model={version:'FEM-prep-1',units:{length:'mm',force:'N',stress:'MPa'},geometry:{Bx:Bx,By:By,H:H},material:material,mesh:{nx:nx,ny:ny,nz:nz,dx:dx,dy:dy,dz:dz,xs:xs,ys:ys,zs:zs,conforming:true},nodes:nodes,elements:elements,anchors:[],reinforcement:[],loads:[],boundary:{bottom:'fixed-z'},meta:{source:'EN 1992-4 anchor calculator'}};
+  var nxA=+$('nx').value,nyA=+$('ny').value,sx=v('sx'),sy=v('sy');
+  for(j=0;j<nyA;j++)for(i=0;i<nxA;i++){
+    var x=GEO.anc(Bx,nxA,sx,i)-Bx/2,y=GEO.anc(By,nyA,sy,j)-By/2;
+    model.anchors.push({id:'A'+(j*nxA+i+1),x:x,y:y,z:0,hef:v('hef'),diameter:parseFloat($('dia').value.split('|')[1])||0,head:v('hd'),tension:FA.length?FA[j*nxA+i]:null});
+  }
+  if($('femusebars').checked){
+    var bars=cbars(),bd=femVal('dvb',12),cover=femVal('cv',50),dst=femVal('dst',8),zc0=cover+dst+bd/2;
+    bars.forEach(function(b,idx){model.reinforcement.push({id:'R'+(idx+1),type:'vertical',x:b[0]-Bx/2,y:b[1]-By/2,z0:zc0,z1:H-cover,diameter:bd});});
+  }
+  if($('femuseanchors').checked){
+    model.anchors.forEach(function(a){a.type='anchor';a.z1=a.z+a.hef;});
+  }
+  var ix=function(a,val){var b=0;a.forEach(function(p,q){if(Math.abs(p-val)<Math.abs(a[b]-val))b=q});return b;},nid=function(a,b,c){return femNodeKey(a,b,c,nx,ny)+1;},snap=0,nTr=0;
+  model.anchors.forEach(function(a){var ia=ix(xs,a.x+Bx/2),ja=ix(ys,a.y+By/2),ka=ix(zs,a.hef);snap=Math.max(snap,Math.abs(xs[ia]-Bx/2-a.x),Math.abs(ys[ja]-By/2-a.y),Math.abs(zs[ka]-a.hef));a.headNode=nid(ia,ja,ka);a.shaft='unbonded: shaft joins concrete at headNode only';a.topPoint={x:a.x,y:a.y,z:0};});
+  model.reinforcement.forEach(function(r){var ia=ix(xs,r.x+Bx/2),ja=ix(ys,r.y+By/2);snap=Math.max(snap,Math.abs(xs[ia]-Bx/2-r.x),Math.abs(ys[ja]-By/2-r.y));r.nodes=[];zs.forEach(function(zv,kk){if(zv>=r.z0-1&&zv<=r.z1+1)r.nodes.push(nid(ia,ja,kk))});r.trussElements=Math.max(0,r.nodes.length-1);nTr+=r.trussElements;});
+  model.meta.maxSnapError=snap;
+  var c={Nc:v('Nc'),Vx:v('Vx'),Vy:v('Vy'),My:v('My'),Mx:v('Mx'),Mz:v('Mz')};
+  model.loads.push({type:'plate-centre',values:c});
+  FEMMODEL=model;
+  $('femexport').disabled=false;
+  $('femstatus').textContent='FEM model built: conforming mesh, bars bonded on shared nodes, anchors unbonded except at the head node.'+(elements.length>50000?' Warning: more than 50000 elements, increase the element size.':'')+' No solution has been run yet.';
+  $('femstats').innerHTML='<table><tr><th>Item</th><th>Count / value</th></tr><tr><td>Concrete nodes</td><td>'+nodes.length+'</td></tr><tr><td>Concrete hex elements</td><td>'+elements.length+'</td></tr><tr><td>Anchor elements</td><td>'+model.anchors.length+'</td></tr><tr><td>Reinforcement lines</td><td>'+model.reinforcement.length+'</td></tr><tr><td>Grid lines x / y / z</td><td>'+(nx+1)+' / '+(ny+1)+' / '+(nz+1)+'</td></tr><tr><td>Mean element size</td><td>'+f(dx,0)+' × '+f(dy,0)+' × '+f(dz,0)+' mm</td></tr><tr><td>Bar truss elements (bonded, shared nodes)</td><td>'+nTr+'</td></tr><tr><td>Max snap error anchors / bars</td><td>'+f(snap,2)+' mm</td></tr><tr><td>E<sub>cm</sub> / ν</td><td>'+f(material.Ecm,0)+' MPa / '+f(material.nu,2)+'</td></tr></table>';
+}
+function exportFEMModel(){
+  if(!FEMMODEL)return;
+  var blob=new Blob([JSON.stringify(FEMMODEL,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='anchor_fem_model_v1.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+
+function hexKe(a,b,c,E,nu){
+  var lam=E*nu/((1+nu)*(1-2*nu)),mu=E/(2*(1+nu)),D=[[lam+2*mu,lam,lam,0,0,0],[lam,lam+2*mu,lam,0,0,0],[lam,lam,lam+2*mu,0,0,0],[0,0,0,mu,0,0],[0,0,0,0,mu,0],[0,0,0,0,0,mu]];
+  var S=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]],K=new Float64Array(576),g=1/Math.sqrt(3),dv=a*b*c/8,G=[-g,g],gi,gj,gk,i,r,s2,t;
+  for(gi=0;gi<2;gi++)for(gj=0;gj<2;gj++)for(gk=0;gk<2;gk++){
+    var xi=G[gi],et=G[gj],ze=G[gk],B=new Float64Array(144),DB=new Float64Array(144);
+    for(i=0;i<8;i++){var sx=S[i][0],sy=S[i][1],sz=S[i][2],dx=sx*(1+sy*et)*(1+sz*ze)/8*2/a,dy=sy*(1+sx*xi)*(1+sz*ze)/8*2/b,dz=sz*(1+sx*xi)*(1+sy*et)/8*2/c,c3=3*i;
+      B[c3]=dx;B[24+c3+1]=dy;B[48+c3+2]=dz;B[72+c3]=dy;B[72+c3+1]=dx;B[96+c3+1]=dz;B[96+c3+2]=dy;B[120+c3]=dz;B[120+c3+2]=dx;}
+    for(r=0;r<6;r++)for(s2=0;s2<24;s2++){var sm=0;for(t=0;t<6;t++)sm+=D[r][t]*B[t*24+s2];DB[r*24+s2]=sm;}
+    for(r=0;r<24;r++)for(s2=0;s2<24;s2++){var q=0;for(t=0;t<6;t++)q+=B[t*24+r]*DB[t*24+s2];K[r*24+s2]+=q*dv;}
+  }
+  return K;}
+function femSolve(){
+  calc();buildFEMModel();var M=FEMMODEL,out=$('femres');
+  if(!M.anchors.length||!M.anchors[0].headNode){out.innerHTML='<p class="note" style="color:var(--bad)">Tick "Include explicit anchor elements" and rebuild.</p>';return;}
+  var nN=M.nodes.length,MS=3*nN,nd=MS+6,mesh=M.mesh,nxm=mesh.nx,nym=mesh.ny,E=M.material.Ecm,nu=M.material.nu,Es=210000,Eb=200000,cache={},i,q,t;
+  if(M.elements.length>20000){out.innerHTML='<p class="note" style="color:var(--bad)">Mesh too large for the in-browser solver. Increase the element size.</p>';return;}
+  var dp=$('dia').value.split('|'),Asa=+dp[0],da=+dp[1],tgv=($('sm').value==='l'?v('tg'):0),Lc=tgv+0.5*da;
+  var ka=Es*Asa/(M.anchors[0].hef+tgv),kl=3*Es*Math.PI*Math.pow(da,4)/64/Math.pow(Lc,3);
+  var el=M.elements.map(function(e,n){var ii=n%nxm,jj=Math.floor(n/nxm)%nym,kk=Math.floor(n/(nxm*nym)),a=mesh.xs[ii+1]-mesh.xs[ii],b=mesh.ys[jj+1]-mesh.ys[jj],c=mesh.zs[kk+1]-mesh.zs[kk],key=a.toFixed(3)+'|'+b.toFixed(3)+'|'+c.toFixed(3);
+    if(!cache[key]){var K=hexKe(a,b,c,E,nu),d=new Float64Array(24);for(t=0;t<24;t++)d[t]=K[t*25];cache[key]={K:K,d:d};}return {n:e.nodes,c:cache[key]};});
+  var BT=[];M.reinforcement.forEach(function(r){var A=Math.PI*r.diameter*r.diameter/4;for(i=0;i+1<r.nodes.length;i++){var L=M.nodes[r.nodes[i+1]-1].z-M.nodes[r.nodes[i]-1].z;BT.push([r.nodes[i],r.nodes[i+1],Eb*A/L,r.id]);}});
+  var nearest=function(a,val){var b=0;a.forEach(function(p,n){if(Math.abs(p-val)<Math.abs(a[b]-val))b=n});return b;};
+  var AN=M.anchors.map(function(a){var ia=nearest(mesh.xs,a.x+M.geometry.Bx/2),ja=nearest(mesh.ys,a.y+M.geometry.By/2);return {id:a.id,rx:a.x,ry:a.y,h:a.headNode,t:femNodeKey(ia,ja,0,nxm,nym)+1};});
+  var FIX=[];M.nodes.forEach(function(n,k){if(Math.abs(n.z-M.geometry.H)<1e-6){FIX.push(3*k,3*k+1,3*k+2);}});
+  function mv(u,raw){var y=new Float64Array(nd),ue=new Float64Array(24),n,s2,id;
+    for(n=0;n<el.length;n++){var E1=el[n],K=E1.c.K;for(t=0;t<8;t++){id=3*(E1.n[t]-1);ue[3*t]=u[id];ue[3*t+1]=u[id+1];ue[3*t+2]=u[id+2];}
+      for(t=0;t<24;t++){var sm=0,o=t*24;for(s2=0;s2<24;s2++)sm+=K[o+s2]*ue[s2];y[3*(E1.n[(t/3)|0]-1)+t%3]+=sm;}}
+    BT.forEach(function(b){var d=3*(b[0]-1)+2,e2=3*(b[1]-1)+2,f=b[2]*(u[d]-u[e2]);y[d]+=f;y[e2]-=f;});
+    AN.forEach(function(a){var sx=u[MS]-a.ry*u[MS+5],sy=u[MS+1]+a.rx*u[MS+5],sz=u[MS+2]+a.ry*u[MS+3]-a.rx*u[MS+4],h=3*(a.h-1)+2,tp=3*(a.t-1),fz=ka*(sz-u[h]),fx=kl*(sx-u[tp]),fy=kl*(sy-u[tp+1]);
+      y[MS]+=fx;y[MS+1]+=fy;y[MS+2]+=fz;y[MS+3]+=a.ry*fz;y[MS+4]-=a.rx*fz;y[MS+5]+=-a.ry*fx+a.rx*fy;y[h]-=fz;y[tp]-=fx;y[tp+1]-=fy;});
+    if(!raw)FIX.forEach(function(d){y[d]=0});return y;}
+  var dg=new Float64Array(nd);
+  el.forEach(function(E1){for(t=0;t<24;t++)dg[3*(E1.n[(t/3)|0]-1)+t%3]+=E1.c.d[t];});
+  BT.forEach(function(b){dg[3*(b[0]-1)+2]+=b[2];dg[3*(b[1]-1)+2]+=b[2];});
+  AN.forEach(function(a){dg[3*(a.h-1)+2]+=ka;dg[3*(a.t-1)]+=kl;dg[3*(a.t-1)+1]+=kl;dg[MS]+=kl;dg[MS+1]+=kl;dg[MS+2]+=ka;dg[MS+3]+=ka*a.ry*a.ry;dg[MS+4]+=ka*a.rx*a.rx;dg[MS+5]+=kl*(a.rx*a.rx+a.ry*a.ry);});
+  FIX.forEach(function(d){dg[d]=1});for(i=0;i<nd;i++)if(!(dg[i]>0))dg[i]=1;
+  var b=new Float64Array(nd);b[MS]=v('Vx')*1000;b[MS+1]=v('Vy')*1000;b[MS+2]=v('Nc')*1000;b[MS+3]=-v('Mx')*1e6;b[MS+4]=v('My')*1e6;b[MS+5]=v('Mz')*1e6;
+  var u=new Float64Array(nd),r=Float64Array.from(b),z=new Float64Array(nd),p,rz=0,b2=0,it,Ap,al,rzn;
+  for(i=0;i<nd;i++){z[i]=r[i]/dg[i];rz+=r[i]*z[i];b2+=b[i]*b[i];}p=Float64Array.from(z);
+  var res=Math.sqrt(b2);
+  for(it=0;it<6000&&res>1e-9*Math.sqrt(b2)+1e-12;it++){Ap=mv(p);var pAp=0;for(i=0;i<nd;i++)pAp+=p[i]*Ap[i];al=rz/pAp;rzn=0;res=0;
+    for(i=0;i<nd;i++){u[i]+=al*p[i];r[i]-=al*Ap[i];z[i]=r[i]/dg[i];rzn+=r[i]*z[i];res+=r[i]*r[i];}res=Math.sqrt(res);var be=rzn/rz;rz=rzn;for(i=0;i<nd;i++)p[i]=z[i]+be*p[i];}
+  var Rw=mv(u,true),Rx=0,Ry=0,Rz=0;for(i=0;i<FIX.length;i+=3){Rx+=Rw[FIX[i]];Ry+=Rw[FIX[i+1]];Rz+=Rw[FIX[i+2]];}
+  var cmp=(window.VEC&&$('useF').checked)?window.VEC:null,rows='',maxS=0;
+  AN.forEach(function(a,n){var sx=u[MS]-a.ry*u[MS+5],sy=u[MS+1]+a.rx*u[MS+5],sz=u[MS+2]+a.ry*u[MS+3]-a.rx*u[MS+4],h=3*(a.h-1)+2,tp=3*(a.t-1),T=-ka*(sz-u[h])/1000,Vv=Math.hypot(kl*(sx-u[tp]),kl*(sy-u[tp+1]))/1000,Tr=cmp?cmp.T[n]:NaN,Vr=cmp?Math.hypot(cmp.qx[n],cmp.qy[n]):NaN;
+    rows+='<tr><td>'+a.id+' tension (kN)</td><td>'+f(Tr,1)+'</td><td>'+f(T,1)+'</td><td>'+f(T-Tr,1)+'</td></tr><tr><td>'+a.id+' shear (kN)</td><td>'+f(Vr,1)+'</td><td>'+f(Vv,1)+'</td><td>'+f(Vv-Vr,1)+'</td></tr>';});
+  var bmax=-1e9,bmin=1e9,fb={};BT.forEach(function(e2){var F=e2[2]*(u[3*(e2[1]-1)+2]-u[3*(e2[0]-1)+2])/1000;bmax=Math.max(bmax,F);bmin=Math.min(bmin,F);});
+  var umax=0;for(i=0;i<MS;i++)umax=Math.max(umax,Math.abs(u[i]));
+  out.innerHTML='<h3>Linear-elastic result (FEM, not an EN 1992-4 resistance)</h3><table><tr><td><b>Quantity</b></td><td><b>Rigid-plate model</b></td><td><b>FEM</b></td><td><b>Difference</b></td></tr>'+rows+
+   '<tr><td>Total vertical reaction (kN)</td><td>'+f(v('Nc'),1)+'</td><td>'+f(-Rz/1000,1)+'</td><td>'+f(-Rz/1000-v('Nc'),1)+'</td></tr><tr><td>Total reaction x (kN)</td><td>'+f(v('Vx'),1)+'</td><td>'+f(-Rx/1000,1)+'</td><td>'+f(-Rx/1000-v('Vx'),1)+'</td></tr><tr><td>Total reaction y (kN)</td><td>'+f(v('Vy'),1)+'</td><td>'+f(-Ry/1000,1)+'</td><td>'+f(-Ry/1000-v('Vy'),1)+'</td></tr></table>'+
+   '<p class="note">CG converged in '+it+' iterations, residual '+res.toExponential(1)+'. Max concrete displacement '+umax.toFixed(4)+' mm. Bar axial force: max tension '+f(bmax,1)+' kN, max compression '+f(-bmin,1)+' kN (element forces, not leg capacity). Assumptions: bottom face fixed, rigid plate, anchor axial spring from plate to the head node, lateral spring to the top concrete node (cantilever length t<sub>g</sub> + d/2), linear elastic, no friction, no lug. Compare with the rigid model only with “plate bears on grout” unticked'+($('bear').checked?' (currently ticked, so differences are expected)':'')+'. Numerical difference in the vertical reaction should be near 0.</p>';
+}
+$('femsolve').addEventListener('click',femSolve);
+$('fembuild').addEventListener('click',function(){calc();buildFEMModel();});
+$('femexport').addEventListener('click',exportFEMModel);
+$('femE').addEventListener('input',function(){if(FEMMODEL)buildFEMModel();});
+var LC=[{n:"min N",Nc:"122.9",Vx:"0.5",Vy:"7",My:"1.1",Mx:"0",Mz:"0"},{n:"max N",Nc:"-136.9",Vx:"12.9",Vy:"71",My:"2.1",Mx:"0",Mz:"0"},{n:"atlo min N",Nc:"223.1",Vx:"64.2",Vy:"12.4",My:"10.9",Mx:"0",Mz:"0"},{n:"atlo max N",Nc:"-168.9",Vx:"71.6",Vy:"12.5",My:"10.9",Mx:"0",Mz:"0"}],cur=3,LCF=["Nc","Vx","Vy","My","Mx","Mz"];
+var tip=document.createElement("div");tip.id="tip";tip.hidden=true;tip.setAttribute("role","tooltip");document.body.appendChild(tip);
+function hideTip(){tip.hidden=true;}
+function showTip(el){tip.textContent=el.getAttribute("data-hint");tip.hidden=false;var r=el.getBoundingClientRect(),w=tip.offsetWidth,h=tip.offsetHeight,x=Math.max(8,Math.min(r.left,window.innerWidth-w-8)),y=r.bottom+6;if(y+h>window.innerHeight-8)y=Math.max(8,r.top-h-6);tip.style.left=x+"px";tip.style.top=y+"px";}
+document.addEventListener("mouseover",function(e){var t=e.target.closest&&e.target.closest("[data-hint]");if(t)showTip(t);else hideTip();});
+document.addEventListener("focusin",function(e){var t=e.target.closest&&e.target.closest("[data-hint]");if(t)showTip(t);});
+document.addEventListener("focusout",hideTip);
+window.addEventListener("scroll",hideTip,true);
+function readCase(){var c={n:$("lcn").value||("LC"+(cur+1))};LCF.forEach(function(k){c[k]=$(k).value});return c;}
+function writeCase(c){LCF.forEach(function(k){if(c[k]!==undefined)$(k).value=c[k]});$("lcn").value=c.n;}
+function refreshLC(){var s=$("lc"),want=LC.map(function(c){return c.n}),have=Array.prototype.map.call(s.options,function(o){return o.text});
+  if(want.join("|")!==have.join("|"))s.innerHTML=LC.map(function(c,i){return '<option value="'+i+'">'+esc(c.n)+'</option>'}).join("");
+  s.value=String(cur);$("lcdel").disabled=LC.length<2;}
+function fireLC(){refreshLC();$("lc").dispatchEvent(new Event("change",{bubbles:true}));}
+function pickLC(){cur=Math.max(0,Math.min(LC.length-1,+$("lc").value||0));writeCase(LC[cur]);}
+$("lc").addEventListener("input",pickLC);$("lc").addEventListener("change",pickLC);
+$("lcadd").addEventListener("click",function(){LC[cur]=readCase();LC.push({n:"LC"+(LC.length+1),Nc:0,Vx:0,Vy:0,My:0,Mx:0,Mz:0});cur=LC.length-1;fireLC();});
+$("lcdup").addEventListener("click",function(){var c=readCase();LC[cur]=c;var d=JSON.parse(JSON.stringify(c));d.n=c.n+" copy";LC.splice(cur+1,0,d);cur++;fireLC();});
+$("lcdel").addEventListener("click",function(){if(LC.length<2)return;LC.splice(cur,1);cur=Math.min(cur,LC.length-1);fireLC();});
+$("lcsumbody").addEventListener("click",function(e){if(e.target.id==="lcall"){SUMALL=!SUMALL;calc();return;}var b=e.target.closest(".lcsel");if(b){$("lc").value=b.getAttribute("data-k");$("lc").dispatchEvent(new Event("change",{bubbles:true}));}});
+function setH(el,h){if(el._h!==h){el._h=h;el.innerHTML=h;}}
+var SUMALL=false;
+function renderSum(all){
+  var sec=$("lcsum");$("lcshow").textContent=all?" – "+LC[cur].n:"";
+  if(!all){sec.hidden=true;return;}
+  sec.hidden=false;
+  var names=LC.map(function(c){return c.n}),fail=[];
+  all.forEach(function(r,k){if(r.some(function(x){return !(x.u<=1)}))fail.push(names[k]);});
+  var items=all[0].map(function(c0,i){var mx=-1,mk=0;all.forEach(function(r,k){if(r[i].u>mx){mx=r[i].u;mk=k;}});return {i:i,l:c0.l,mx:mx,mk:mk};});
+  var gv=items.reduce(function(m,x){return x.mx>m.mx?x:m},items[0]);
+  var vd='<div class="usum'+(fail.length?' bad':'')+'"><span class="tag">'+(fail.length?'Fails in '+esc(fail.join(", ")):'All cases OK')+'</span><span>Governing: '+esc(gv.l)+', '+(isFinite(gv.mx)?Math.round(gv.mx*100)+' %':'∞')+' ('+esc(names[gv.mk])+')</span></div>';
+  var th='<tr><td>Check</td>'+names.map(function(nm,k){return '<td><button type="button" class="lcsel'+(k===cur?' on':'')+'" data-k="'+k+'">'+esc(nm)+'</button></td>'}).join("")+'</tr>';
+  var vis=items.filter(function(x){return SUMALL||!(x.mx<0.8)});
+  var rows=vis.map(function(x){var cells=all.map(function(r,k){var u=r[x.i].u,bad=!(u<=1);
+      return '<td class="'+(bad?'bd':'')+'"'+(bad&&r[x.i].h?' tabindex="0" data-hint="'+esc(names[k]+": "+r[x.i].h)+'"':'')+'>'+(isFinite(u)?Math.round(u*100)+' %':'∞')+'</td>';}).join("");
+    return '<tr><td>'+esc(x.l)+'</td>'+cells+'</tr>';}).join("");
+  setH($("lcsumbody"),vd+'<div class="lcm"><table>'+th+rows+'</table></div><button type="button" id="lcall">'+(SUMALL?'Show only checks at 80 % or more':'Show all '+items.length+' checks')+'</button><p class="note">Utilisation per load case. Click a case name to open its full detail. Hover or focus a red value for hints.</p>');
+}
+
+/* ======================================================================
+   ENGINEERING MODEL / DESIGN ENGINE REFACTOR
+   ----------------------------------------------------------------------
+   This layer is deliberately kept between the UI and the existing formula
+   implementation. It gives the application a stable engineering-model
+   snapshot and named design stages without changing the numerical results.
+   The next audit pass can replace each stage internally, one at a time.
+   ====================================================================== */
+var ENGINE={
+  readInputs:function(){
+    var gp=$('gr').value.split('|'), dp=$('dia').value.split('|');
+    return {
+      concrete:{fck:v('fck'),cracked:$('cr').value==='1',gammaMc:v('gm')||1.5},
+      geometry:{hef:v('hef'),nx:+$('nx').value,ny:+$('ny').value,sx:v('sx'),sy:v('sy'),Bx:v('Bx'),By:v('By'),H:v('hb'),cover:v('cv')},
+      anchors:{diameter:+dp[1],area:+dp[0],grade:$('gr').value,headType:$('ht').value,head:v('hd'),plateThickness:v('ptp'),plateOffset:v('pofs')},
+      reinforcement:{verticalDiameter:v('dvb'),stirrupDiameter:v('dst'),nbx:Math.max(2,+$('nbx').value),nby:Math.max(2,+$('nby').value),spacing:v('sst'),reachFactor:v('kre'),supplementary:$('usere').checked},
+      actions:{N:v('Nc'),Vx:v('Vx'),Vy:v('Vy'),Mx:v('Mx'),My:v('My'),Mz:v('Mz')},
+      transfer:{bearing:$('bear').checked,friction:v('mu'),shearMode:$('sm').value,lug:$('lug').checked},
+      product:{k8:$('k8in').value.trim()===''?null:+$('k8in').value}
+    };
+  },
+  buildModel:function(){
+    var m=this.readInputs();
+    syncEngineeringGeometry();
+    m.edges={left:v('cl'),right:v('cr2'),top:v('ct'),bottom:v('cb')};
+    return m;
+  },
+  loadTransfer:function(){
+    solveLoadTransfer();
+    return window.VEC||null;
+  },
+  concreteBreakout:function(){
+    /* Named stage: current verified implementation remains in the legacy
+       calculation body until its equation audit is completed. */
+    return {stage:'concreteBreakout'};
+  },
+  supplementaryReinforcement:function(){return {stage:'supplementaryReinforcement'};},
+  anchorSteel:function(){return {stage:'anchorSteel'};},
+  shear:function(){return {stage:'shear'};},
+  interaction:function(){return {stage:'interaction'};},
+  calculate:function(){
+    var model=this.buildModel();
+    this.loadTransfer();
+    calculateDesignLegacy();
+    return {model:model,vector:window.VEC||null};
+  }
+};
+
+/* Backward-compatible aliases used by geometry/FEM code. */
+function syncEngineeringGeometry(){syncF();}
+function solve(){return solveLoadTransfer();}
+
+function calc(){
+var pcs=$('ht').value==='c';$('hd').parentNode.style.display=pcs?'none':'';['pofs','ptp','phs','pts','pfy'].forEach(function(id){$(id).parentNode.style.display=pcs?'':'none'});
+$("lugf").hidden=!$("lug").checked;$("lugnote").style.color=($("lug").checked&&!$("useF").checked)?"var(--bad)":"";
+  MANC.vb=0;cage();LC[cur]=readCase();refreshLC();hideTip();
+  var on=$("useF").checked,multi=on&&LC.length>1,all=[];
+  $("lcnote").textContent=(!on&&LC.length>1)?"Load cases need the rigid-plate analysis. Tick it to check all cases.":"";
+  if(multi){LC.forEach(function(c){OV=c;try{ENGINE.calculate();}finally{OV=null;}all.push(RES);});}
+  ENGINE.calculate();
+  window.MAN={vb:Math.ceil(MANC.vb/5)*5};
+  renderSum(multi?all:null);
+}
+document.querySelectorAll("input,select").forEach(function(e){e.addEventListener("input",calc);e.addEventListener("change",calc)});
+function draw(){
+var hef=v('hef');if(hef<=0)return;
+var h=1.5*hef,nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),cl=v('cl'),cr=v('cr2'),ct=v('ct'),cb=v('cb'),Hb=v('hb')||hef*1.6,cv=v('cv'),da=+$('dia').value.split('|')[1],dh=v('hd');
+var tx=Math.min(+$('tx').value,nx),ty=Math.min(+$('ty').value,ny),hs=$('hs').value,vs=$('vs').value,eg=edges(nx,ny,tx,ty,hs,vs);
+var colT=function(i){return hs=='l'?i<tx:i>=nx-tx},rowT=function(j){return vs=='t'?j<ty:j>=ny-ty};
+var tS=function(i,j){var V=window.VEC;return V&&V.T?V.T[j*nx+i]>1e-6:(colT(i)&&rowT(j))},colA=function(i){for(var j=0;j<ny;j++)if(tS(i,j))return true;return false};
+var R=function(x){return Math.round(x*10)/10},xe=(nx-1)*sx,ye=(ny-1)*sy,P='a1',i,j,o;
+var L=function(a,b,c){return a+`<tspan dy='3' font-size='8'>${b}</tspan><tspan dy='-3'>${c}</tspan>`};
+var defs=function(){return `<defs><marker id='${P}' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0 0L10 5L0 10z' style='fill:var(--mute)'/></marker><pattern id='${P}h' width='7' height='7' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><line x1='0' y1='0' x2='0' y2='7' style='stroke:var(--line)'/></pattern></defs>`};
+var dH=function(x1,x2,y,t){return `<line class='dim' marker-start='url(#${P})' marker-end='url(#${P})' x1='${R(x1)}' x2='${R(x2)}' y1='${R(y)}' y2='${R(y)}'/><text class='m' text-anchor='middle' x='${R((x1+x2)/2)}' y='${R(y-4)}'>${t}</text>`};
+var dV=function(y1,y2,x,t,sd){return `<line class='dim' marker-start='url(#${P})' marker-end='url(#${P})' x1='${R(x)}' x2='${R(x)}' y1='${R(y1)}' y2='${R(y2)}'/><text class='m' text-anchor='middle' transform='translate(${R(x+(sd<0?-5:12))},${R((y1+y2)/2)}) rotate(-90)'>${t}</text>`};
+var ex=function(x1,y1,x2,y2){return `<line class='ext' x1='${R(x1)}' y1='${R(y1)}' x2='${R(x2)}' y2='${R(y2)}'/>`};
+var vw=420,pl=64,pr=52,xmin=-Math.min(cl,1.3*h),xmax=xe+Math.min(cr,1.3*h),xT=(hs=='l')?0:(nx-tx)*sx;
+/* plan view */
+var vh=390,pt=58,pb=78,ymin=-Math.min(ct,1.3*h),ymax=ye+Math.min(cb,1.3*h);
+var s=Math.min((vw-pl-pr)/(xmax-xmin),(vh-pt-pb)/(ymax-ymin)),ox=pl+((vw-pl-pr)-(xmax-xmin)*s)/2,oy=pt+((vh-pt-pb)-(ymax-ymin)*s)/2;
+var X=function(x){return R(ox+(x-xmin)*s)},Y=function(y){return R(oy+(y-ymin)*s)};
+var bw=R((xmax-xmin)*s),bh=R((ymax-ymin)*s);
+o=defs()+`<rect class='conc' x='${X(xmin)}' y='${Y(ymin)}' width='${bw}' height='${bh}'/><rect style='fill:url(#${P}h)' x='${X(xmin)}' y='${Y(ymin)}' width='${bw}' height='${bh}'/><rect class='pl' x='${X(-60)}' y='${Y(-60)}' width='${R((xe+120)*s)}' height='${R((ye+120)*s)}'/>`;
+for(i=0;i<nx;i++)for(j=0;j<ny;j++){if(!tS(i,j))continue;
+var x0=Math.max(i*sx-h,-cl),x1=Math.min(i*sx+h,xe+cr),y0=Math.max(j*sy-h,-ct),y1=Math.min(j*sy+h,ye+cb);
+o+=`<rect class='fp' x='${X(x0)}' y='${Y(y0)}' width='${R((x1-x0)*s)}' height='${R((y1-y0)*s)}'/><text class='sm' x='${R(X(x0)+3)}' y='${R(Y(y0)+11)}'>cone A${j*nx+i+1}</text>`;}
+var dsr=v('dst'),dvr=v('dvb'),cvv=v('cv'),Bxx=v('Bx'),Byy=v('By'),ox0=v('cl'),oy0=v('ct'),QQ=qual(),kre=v('kre');
+var ccx=function(x){return X(x-ox0)},ccy=function(y){return Y(y-oy0)};
+o+=`<clipPath id='a1c'><rect x='${X(xmin)}' y='${Y(ymin)}' width='${bw}' height='${bh}'/></clipPath><g clip-path='url(#a1c)'>`;
+var rrp=Math.max(2,2.5*dsr*s),swp=Math.max(1.4,dsr*s),sx1=ccx(cvv+dsr/2),sy1=ccy(cvv+dsr/2);
+o+=`<rect class='rb' style='stroke:var(--bad);stroke-width:${R(swp)}' rx='${R(rrp)}' x='${sx1}' y='${sy1}' width='${R((Bxx-2*cvv-dsr)*s)}' height='${R((Byy-2*cvv-dsr)*s)}'/>`;
+for(i=0;i<nx;i++)for(j=0;j<ny;j++){if(colT(i)&&rowT(j))o+=`<circle class='hd' style='stroke:var(--ok)' cx='${X(i*sx)}' cy='${Y(j*sy)}' r='${R(kre*hef*s)}'/>`;}
+QQ.forEach(function(q){o+=`<circle cx='${ccx(q.x)}' cy='${ccy(q.y)}' r='${R(Math.max(2.6,dvr/2*s))}' style='fill:${q.ok?'var(--ok)':'var(--bad)'}'/>`});
+o+='</g>';
+[[cl,X(-cl),X(-cl),Y(ymin),Y(ymax),eg.l],[cr,X(xe+cr),X(xe+cr),Y(ymin),Y(ymax),eg.r],[ct,X(xmin),X(xmax),Y(-ct),Y(-ct),eg.t],[cb,X(xmin),X(xmax),Y(ye+cb),Y(ye+cb),eg.b]].forEach(function(e){if(e[0]<=1.3*h)o+=`<line class='${e[5]<h?'edge':'edge2'}' x1='${e[1]}' x2='${e[2]}' y1='${e[3]}' y2='${e[4]}'/>`});
+var ra=Math.max(4.5,da/2*s),rh=Math.max(ra+3,dh/2*s);if($('ht').value==='c'){var po2=v('pofs');o+=`<rect class='hd' x='${X(-po2)}' y='${Y(-po2)}' width='${R((xe+2*po2)*s)}' height='${R((ye+2*po2)*s)}'/>`;rh=ra+3;}
+for(i=0;i<nx;i++)for(j=0;j<ny;j++){var tn=tS(i,j);o+=`<circle class='hd' cx='${X(i*sx)}' cy='${Y(j*sy)}' r='${R(rh)}'/><circle class='${tn?'anc':'cmp'}' cx='${X(i*sx)}' cy='${Y(j*sy)}' r='${R(ra)}'/><text class='sm' x='${R(X(i*sx)+rh+3)}' y='${R(Y(j*sy)-rh)}'>A${j*nx+i+1}${FA.length?': '+f(FA[j*nx+i],1)+' kN':''}</text>`;}
+var VC=window.VEC;
+if(VC&&VC.qx){var ah=function(x1,y1,x2,y2,c,sw){var a=Math.atan2(y2-y1,x2-x1),k=6.5;return `<line x1='${R(x1)}' y1='${R(y1)}' x2='${R(x2)}' y2='${R(y2)}' style='stroke:${c};stroke-width:${sw}'/><path d='M${R(x2)} ${R(y2)}L${R(x2-k*Math.cos(a-.4))} ${R(y2-k*Math.sin(a-.4))}L${R(x2-k*Math.cos(a+.4))} ${R(y2-k*Math.sin(a+.4))}z' style='fill:${c}'/>`},tx2=function(x,y,t,c){return `<text class='tg' x='${R(x)}' y='${R(y)}' style='fill:${c}'>${t}</text>`};
+var mq=Math.max.apply(null,VC.qx.map(function(a,k){return Math.hypot(a,VC.qy[k])}).concat([1e-9])),OR='#d9822b',PU='#8e44ad',cx=X(xe/2),cy=Y(ye/2),mv=Math.max(Math.abs(VC.Vx),Math.abs(VC.Vy),1e-9),sg=Math.sign;
+VC.qx.forEach(function(qx,k){var qh=Math.hypot(qx,VC.qy[k]),L=qh/mq*44;if(L<3)return;var ax=X((k%nx)*sx),ay=Y(Math.floor(k/nx)*sy);o+=ah(ax,ay,ax+qx/qh*L,ay+VC.qy[k]/qh*L,OR,2.4);});
+if(Math.abs(VC.Vx)>1e-9)o+=ah(cx,cy,cx+sg(VC.Vx)*Math.abs(VC.Vx)/mv*75,cy,PU,3.2)+tx2(cx+sg(VC.Vx)*40,cy-6,'Vx = '+f(VC.Vx)+' kN',PU);
+if(Math.abs(VC.Vy)>1e-9)o+=ah(cx,cy,cx,cy+sg(VC.Vy)*Math.abs(VC.Vy)/mv*75,PU,3.2)+tx2(cx+6,cy+sg(VC.Vy)*40,'Vy = '+f(VC.Vy)+' kN',PU);
+o+=`<circle cx='${R(cx)}' cy='${R(cy)}' r='7' style='fill:var(--panel);stroke:${PU};stroke-width:1.6'/>`+(VC.N>=0?`<path d='M${R(cx-3.5)} ${R(cy-3.5)}l7 7m0 -7l-7 7' style='stroke:${PU};stroke-width:1.6'/>`:`<circle cx='${R(cx)}' cy='${R(cy)}' r='2.2' style='fill:${PU}'/>`)+tx2(cx-86,cy-12,'N = '+f(Math.abs(VC.N))+(VC.N>=0?' kN compr. (into page)':' kN tension (out of page)'),PU);
+var dbl=function(x1,y1,x2,y2){var dx=x2-x1,dy=y2-y1,l=Math.hypot(dx,dy)||1;return ah(x1,y1,x2,y2,PU,3)+ah(x1,y1,x2-dx/l*9,y2-dy/l*9,PU,0)};
+if(Math.abs(VC.My)>1e-9)o+=dbl(cx-95,cy-18*sg(VC.My),cx-95,cy+18*sg(VC.My))+tx2(cx-130,cy+36,'My = '+f(VC.My)+' kNm',PU);
+if(Math.abs(VC.Mx)>1e-9)o+=dbl(cx+18*sg(VC.Mx),cy+95,cx-18*sg(VC.Mx),cy+95)+tx2(cx-30,cy+113,'Mx = '+f(VC.Mx)+' kNm',PU);
+if(Math.abs(VC.Mz)>1e-9){var r0=30,pp=function(a){return [cx+r0*Math.cos(a),cy-80+r0*Math.sin(a)]},a0=-2.1,a1=1.75,P0=pp(sg(VC.Mz)>0?a0:a1),P1=pp(sg(VC.Mz)>0?a1:a0),tg=sg(VC.Mz)>0?[-Math.sin(a1),Math.cos(a1)]:[Math.sin(a0),-Math.cos(a0)];
+o+=`<path d='M${R(P0[0])} ${R(P0[1])}A${r0} ${r0} 0 1 ${VC.Mz>0?1:0} ${R(P1[0])} ${R(P1[1])}' style='fill:none;stroke:${PU};stroke-width:3'/>`+ah(P1[0]-tg[0]*3,P1[1]-tg[1]*3,P1[0],P1[1],PU,0)+tx2(cx+36,cy-78,'T = '+f(VC.Mz)+' kNm',PU);}
+o+=`<text class='sm' x='6' y='14'>Moments drawn as double-head vectors (right-hand rule); T as arc</text>`;}
+var yb=Y(ymax)+16;
+if(cl<=1.3*h)o+=dH(X(-cl),X(0),yb,'c = '+cl);
+if(cr<=1.3*h)o+=dH(X(xe),X(xe+cr),yb,'c = '+cr);
+if(ct<=1.3*h)o+=dV(Y(-ct),Y(0),X(xmax)+14,'c = '+ct,1);
+if(cb<=1.3*h)o+=dV(Y(ye),Y(ye+cb),X(xmax)+14,'c = '+cb,1);
+if(nx>1)o+=ex(X(0),Y(ye),X(0),yb+18)+ex(X(sx),Y(ye),X(sx),yb+18)+dH(X(0),X(sx),yb+18,L('s','x',' = '+sx));
+if(ny>1)o+=ex(X(0),Y(0),X(xmin)-14,Y(0))+ex(X(0),Y(sy),X(xmin)-14,Y(sy))+dV(Y(0),Y(sy),X(xmin)-14,L('s','y',' = '+sy),-1);
+o+=dH(X(Math.max(xT-h,xmin)),X(Math.min(xT+h,xmax)),Y(ymin)-14,L('3·h','ef',' = '+Math.round(2*h)));
+var ly=vh-34,ly2=vh-16;
+o+=`<circle class='anc' cx='14' cy='${ly}' r='4.5'/><text class='sm' x='24' y='${ly+3}'>tension anchor</text><circle class='cmp' cx='124' cy='${ly}' r='4.5'/><text class='sm' x='134' y='${ly+3}'>compression anchor</text><rect class='fp' x='250' y='${ly-5}' width='16' height='10'/><text class='sm' x='272' y='${ly+3}'>cone footprint 3·h_ef</text><rect class='rb' x='9' y='${ly2-5}' width='10' height='10'/><text class='sm' x='24' y='${ly2+3}'>bar in reach</text><circle class='hd' cx='156' cy='${ly2}' r='5'/><text class='sm' x='166' y='${ly2+3}'>head or washer</text><line class='edge' x1='250' x2='266' y1='${ly2}' y2='${ly2}'/><text class='sm' x='272' y='${ly2+3}'>edge closer than 1.5·h_ef</text>`;
+$('plan').setAttribute('viewBox','0 0 '+vw+' '+vh);$('plan').innerHTML=o+axTri('plan');
+/* section */
+P='a2';
+var vh2=380,y0=104,pb2=40,dmv=Math.min(Hb,hef*1.9+cv),trunc=Hb>dmv+1;
+var sc=Math.min((vw-pl-pr)/(xmax-xmin),(vh2-y0-pb2)/dmv),ox2=pl+((vw-pl-pr)-(xmax-xmin)*sc)/2;
+var X2=function(x){return R(ox2+(x-xmin)*sc)},Z=function(z){return R(y0+z*sc)};
+var cw=R((xmax-xmin)*sc),chh=R(dmv*sc);
+o=defs()+`<rect class='conc' x='${X2(xmin)}' y='${Z(0)}' width='${cw}' height='${chh}'/><rect style='fill:url(#${P}h)' x='${X2(xmin)}' y='${Z(0)}' width='${cw}' height='${chh}'/>`;
+if(cl<=1.3*h)o+=`<line class='${eg.l<h?'edge':'edge2'}' x1='${X2(xmin)}' x2='${X2(xmin)}' y1='${Z(0)}' y2='${Z(dmv)}'/>`;
+if(cr<=1.3*h)o+=`<line class='${eg.r<h?'edge':'edge2'}' x1='${X2(xmax)}' x2='${X2(xmax)}' y1='${Z(0)}' y2='${Z(dmv)}'/>`;
+var tgv=($('sm').value=='l')?v('tg'):25,gpx=Math.max(4,tgv*sc),tpx=Math.max(7,25*sc),yG=y0-gpx,yP=yG-tpx;
+o+=`<rect class='grt' x='${X2(-60)}' y='${R(yG)}' width='${R((xe+120)*sc)}' height='${R(gpx)}'/><rect class='plt' x='${X2(-60)}' y='${R(yP)}' width='${R((xe+120)*sc)}' height='${R(tpx)}'/>`;
+var zc=hef*2/3;
+for(i=0;i<nx;i++){if(!colA(i))continue;var xi=i*sx,xl=Math.max(xi-h,-cl),xr=Math.min(xi+h,xe+cr),zl=hef*(1-(xi-xl)/h),zr=hef*(1-(xr-xi)/h);
+o+=`<polygon class='fp' points='${X2(xl)},${Z(0)} ${X2(xl)},${Z(zl)} ${X2(xi)},${Z(hef)} ${X2(xr)},${Z(zr)} ${X2(xr)},${Z(0)}'/>`;
+}
+var QQ=qual(),dvr=v('dvb'),dsr=v('dst'),ox0=v('cl'),kre=v('kre'),sst=v('sst')||150,Bxx=v('Bx'),cc=Bxx/2-ox0,swb=Math.max(1.8,dvr*sc),rb2=Math.max(4,3*dvr*sc),tb=Math.max(10,10*dvr*sc);
+o+=`<clipPath id='a2c'><rect x='${X2(xmin)}' y='${Z(0)}' width='${cw}' height='${chh}'/></clipPath><g clip-path='url(#a2c)'>`;
+for(var zs=50;zs<=Hb-cv;zs+=sst)o+=`<line style='stroke:var(--bad);stroke-width:${R(Math.max(1.2,dsr*sc))}' x1='${X2(cv+dsr/2-ox0)}' x2='${X2(Bxx-cv-dsr/2-ox0)}' y1='${Z(zs)}' y2='${Z(zs)}'/>`;
+var seen={};
+QQ.forEach(function(q){var gx=R(q.x-ox0),key=gx+(q.ok?'g':'r');if(seen[key])return;seen[key]=1;var dir=gx<cc?1:-1,xb=X2(gx),col=q.ok?'var(--ok)':'var(--bad)';
+o+=`<path d='M${xb} ${Z(dmv)}L${xb} ${R(Z(cv)+rb2)}Q${xb} ${Z(cv)} ${R(xb+dir*rb2)} ${Z(cv)}L${R(xb+dir*(rb2+tb))} ${Z(cv)}' style='fill:none;stroke:${col};stroke-width:${R(swb)};stroke-linecap:round'/>`;
+if(q.ok)o+=`<circle cx='${xb}' cy='${Z(hef-q.d/1.5)}' r='3.2' style='fill:var(--panel);stroke:${col};stroke-width:1.6'/>`;});
+o+='</g>';
+for(i=0;i<nx;i++){if(!colA(i))continue;[-1,1].forEach(function(k){o+=ex(X2(i*sx+k*kre*hef),Z(0),X2(i*sx+k*kre*hef),Z(hef))});}
+var q1=QQ.filter(function(q){return q.ok})[0];
+if(q1){var zq=hef-q1.d/1.5,xd=X2(q1.x-ox0)+((q1.x-ox0)<cc?12:-12);o+=dV(Z(cv),Z(zq),xd,'l₁ = '+Math.round(zq-cv),1);}
+var nw=Math.max(10,1.7*da*sc),nh=Math.max(6,0.8*da*sc),sw=Math.max(3,da*sc),hw=($('ht').value==='c'?0:Math.max(8,dh*sc)),hh=Math.max(5,0.45*da*sc);
+for(i=0;i<nx;i++){var cx=X2(i*sx),t2=colA(i),yTop=yP-3-nh;
+o+=`<rect class='anc' x='${R(cx-sw/2)}' y='${R(yTop-6)}' width='${R(sw)}' height='${R(Z(hef)-yTop+6)}'/><rect class='anc' x='${R(cx-hw/2)}' y='${R(Z(hef)-hh)}' width='${R(hw)}' height='${R(hh)}'/><rect class='wsh' x='${R(cx-nw*0.65)}' y='${R(yP-3)}' width='${R(nw*1.3)}' height='3'/><rect class='nut' x='${R(cx-nw/2)}' y='${R(yTop)}' width='${R(nw)}' height='${R(nh)}'/><text class='tg' text-anchor='middle' x='${cx}' y='${R(yTop-12)}' style='fill:${t2?'var(--acc)':'var(--mute)'}'>${t2?'T':'C'}</text>`;}
+if($('ht').value==='c'){var po=v('pofs'),pt2=Math.max(3,v('ptp')*sc);o+=`<rect class='plt' x='${X2(-po)}' y='${Z(hef)}' width='${R((xe+2*po)*sc)}' height='${R(pt2)}'/>`+(nx>1?`<rect x='${X2(0)}' y='${R(Z(hef)-v('phs')*sc)}' width='${R(xe*sc)}' height='${R(v('phs')*sc)}' style='fill:var(--ink);fill-opacity:.55'/>`:'');}
+o+=ex(pl-30,Z(0),X2(xmin),Z(0))+ex(pl-30,Z(hef),X2(xT),Z(hef))+dV(Z(0),Z(hef),pl-30,L('h','ef',' = '+hef),-1);
+var yd=Math.max(34,yP-nh-40);
+o+=ex(X2(xT+h),yd,X2(xT+h),Z(0))+dH(X2(xT),X2(xT+h),yd,L('1.5·h','ef',' = '+Math.round(h)));
+
+if(!trunc)o+=ex(X2(xmax),Z(Hb),vw-30,Z(Hb))+dV(Z(0),Z(Hb),vw-30,'h = '+Hb,1);
+else{var zz='M'+X2(xmin)+' '+(Z(dmv)-3);for(var q=0;q<cw/8;q++)zz+='l4 '+(q%2?-6:6)+' ';o+=`<path class='dim' style='fill:none' d='${zz}'/>`;}
+o+=`<text class='sm' x='6' y='${vh2-12}'>Block depth h = ${Hb} mm, bar cover ${cv} mm. Plate (25 mm) and grout are schematic.</text>`;
+$('sec').setAttribute('viewBox','0 0 '+vw+' '+vh2);$('sec').innerHTML=o+axTri('sec');}
+function cage(){
+var Bx=v('Bx'),By=v('By'),H=v('hb'),cv=v('cv'),dst=v('dst'),sst=v('sst')||150,dvb=v('dvb'),mcl=v('mcl'),hef=v('hef'),da=+$('dia').value.split('|')[1],dh=v('hd'),rnd=$('ht').value=='r';
+if(Bx<=0||By<=0||H<=0)return;
+var nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),x0=v('cl'),y0=v('ct'),nbx=Math.max(2,+$('nbx').value),nby=Math.max(2,+$('nby').value);
+var PC=$('ht').value==='c',PL=(nx-1)*sx+2*v('pofs'),PW=(ny-1)*sy+2*v('pofs'),ptp=v('ptp'),phs=v('phs'),pts=v('pts'),c0=cv+dst+dvb/2,inn=cv+dst,bars=[],an=[],k,i,j,R=function(x){return Math.round(x*10)/10},mn=1e9,mHB=1e9,mSB=1e9,mST=1e9;
+bars=cbars();
+for(j=0;j<ny;j++)for(i=0;i<nx;i++){var ax=GEO.anc(Bx,nx,sx,i),ay=GEO.anc(By,ny,sy,j),g=1e9;
+bars.forEach(function(b){var dx=Math.abs(b[0]-ax),dy=Math.abs(b[1]-ay),gs=Math.hypot(dx,dy)-da/2-dvb/2,gh=PC?Math.hypot(Math.max(Math.abs(b[0]-Bx/2)-PL/2,0),Math.max(Math.abs(b[1]-By/2)-PW/2,0))-dvb/2:rnd?Math.hypot(dx,dy)-dh/2-dvb/2:Math.hypot(Math.max(dx-dh/2,0),Math.max(dy-dh/2,0))-dvb/2;mSB=Math.min(mSB,gs);mHB=Math.min(mHB,gh);g=Math.min(g,gs,gh);});
+var gst=PC?Math.min(Bx/2-PL/2-inn,By/2-PW/2-inn):Math.min(ax-dh/2-inn,Bx-inn-ax-dh/2,ay-dh/2-inn,By-inn-ay-dh/2);mST=Math.min(mST,gst);g=Math.min(g,gst);an.push([ax,ay,g]);mn=Math.min(mn,g);}
+var mHH=PC?1e9:Math.min(nx>1?sx-dh:1e9,ny>1?sy-dh:1e9);mn=Math.min(mn,mHH);
+window.CLR={mn:mn,req:mcl};var ok=mn>=mcl,spx=(Bx-2*c0)/(nbx-1),spy=(By-2*c0)/(nby-1);
+var rows=[['Inner clear size inside the stirrups',f(Bx-2*inn,0)+' × '+f(By-2*inn,0)+' mm'],['Clear gap between bars, x face / y face',f(spx-dvb,0)+' / '+f(spy-dvb,0)+' mm'],['Anchor shaft to nearest bar',f(mSB,0)+' mm'],['Head or washer to nearest bar',f(mHB,0)+' mm'],['Head or washer to stirrup (inner face)',f(mST,0)+' mm'],['Head to head',isFinite(mHH)&&mHH<1e8?f(mHH,0)+' mm':'single anchor'],['Smallest clearance / required',f(mn,0)+' / '+f(mcl,0)+' mm']];
+var chint=ok?'':' tabindex="0" data-hint="'+esc('Smallest clearance is '+f(mn,0)+' mm, required '+f(mcl,0)+' mm. Options: move the anchors (spacing or block size), reduce the head or washer size, change the bar count or stirrup spacing so bars pass between the anchors, increase the block width, or lower the required clearance if the detailing allows.')+'"';
+$('cgres').innerHTML=`<div class='bar${ok?'':' bad'}'><div class='t'><span>Anchors and heads fit inside the cage</span><span class='tag'${chint}>${ok?'Fits':'Does not fit'}</span></div></div><table>`+rows.map(function(r){return `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`}).join('')+'</table>';
+var P='c1',vw=420,pl=50,pr=34;
+var df=function(){return `<defs><marker id='${P}' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0 0L10 5L0 10z' style='fill:var(--mute)'/></marker></defs>`};
+var dH=function(x1,x2,y,t){return `<line class='dim' marker-start='url(#${P})' marker-end='url(#${P})' x1='${R(x1)}' x2='${R(x2)}' y1='${R(y)}' y2='${R(y)}'/><text class='m' text-anchor='middle' x='${R((x1+x2)/2)}' y='${R(y-4)}'>${t}</text>`};
+var dV=function(y1,y2,x,t){return `<line class='dim' marker-start='url(#${P})' marker-end='url(#${P})' x1='${R(x)}' x2='${R(x)}' y1='${R(y1)}' y2='${R(y2)}'/><text class='m' text-anchor='middle' transform='translate(${R(x-5)},${R((y1+y2)/2)}) rotate(-90)'>${t}</text>`};
+var vh=400,pt=44,pb=84,s=Math.min((vw-pl-pr)/Bx,(vh-pt-pb)/By),ox=pl+((vw-pl-pr)-Bx*s)/2;
+var X=function(x){return R(ox+x*s)},Y=function(y){return R(pt+y*s)};
+var o=df()+`<rect class='conc' x='${X(0)}' y='${Y(0)}' width='${R(Bx*s)}' height='${R(By*s)}'/><rect class='rb' style='stroke:var(--bad);stroke-width:${R(Math.max(1.5,dst*s))}' rx='${R(Math.max(2,2.5*dst*s))}' x='${X(cv+dst/2)}' y='${Y(cv+dst/2)}' width='${R((Bx-2*cv-dst)*s)}' height='${R((By-2*cv-dst)*s)}'/><path class='rb' style='stroke:var(--bad);stroke-width:${R(Math.max(1.5,dst*s))};stroke-linecap:round' d='M${R(X(cv+dst/2)+Math.max(2,2.5*dst*s))} ${Y(cv+dst/2)}L${R(X(cv+dst/2)+Math.max(2,2.5*dst*s)+0.7*Math.max(8,6*dst*s))} ${R(Y(cv+dst/2)+0.7*Math.max(8,6*dst*s))}M${X(cv+dst/2)} ${R(Y(cv+dst/2)+Math.max(2,2.5*dst*s))}L${R(X(cv+dst/2)+0.7*Math.max(8,6*dst*s))} ${R(Y(cv+dst/2)+Math.max(2,2.5*dst*s)+0.7*Math.max(8,6*dst*s))}'/>`;
+var QC=qual();bars.forEach(function(b,n){o+=`<circle cx='${X(b[0])}' cy='${Y(b[1])}' r='${R(Math.max(1.8,dvb/2*s))}' style='fill:${QC[n].ok?'var(--ok)':'var(--bad)'}'/>`});
+an.forEach(function(a,n){var bad=a[2]<mcl,st=bad?'stroke:var(--bad);stroke-width:2;fill:var(--bad);fill-opacity:.25':'stroke:var(--ink);fill:var(--ink);fill-opacity:.22';
+o+=(PC?'':rnd?`<circle cx='${X(a[0])}' cy='${Y(a[1])}' r='${R(dh/2*s)}' style='${st}'/>`:`<rect x='${X(a[0]-dh/2)}' y='${Y(a[1]-dh/2)}' width='${R(dh*s)}' height='${R(dh*s)}' style='${st}'/>`)+`<circle cx='${X(a[0])}' cy='${Y(a[1])}' r='${R(Math.max(2,da/2*s))}' class='anc'/><text class='sm' x='${R(X(a[0])+dh/2*s+3)}' y='${R(Y(a[1])-dh/2*s)}'>A${n+1}</text>`;});
+if(PC){var rxl=nx>=2,rln=rxl?(nx-1)*sx:(ny-1)*sy;o+=`<rect x='${X(Bx/2-PL/2)}' y='${Y(By/2-PW/2)}' width='${R(PL*s)}' height='${R(PW*s)}' style='fill:var(--ink);fill-opacity:.2;stroke:var(--ink);stroke-width:1.5'/>`+(rln>0?`<rect x='${X(Bx/2-(rxl?rln:pts)/2)}' y='${Y(By/2-(rxl?pts:rln)/2)}' width='${R((rxl?rln:pts)*s)}' height='${R((rxl?pts:rln)*s)}' style='fill:var(--ink);fill-opacity:.7'/>`:'');}
+o+=dH(X(0),X(Bx),Y(0)-16,'Bₓ = '+Bx)+dV(Y(0),Y(By),X(0)-14,'Bᵧ = '+By)+dH(X(0),X(cv),Y(By)+16,'c = '+cv)+dH(X(c0),X(c0+spx),Y(By)+36,'bars every '+Math.round(spx)+' mm');
+o+=`<text class='sm' x='6' y='${vh-20}'>Red ring: stirrup Ø${dst}. Red dots: vertical bars Ø${dvb}. Dark dot: anchor shaft Ø${da}. Shaded: head ${dh}.</text><text class='sm' x='6' y='${vh-6}'>Smallest clearance ${R(mn)} mm, required ${mcl} mm.</text>`;
+$('cage').innerHTML=o+axTri('plan');
+P='c2';var vh2=340,y0=70,s2=Math.min((vw-pl-pr)/Bx,(vh2-110)/H),ox2=pl+((vw-pl-pr)-Bx*s2)/2;
+var X2=function(x){return R(ox2+x*s2)},Z=function(z){return R(y0+z*s2)};
+o=df()+`<rect class='conc' x='${X2(0)}' y='${Z(0)}' width='${R(Bx*s2)}' height='${R(H*s2)}'/>`;
+for(var z=50;z<=H-cv;z+=sst)o+=`<line style='stroke:var(--bad);stroke-width:${R(Math.max(1.2,dst*s2))}' x1='${X2(cv+dst/2)}' x2='${X2(Bx-cv-dst/2)}' y1='${Z(z)}' y2='${Z(z)}'/>`;
+var xs=[];bars.forEach(function(b){var q=R(b[0]);if(xs.indexOf(q)<0)xs.push(q)});
+xs.forEach(function(q){o+=`<line style='stroke:var(--bad);stroke-width:${R(Math.max(1.8,dvb*s2))}' x1='${X2(q)}' x2='${X2(q)}' y1='${Z(cv)}' y2='${Z(H-cv)}'/>`});
+var tpx=Math.max(6,25*s2),nh=Math.max(6,.8*da*s2),nw=Math.max(10,1.7*da*s2),hhh=Math.max(5,.5*da*s2);
+o+=`<rect class='plt' x='${X2(x0-60)}' y='${R(Z(0)-tpx)}' width='${R(((nx-1)*sx+120)*s2)}' height='${R(tpx)}'/>`;
+for(i=0;i<nx;i++){var cx=X2(x0+i*sx);o+=`<rect class='anc' x='${R(cx-Math.max(1.5,da*s2/2))}' y='${R(Z(0)-tpx-nh-6)}' width='${R(Math.max(3,da*s2))}' height='${R(Z(hef)-Z(0)+tpx+nh+6)}'/><rect class='nut' x='${R(cx-nw/2)}' y='${R(Z(0)-tpx-nh)}' width='${R(nw)}' height='${R(nh)}'/><rect class='anc' x='${R(cx-dh*s2/2)}' y='${R(Z(hef)-hhh)}' width='${PC?0:R(dh*s2)}' height='${R(hhh)}'/>`;}
+if(PC){var PX2=(nx-1)*sx+2*v('pofs');o+=`<rect class='plt' x='${X2(Bx/2-PX2/2)}' y='${Z(hef)}' width='${R(PX2*s2)}' height='${R(Math.max(3,ptp*s2))}'/>`+(nx>=2?`<rect x='${X2(x0)}' y='${R(Z(hef)-phs*s2)}' width='${R((nx-1)*sx*s2)}' height='${R(phs*s2)}' style='fill:var(--ink);fill-opacity:.55'/>`:'');}
+o+=dV(Z(0),Z(H),X2(Bx)+24,'h = '+H)+dV(Z(0),Z(hef),X2(0)-14,'h_ef = '+hef)+dH(X2(0),X2(Bx),Z(0)-tpx-nh-26,'Bₓ = '+Bx);
+o+=`<text class='sm' x='6' y='${vh2-12}'>Ø${dvb} vertical bars, Ø${dst} stirrups every ${sst} mm, cover ${cv} mm. Stirrups start 50 mm below the top.</text>`;
+$('cageE').innerHTML=o+axTri('sec');}
+function drawOld(){
+var hef=v("hef"),h=1.5*hef,nx=+$("nx").value,ny=+$("ny").value,sx=v("sx"),sy=v("sy"),cl=v("cl"),cr=v("cr2"),ct=v("ct"),cb=v("cb"),l1=v("l1");
+if(hef<=0)return;
+var tx=Math.min(+$("tx").value,nx),ty=Math.min(+$("ty").value,ny),hs=$("hs").value,vs=$("vs").value,eg=edges(nx,ny,tx,ty,hs,vs);
+var inT=function(i,j){return (hs=="l"?i<tx:i>=nx-tx)&&(vs=="t"?j<ty:j>=ny-ty)};
+var R=function(x){return Math.round(x*10)/10};
+var W=(nx-1)*sx+2*h,H=(ny-1)*sy+2*h,vw=320,vh=280,pad=40;
+var s=Math.min((vw-2*pad)/W,(vh-2*pad)/H),ox=(vw-W*s)/2,oy=(vh-H*s)/2;
+var X=function(x){return R(ox+(x+h)*s)},Y=function(y){return R(oy+(y+h)*s)};
+var xe=(nx-1)*sx,ye=(ny-1)*sy,o="";
+for(var i=0;i<nx;i++)for(var j=0;j<ny;j++){
+if(!inT(i,j))continue;
+var x0=Math.max(i*sx-h,-cl),x1=Math.min(i*sx+h,xe+cr),y0=Math.max(j*sy-h,-ct),y1=Math.min(j*sy+h,ye+cb);
+o+='<rect class="ac" x="'+X(x0)+'" y="'+Y(y0)+'" width="'+R((x1-x0)*s)+'" height="'+R((y1-y0)*s)+'"/>';}
+if(eg.l<h)o+='<line class="edge" x1="'+X(-cl)+'" x2="'+X(-cl)+'" y1="'+Y(-h)+'" y2="'+Y(ye+h)+'"/><text x="'+(X(-cl)+4)+'" y="'+(Y(-h)+12)+'">c = '+Math.round(eg.l)+'</text>';
+if(eg.r<h)o+='<line class="edge" x1="'+X(xe+cr)+'" x2="'+X(xe+cr)+'" y1="'+Y(-h)+'" y2="'+Y(ye+h)+'"/><text text-anchor="end" x="'+(X(xe+cr)-4)+'" y="'+(Y(-h)+12)+'">c = '+Math.round(eg.r)+'</text>';
+if(eg.t<h)o+='<line class="edge" y1="'+Y(-ct)+'" y2="'+Y(-ct)+'" x1="'+X(-h)+'" x2="'+X(xe+h)+'"/><text x="'+(X(-h)+4)+'" y="'+(Y(-ct)+13)+'">c = '+Math.round(eg.t)+'</text>';
+if(eg.b<h)o+='<line class="edge" y1="'+Y(ye+cb)+'" y2="'+Y(ye+cb)+'" x1="'+X(-h)+'" x2="'+X(xe+h)+'"/><text x="'+(X(-h)+4)+'" y="'+(Y(ye+cb)-5)+'">c = '+Math.round(eg.b)+'</text>';
+for(i=0;i<nx;i++)for(j=0;j<ny;j++)o+='<circle class="'+(inT(i,j)?'anc':'cmp')+'" cx="'+X(i*sx)+'" cy="'+Y(j*sy)+'" r="4.5"/>';
+if(nx>1)o+='<line class="dim" x1="'+X(0)+'" x2="'+X(sx)+'" y1="'+(Y(0)-12)+'" y2="'+(Y(0)-12)+'"/><text text-anchor="middle" x="'+X(sx/2)+'" y="'+(Y(0)-16)+'">s<tspan dy="3" font-size="8">x</tspan><tspan dy="-3"> = '+sx+'</tspan></text>';
+if(ny>1)o+='<line class="dim" y1="'+Y(0)+'" y2="'+Y(sy)+'" x1="'+(X(0)-12)+'" x2="'+(X(0)-12)+'"/><text text-anchor="end" x="'+(X(0)-16)+'" y="'+(Y(sy/2)+4)+'">s<tspan dy="3" font-size="8">y</tspan><tspan dy="-3"> = '+sy+'</tspan></text>';
+o+='<text class="m" x="6" y="260">Filled = tension, open = compression</text><text class="m" x="6" y="273">Cone footprint 3·h_ef = '+Math.round(2*h)+' mm</text>';
+$("plan").innerHTML=o;
+// section
+var Hb=v("hb")||hef*1.45,dm=Math.max(Hb,hef*1.05),vh2=250,sc=Math.min((vw-2*pad)/W,(vh2-80)/dm),ox2=(vw-W*sc)/2,y0s=52;
+var X2=function(x){return R(ox2+(x+h)*sc)},Z=function(z){return R(y0s+z*sc)};
+o='<rect class="conc" x="'+X2(-h)+'" y="'+Z(0)+'" width="'+R(W*sc)+'" height="'+R(dm*sc)+'"/>';
+for(i=0;i<nx;i++){var xi=i*sx;if(!(hs=="l"?i<tx:i>=nx-tx)){o+='<line class="st" opacity=".45" x1="'+X2(xi)+'" x2="'+X2(xi)+'" y1="'+(Z(0)-16)+'" y2="'+Z(hef)+'"/>';continue;}
+o+='<polygon class="cone" points="'+X2(xi-h)+','+Z(0)+' '+X2(xi)+','+Z(hef)+' '+X2(xi+h)+','+Z(0)+'"/>';
+var cv=v("cv"),zc=hef*2/3,l1e=Math.max(0,Math.min(l1,Hb-cv-zc,zc-cv)),top=Math.max(0.03*hef,zc-l1e),bot=Math.min(dm*0.97,zc+l1e);
+[-0.5,0.5].forEach(function(k){o+='<line class="rb" x1="'+X2(xi+k*hef)+'" x2="'+X2(xi+k*hef)+'" y1="'+Z(top)+'" y2="'+Z(bot)+'"/>';});
+o+='<line class="st" x1="'+X2(xi)+'" x2="'+X2(xi)+'" y1="'+(Z(0)-16)+'" y2="'+Z(hef)+'"/><rect class="anc" x="'+R(X2(xi)-Math.max(4,0.07*hef*sc))+'" y="'+(Z(hef)-3)+'" width="'+R(2*Math.max(4,0.07*hef*sc))+'" height="6"/>';}
+o+='<line class="dim" x1="'+X2(0.2*hef)+'" x2="'+X2(0.2*hef)+'" y1="'+Z(0)+'" y2="'+Z(hef)+'"/><text x="'+(X2(0.2*hef)+4)+'" y="'+Z(hef*0.35)+'">h<tspan dy="3" font-size="8">ef</tspan><tspan dy="-3"> = '+hef+'</tspan></text>';
+o+='<line class="dim" x1="'+X2(0)+'" x2="'+X2(h)+'" y1="'+(Z(0)-26)+'" y2="'+(Z(0)-26)+'"/><text text-anchor="middle" x="'+X2(h/2)+'" y="'+(Z(0)-30)+'">1.5·h<tspan dy="3" font-size="8">ef</tspan><tspan dy="-3"> = '+Math.round(h)+'</tspan></text>';
+o+='<text x="'+(X2(0.5*hef)+5)+'" y="'+Z(Math.min(dm*0.9,hef*2/3+l1*0.6))+'">l<tspan dy="3" font-size="8">1</tspan><tspan dy="-3"> = '+Math.round(l1e)+'</tspan></text>';
+o+='<text class="m" x="6" y="244">Block depth h = '+Hb+' mm'+(Hb<hef+cv?' (too shallow for h_ef)':'')+'</text>';
+$("sec").innerHTML=o;}
+document.querySelectorAll("input,select").forEach(function(e){e.addEventListener("input",draw);e.addEventListener("change",draw)});
+document.querySelectorAll('input,select').forEach(function(e){e.addEventListener('input',cage);e.addEventListener('change',cage)});
+function buildRep(){
+var old=$('rep');if(old)old.remove();
+var r=document.createElement('div');r.id='rep';
+var cl=function(sv){return sv.innerHTML.replace(/id=(["'])(\w+)\1/g,'id=$1r_$2$1').replace(/url\(#(\w+)\)/g,'url(#r_$1)')};
+var inp='';document.querySelectorAll('main>div:first-child>section').forEach(function(sc){var rows=[];sc.querySelectorAll('label').forEach(function(l){var e=l.querySelector('input,select');if(!e||!l.offsetParent)return;var c=l.cloneNode(true);c.querySelectorAll('input,select').forEach(function(x){x.remove()});var val=e.type==='checkbox'?(e.checked?'yes':'no'):(e.tagName==='SELECT'?e.options[e.selectedIndex].text:e.value);rows.push('<tr><td>'+c.innerHTML.trim()+'</td><td>'+esc(val)+'</td></tr>')});if(rows.length)inp+='<h3>'+sc.querySelector('h2').textContent+'</h3><table>'+rows.join('')+'</table>'});
+var lcT='<table><tr><td><b>Case</b></td><td><b>N</b></td><td><b>Vx</b></td><td><b>Vy</b></td><td><b>My</b></td><td><b>Mx</b></td><td><b>T</b></td></tr>'+LC.map(function(c){return '<tr><td>'+esc(c.n)+(c===LC[cur]?' (shown below)':'')+'</td>'+['Nc','Vx','Vy','My','Mx','Mz'].map(function(k){return '<td>'+esc(c[k])+'</td>'}).join('')+'</tr>'}).join('')+'</table><p class="note">N in kN (compression +), V in kN, M and T in kNm.</p>';
+var im=window.V3snap?window.V3snap():'',dk=(matchMedia('(prefers-color-scheme: dark)').matches&&document.documentElement.getAttribute('data-theme')!=='light')||document.documentElement.getAttribute('data-theme')==='dark';
+var rec=RES.filter(function(x){return x.h}).map(function(x){return '<li><b>'+esc(x.l)+' ('+(isFinite(x.u)?Math.round(x.u*100)+' %':'∞')+'):</b> '+esc(x.h)+'</li>'}).join('');
+r.innerHTML='<h1>'+document.querySelector('h1').textContent+'</h1><p class="note">Hand-check to EN 1992-4, report of '+new Date().toLocaleDateString()+'. Load case shown: '+esc(LC[cur].n)+'.</p><h2>1. Input</h2>'+inp+'<h2>2. Load cases</h2>'+lcT+($('fres').innerHTML?'<h2>3. Anchor forces (rigid plate)</h2>'+$('fres').innerHTML:'')+'<h2 class="pb">4. Geometry and force vectors</h2><div class="figs"><div><svg class="sv" viewBox="'+$('plan').getAttribute('viewBox')+'">'+cl($('plan'))+'</svg></div><div><svg class="sv" viewBox="'+$('sec').getAttribute('viewBox')+'">'+cl($('sec'))+'</svg></div><div><svg class="sv" viewBox="'+$('cage').getAttribute('viewBox')+'">'+cl($('cage'))+'</svg></div><div><svg class="sv" viewBox="'+$('cageE').getAttribute('viewBox')+'">'+cl($('cageE'))+'</svg></div></div>'+(im?'<div class="im" style="'+(dk?'background:#14191f;':'')+'margin-top:8px"><img src="'+im+'" alt="3D view"></div>':'')+'<h2 class="pb">5. Utilisation</h2>'+$('bars').innerHTML.replace(/<details/g,'<details open')+($('lcsum').hidden?'':'<h3>All load cases</h3>'+$('lcsumbody').innerHTML)+(rec?'<h3>Remedies for failing checks</h3><ul>'+rec+'</ul>':'')+'<h2 class="pb">6. Calculation steps</h2><table class="stp">'+$('steps').innerHTML+'</table><p class="note">'+document.querySelector('#stepsd .note').innerHTML+'</p>';
+document.body.appendChild(r);}
+$('pdfbtn').addEventListener('click',function(){buildRep();window.print();});
+window.addEventListener('beforeprint',buildRep);
+calc();draw();cage();
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>if(typeof THREE==='undefined'){document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"><\/script>');}</script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var v=function(i){var x=parseFloat($(i).value);return isFinite(x)?x:0};
+function fail(t){var m=$('v3msg');m.textContent=t;m.style.display='block';}
+if(typeof THREE==='undefined'){fail('The 3D library could not be loaded from cdnjs.');return;}
+var V3=THREE.Vector3,cvs=$('v3c'),wrap=$('v3wrap'),renderer;
+try{renderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});}catch(e){fail('WebGL is not available in this browser.');return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.localClippingEnabled=true;
+var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,5,200000);
+scene.add(new THREE.AmbientLight(0xffffff,0.75));
+var dl=new THREE.DirectionalLight(0xffffff,0.7);dl.position.set(0.6,1,0.8);scene.add(dl);
+var plane=new THREE.Plane(new V3(0,0,-1),1e6);
+var LY={conc:1,stir:1,bars:1,anch:1,cone:1,vec:1,lab:1},secOn=false,need=true;
+var group=null,G={},labels=[],pick=[],W={n:0},curBy=600,hov=null,first=true;
+var toeOut=true,th=Math.PI/4,ph=1.05,dist=3000,target=new V3();
+
+function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#888888'}
+function colors(){var g=function(n){return new THREE.Color(css(n))};return{ok:g('--ok'),bad:g('--bad'),acc:g('--acc'),mute:g('--mute'),ink:g('--ink'),line:g('--line'),brown:new THREE.Color('#9a6b3f')};}
+function mat(c,o){return new THREE.MeshLambertMaterial(Object.assign({color:c,side:THREE.DoubleSide,clippingPlanes:[plane]},o||{}));}
+
+/* ---------- inputs ---------- */
+function inp(){
+  var nx=+$('nx').value,ny=+$('ny').value;
+  return {Bx:v('Bx'),By:v('By'),H:v('hb'),cv:v('cv'),dst:v('dst'),dvb:v('dvb'),sst:v('sst')||150,mcl:v('mcl'),hef:v('hef'),
+    da:+$('dia').value.split('|')[1],dh:v('hd'),rnd:$('ht').value==='r',nx:nx,ny:ny,sx:v('sx'),sy:v('sy'),
+    nbx:Math.max(2,+$('nbx').value),nby:Math.max(2,+$('nby').value),kre:v('kre'),Lx:v('Lpx')||400,Ly:v('Lpy')||400,
+    tg:$('sm').value==='l'?v('tg'):25,tx:Math.min(+$('tx').value,nx),ty:Math.min(+$('ty').value,ny),hs:$('hs').value,vs:$('vs').value,
+    pc:$('ht').value==='c',pofs:v('pofs'),ptp:v('ptp')||10,phs:v('phs'),pts:v('pts')||10,lug:$('lug').checked&&$('useF').checked,lp:$('lugp').value,lo:$('lugo').value,lh:v('lugh'),lx:Math.abs(v('Vx'))>=Math.abs(v('Vy'))};
+}
+function forces(){var out=[];if(!$('useF').checked)return out;var rows=document.querySelectorAll('#fres table tr');for(var i=1;i<rows.length;i++){var td=rows[i].children;out.push(parseFloat(td[1]&&td[1].textContent))}return out;}
+
+/* ---------- geometry helpers (guide sections 5.1-5.3) ---------- */
+function bendR(d,bar){var D=(d<=16?4:7)*d;if(bar&&window.MAN&&window.MAN.vb>D)D=window.MAN.vb;return D/2+d/2;}
+function fillet(pts,r){
+  var out=[pts[0].clone()];
+  for(var i=1;i<pts.length-1;i++){
+    var p0=pts[i-1],p1=pts[i],p2=pts[i+1];
+    var a=p0.clone().sub(p1).normalize(),b=p2.clone().sub(p1).normalize(),ang=a.angleTo(b);
+    if(Math.abs(ang-Math.PI)<1e-6||ang<1e-6){out.push(p1.clone());continue;}
+    var t=r/Math.tan(ang/2),tMax=0.5*Math.min(p0.distanceTo(p1),p1.distanceTo(p2)),rr=r;
+    if(t>tMax){t=tMax;rr=t*Math.tan(ang/2);W.n++;}
+    var s=a.clone().multiplyScalar(t).add(p1),e=b.clone().multiplyScalar(t).add(p1);
+    var c=a.clone().add(b).normalize().multiplyScalar(rr/Math.sin(ang/2)).add(p1);
+    var v0=s.clone().sub(c),v1=e.clone().sub(c),sweep=v0.angleTo(v1),axis=v0.clone().cross(v1).normalize();
+    var n=Math.max(6,Math.ceil(sweep/(Math.PI/24)));
+    for(var k=0;k<=n;k++)out.push(v0.clone().applyAxisAngle(axis,sweep*k/n).add(c));
+  }
+  out.push(pts[pts.length-1].clone());
+  return out;
+}
+class PolyCurve extends THREE.Curve{
+  constructor(pts){super();this.pts=pts;this.len=[0];for(var i=1;i<pts.length;i++)this.len.push(this.len[i-1]+pts[i].distanceTo(pts[i-1]));this.total=this.len[this.len.length-1];}
+  getPoint(t,target){target=target||new V3();var d=t*this.total,i=1;while(i<this.len.length-1&&this.len[i]<d)i++;var k=(d-this.len[i-1])/((this.len[i]-this.len[i-1])||1);return target.copy(this.pts[i-1]).lerp(this.pts[i],Math.min(1,Math.max(0,k)));}
+}
+function barMesh(pts,dia,material){
+  var curve=new PolyCurve(pts),segs=Math.min(900,Math.max(8,Math.ceil(curve.total/Math.max(dia/2,3))));
+  var m=new THREE.Mesh(new THREE.TubeGeometry(curve,segs,dia/2,10,false),material);m.userData.len=curve.total;return m;
+}
+
+/* ---------- model ---------- */
+function model(m){
+  var c0=m.cv+m.dst+m.dvb/2,bars=[],anchors=[],k,i,j;
+  bars=window.GEO.vbars(m.Bx,m.By,c0,m.nbx,m.nby,m.dvb);
+  var ex=(m.Bx-(m.nx-1)*m.sx)/2,ey=(m.By-(m.ny-1)*m.sy)/2;
+  for(j=0;j<m.ny;j++)for(i=0;i<m.nx;i++){
+    var tn=(m.hs==='l'?i<m.tx:i>=m.nx-m.tx)&&(m.vs==='t'?j<m.ty:j>=m.ny-m.ty);
+    anchors.push({x:GEO.anc(m.Bx,m.nx,m.sx,i),y:GEO.anc(m.By,m.ny,m.sy,j),tb:tn,t:(window.VEC&&window.VEC.T?window.VEC.T[j*m.nx+i]>1e-6:tn),n:j*m.nx+i+1,gap:1e9});}
+  var ta=anchors.filter(function(a){return a.tb});
+  bars.forEach(function(b){var d=1e9;ta.forEach(function(a){d=Math.min(d,Math.hypot(a.x-b.x,a.y-b.y))});b.ok=d<=m.kre*m.hef;});
+  var inn=m.cv+m.dst,hh=Math.min(m.nx>1?m.sx-m.dh:1e9,m.ny>1?m.sy-m.dh:1e9);
+  anchors.forEach(function(a){var g=1e9;
+    bars.forEach(function(b){var dx=Math.abs(b.x-a.x),dy=Math.abs(b.y-a.y),h=Math.hypot(dx,dy),gs=h-m.da/2-m.dvb/2,
+      gh=m.pc?Math.hypot(Math.max(Math.abs(b.x-m.Bx/2)-((m.nx-1)*m.sx+2*m.pofs)/2,0),Math.max(Math.abs(b.y-m.By/2)-((m.ny-1)*m.sy+2*m.pofs)/2,0))-m.dvb/2:m.rnd?h-m.dh/2-m.dvb/2:Math.hypot(Math.max(dx-m.dh/2,0),Math.max(dy-m.dh/2,0))-m.dvb/2;g=Math.min(g,gs,gh);});
+    g=Math.min(g,m.pc?Math.min(m.Bx/2-((m.nx-1)*m.sx+2*m.pofs)/2-inn,m.By/2-((m.ny-1)*m.sy+2*m.pofs)/2-inn):Math.min(a.x-m.dh/2-inn,m.Bx-inn-a.x-m.dh/2,a.y-m.dh/2-inn,m.By-inn-a.y-m.dh/2,hh));a.gap=g;});
+  var st=[];for(var z=50;z<=m.H-m.cv;z+=m.sst)st.push(z);
+  return {bars:bars,anchors:anchors,stirrups:st,c0:c0};
+}
+
+/* ---------- build ---------- */
+function disposeG(o){o.traverse(function(x){if(x.geometry)x.geometry.dispose();if(x.material){(Array.isArray(x.material)?x.material:[x.material]).forEach(function(mm){mm.dispose()})}});}
+function build(){try{build0();}catch(e){fail('3D error: '+e.message);console.error(e);}}
+function build0(){
+  var m=inp();if(m.Bx<=0||m.By<=0||m.H<=0||m.hef<=0)return;
+  if(group){scene.remove(group);disposeG(group);}
+  group=new THREE.Group();labels=[];pick=[];W.n=0;curBy=m.By;$('v3lab').innerHTML='';
+  var C=colors(),md=model(m),F=forces();
+  G={conc:new THREE.Group(),stir:new THREE.Group(),bars:new THREE.Group(),anch:new THREE.Group(),cone:new THREE.Group(),vec:new THREE.Group()};
+  for(var key in G)group.add(G[key]);
+  var ox=m.Bx/2,oz=m.By/2,i,j;
+  /* concrete */
+  var bg=new THREE.BoxGeometry(m.Bx,m.H,m.By),cm=mat(C.mute,{transparent:true,opacity:0.1,depthWrite:false}),cb=new THREE.Mesh(bg,cm);
+  cb.position.y=-m.H/2;cb.renderOrder=10;G.conc.add(cb);
+  var ed=new THREE.LineSegments(new THREE.EdgesGeometry(bg),new THREE.LineBasicMaterial({color:C.mute,clippingPlanes:[plane]}));ed.position.y=-m.H/2;G.conc.add(ed);
+  /* vertical bars */
+  var rB=bendR(m.dvb,true),ytop=-(m.cv+m.dvb/2),ybot=-(m.H-m.cv-m.dvb/2),firstLen=0;
+  var vb=md.bars.map(function(b){return {x:b.x,y:b.y,ok:b.ok,dx:b.dx,dz:b.dz,dy:b.dy};});
+  var nU=0;
+  vb.forEach(function(b){
+    if(b.dx!==1&&b.dz!==1)return;
+    var q2=null;vb.forEach(function(q){if(b.dx===1&&q.dx===-1&&Math.abs(q.y-b.y)<1)q2=q;if(b.dz===1&&q.dz===-1&&Math.abs(q.x-b.x)<1)q2=q;});
+    var yt=b.dx===1?ytop:ytop-m.dvb,A=new V3(b.x-ox,yt,b.y-oz),P=[new V3(A.x,ybot,A.z),A];
+    if(q2){var B2=new V3(q2.x-ox,yt,q2.y-oz);P.push(B2,new V3(B2.x,ybot,B2.z));}
+    var ok=b.ok||(q2&&q2.ok),mesh=barMesh(fillet(P,rB),m.dvb,mat(ok?C.ok:C.brown));nU++;
+    mesh.userData.info='U-bar Ø'+m.dvb+' along '+(b.dx===1?'x':'y')+(ok?' (within reach, anchor reinforcement)':' (not within reach)')+', L = '+Math.round(mesh.userData.len)+' mm';
+    if(!firstLen)firstLen=mesh.userData.len;G.bars.add(mesh);pick.push(mesh);});
+  /* stirrups with 135 degree hooks */
+  var rS=bendR(m.dst),xl=m.cv+m.dst/2-ox,xr=m.Bx-m.cv-m.dst/2-ox,zt=m.cv+m.dst/2-oz,zb=m.By-m.cv-m.dst/2-oz,tt=rS/Math.tan(Math.PI/8),Lh=Math.max(10*m.dst,70)+tt,aoff=2*m.dst,q=Math.SQRT1_2,stLen=0,sm=mat(C.bad);
+  md.stirrups.forEach(function(z){
+    var y=-z,V1=new V3(xl+rS+aoff-tt,y,zt),V2=new V3(xl,y,zt+rS+aoff-tt),hk=new V3(q*Lh,0,q*Lh);
+    var P=[V1.clone().add(hk),V1,new V3(xr,y,zt),new V3(xr,y,zb),new V3(xl,y,zb),V2,V2.clone().add(hk)];
+    var mesh=barMesh(fillet(P,rS),m.dst,sm);mesh.userData.info='Stirrup Ø'+m.dst+' at depth '+z+' mm, L = '+Math.round(mesh.userData.len)+' mm';
+    if(!stLen)stLen=mesh.userData.len;G.stir.add(mesh);pick.push(mesh);});
+  /* anchors, nuts, washers, plate, grout */
+  var da=m.da,g=m.tg,tp=25,wt=Math.max(3,0.15*da),nh=0.8*da,th2=Math.max(6,0.5*da),yTop=g+tp+wt+nh+0.4*da,steel=mat(C.mute);
+  var plate=new THREE.Mesh(new THREE.BoxGeometry(m.Lx,tp,m.Ly),mat(C.ink,{transparent:true,opacity:0.45,depthWrite:false}));plate.position.y=g+tp/2;G.anch.add(plate);
+  var grout=new THREE.Mesh(new THREE.BoxGeometry(m.Lx,g,m.Ly),mat(C.line));grout.position.y=g/2;G.anch.add(grout);
+  if(m.lug&&m.lh>0&&window.heaProps){var sp=window.heaProps(m.lp),lmt=mat(new THREE.Color('#c28a2c')),hf=sp.h/2-sp.tf/2,strong=m.lo!=='w';
+    var lparts=strong?[[sp.tf,sp.b,-hf,0],[sp.tf,sp.b,hf,0],[sp.h-2*sp.tf,sp.tw,0,0]]:[[sp.tw,sp.h,0,0],[sp.b,sp.tf,0,-hf],[sp.b,sp.tf,0,hf]];
+    lparts.forEach(function(pt){var lgM=new THREE.Mesh(new THREE.BoxGeometry(m.lx?pt[0]:pt[1],g+m.lh,m.lx?pt[1]:pt[0]),lmt);
+      lgM.position.set(m.lx?pt[2]:pt[3],(g-m.lh)/2,m.lx?pt[3]:pt[2]);
+      lgM.userData.info='Shear lug '+m.lp+(strong?' (strong axis)':' (weak axis)')+', embedded '+m.lh+' mm';G.anch.add(lgM);pick.push(lgM);});}
+  md.anchors.forEach(function(a,n){
+    var X=a.x-ox,Z=a.y-oz,bad=a.gap<m.mcl,col=bad?C.bad:(a.t?C.acc:C.mute),am=mat(col);
+    var shaft=new THREE.Mesh(new THREE.CylinderGeometry(da/2,da/2,yTop+m.hef,24),am);shaft.position.set(X,(yTop-m.hef)/2,Z);
+    shaft.userData.info='Anchor A'+a.n+' ('+(a.t?'tension':'compression')+'), clearance '+Math.round(a.gap)+' mm'+(isFinite(F[n])?', N = '+F[n].toFixed(1)+' kN':'');G.anch.add(shaft);pick.push(shaft);
+    var head=m.rnd?new THREE.Mesh(new THREE.CylinderGeometry(m.dh/2,m.dh/2,th2,32),am):new THREE.Mesh(new THREE.BoxGeometry(m.dh,th2,m.dh),am);
+    if(!m.pc){head.position.set(X,-(m.hef-th2/2),Z);G.anch.add(head);}
+    var wsh=new THREE.Mesh(new THREE.CylinderGeometry(1.1*da,1.1*da,wt,24),steel);wsh.position.set(X,g+tp+wt/2,Z);G.anch.add(wsh);
+    var nut=new THREE.Mesh(new THREE.CylinderGeometry(0.87*da,0.87*da,nh,6),steel);nut.position.set(X,g+tp+wt+nh/2,Z);G.anch.add(nut);
+    if(a.t){var cpl=[plane,new THREE.Plane(new V3(1,0,0),m.Bx/2),new THREE.Plane(new V3(-1,0,0),m.Bx/2),new THREE.Plane(new V3(0,0,1),m.By/2),new THREE.Plane(new V3(0,0,-1),m.By/2)],cg=new THREE.ConeGeometry(1.5*m.hef,m.hef,48,1,true);
+      [{wireframe:true,opacity:0.4},{opacity:0.14,depthWrite:false}].forEach(function(o2){var cone=new THREE.Mesh(cg,new THREE.MeshBasicMaterial(Object.assign({color:C.acc,transparent:true,side:THREE.DoubleSide,clippingPlanes:cpl},o2)));cone.rotation.x=Math.PI;cone.position.set(X,-m.hef/2,Z);G.cone.add(cone);});}
+    labels.push({pos:new V3(X,yTop+0.6*da,Z),text:'A'+a.n+(a.t?' T':' C')+(isFinite(F[n])?' '+F[n].toFixed(1)+' kN':'')});
+  });
+  if(m.pc){var PX=(m.nx-1)*m.sx+2*m.pofs,PZ=(m.ny-1)*m.sy+2*m.pofs,pm=mat(new THREE.Color('#c28a2c')),ppl=new THREE.Mesh(new THREE.BoxGeometry(PX,m.ptp,PZ),pm);ppl.position.set(0,-(m.hef+m.ptp/2),0);ppl.userData.info='Common head plate '+Math.round(PX)+' x '+Math.round(PZ)+' x '+m.ptp+' mm, bearing face at h_ef';G.anch.add(ppl);pick.push(ppl);
+    var rxx=m.nx>=2,rl=rxx?(m.nx-1)*m.sx:(m.ny-1)*m.sy;if(rl>0){var prb=new THREE.Mesh(new THREE.BoxGeometry(rxx?rl:m.pts,m.phs,rxx?m.pts:rl),pm);prb.position.set(0,-(m.hef-m.phs/2),0);prb.userData.info='Stiffener '+Math.round(rl)+' x '+m.phs+' x '+m.pts+' mm';G.anch.add(prb);pick.push(prb);}}
+  var VC=window.VEC;
+  if(VC&&VC.T){var Fm=Math.max(1e-9,Math.abs(VC.N),Math.abs(VC.Vx),Math.abs(VC.Vy)),Tm=Math.max.apply(null,VC.T.concat(VC.qx.map(function(a,k){return Math.hypot(a,VC.qy[k])})).concat([1e-9])),Ls=0.45*Math.max(m.Bx,m.By),up=new V3(0,1,0),yc=yTop+40,PU='#8e44ad',OR='#d9822b',AC='#'+C.acc.getHexString();
+    var arr=function(o,d,col,txt,r){var L=d.length();if(L<5)return;var dir=d.clone().normalize(),q=new THREE.Quaternion().setFromUnitVectors(up,dir),hl=Math.min(L*0.4,r*6),M=new THREE.MeshBasicMaterial({color:col,clippingPlanes:[plane]}),sh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,L-hl,10),M),hd=new THREE.Mesh(new THREE.ConeGeometry(r*2.4,hl,14),M);
+      sh.position.copy(o).addScaledVector(dir,(L-hl)/2);hd.position.copy(o).addScaledVector(dir,L-hl/2);sh.quaternion.copy(q);hd.quaternion.copy(q);G.vec.add(sh);G.vec.add(hd);if(txt)labels.push({pos:o.clone().add(d),text:txt});};
+    md.anchors.forEach(function(a,n){var X=a.x-ox,Z=a.y-oz,t=VC.T[n]||0,qh=Math.hypot(VC.qx[n],VC.qy[n]);
+      if(t>1e-6)arr(new V3(X,yTop+15,Z),new V3(0,t/Tm*Ls*0.6,0),AC,'T '+t.toFixed(1),4);
+      if(qh>1e-6)arr(new V3(X,g+tp+6,Z),new V3(VC.qx[n],0,VC.qy[n]).multiplyScalar(Ls*0.6/Tm),OR,'V '+qh.toFixed(1),4);});
+    var ln=function(x){return Math.abs(x)/Fm*Ls*0.8};
+    if(Math.abs(VC.N)>1e-9){var Ln=ln(VC.N);if(VC.N>0)arr(new V3(0,yc+Ln,0),new V3(0,-Ln,0),PU,'N = '+VC.N.toFixed(1)+' kN (compression)',7);else arr(new V3(0,yc,0),new V3(0,Ln,0),PU,'N = '+(-VC.N).toFixed(1)+' kN (tension)',7);}
+    if(Math.abs(VC.Vx)>1e-9)arr(new V3(0,yc,0),new V3(Math.sign(VC.Vx)*ln(VC.Vx),0,0),PU,'Vx = '+VC.Vx.toFixed(1)+' kN',7);
+    if(Math.abs(VC.Vy)>1e-9)arr(new V3(0,yc,0),new V3(0,0,Math.sign(VC.Vy)*ln(VC.Vy)),PU,'Vy = '+VC.Vy.toFixed(1)+' kN',7);
+    var mom=function(ax,k,txt){var R0=(0.28*Math.max(m.Lx,m.Ly)+60)*k,gm=new THREE.Group(),M=new THREE.MeshBasicMaterial({color:PU,clippingPlanes:[plane]}),A=1.5*Math.PI,tb=Math.max(5,R0*0.03),hd=new THREE.Mesh(new THREE.ConeGeometry(tb*2.6,tb*6,14),M);
+      gm.add(new THREE.Mesh(new THREE.TorusGeometry(R0,tb,8,40,A),M));hd.position.set(R0*Math.cos(A),R0*Math.sin(A),0);hd.quaternion.setFromUnitVectors(up,new V3(-Math.sin(A),Math.cos(A),0));gm.add(hd);
+      gm.quaternion.setFromUnitVectors(new V3(0,0,1),ax);gm.position.set(0,yc,0);G.vec.add(gm);labels.push({pos:new V3(R0,0,0).applyQuaternion(gm.quaternion).add(gm.position),text:txt});};
+    if(Math.abs(VC.My)>1e-9)mom(new V3(0,0,Math.sign(VC.My)),1,'My = '+VC.My.toFixed(1)+' kNm');
+    if(Math.abs(VC.Mx)>1e-9)mom(new V3(-Math.sign(VC.Mx),0,0),1.2,'Mx = '+VC.Mx.toFixed(1)+' kNm');
+    if(Math.abs(VC.Mz)>1e-9)mom(new V3(0,-Math.sign(VC.Mz),0),1.4,'T = '+VC.Mz.toFixed(1)+' kNm');}
+  labels.forEach(function(l){var s=document.createElement('span');s.textContent=l.text;$('v3lab').appendChild(s);l.el=s;});
+  scene.add(group);applyLayers();
+  /* notes and schedule */
+  var bad=md.anchors.filter(function(a){return a.gap<m.mcl}).length;
+  $('v3note').textContent=(W.n?'Bend radius reduced on '+W.n+' bend(s) because a leg is too short for the code mandrel. ':'All bends use the code mandrel. ')+(bad?bad+' anchor(s) violate the required clearance (drawn red).':'Anchors keep the required clearance to bars and stirrups.');
+  $('v3sched').innerHTML='<tr><td>Bend mandrel Ø, vertical bars / stirrups</td><td>'+Math.round(2*(rB-m.dvb/2))+' / '+Math.round(2*(rS-m.dst/2))+' mm, automatic</td></tr><tr><td>U-bars Ø'+m.dvb+' × '+nU+'</td><td>L = '+Math.round(firstLen)+' mm each</td></tr><tr><td>Stirrups Ø'+m.dst+' × '+md.stirrups.length+'</td><td>L = '+Math.round(stLen)+' mm each</td></tr>';
+  if(first){first=false;setPreset('iso');}else need=true;
+}
+function applyLayers(){for(var k in G)if(LY[k]!==undefined)G[k].visible=!!LY[k];$('v3lab').style.display=LY.lab?'':'none';need=true;}
+
+/* ---------- camera and controls ---------- */
+function setCam(){
+  ph=Math.min(Math.PI-0.01,Math.max(0.01,ph));dist=Math.max(100,Math.min(100000,dist));
+  camera.position.set(target.x+dist*Math.sin(ph)*Math.sin(th),target.y+dist*Math.cos(ph),target.z+dist*Math.sin(ph)*Math.cos(th));
+  camera.lookAt(target);camera.updateMatrixWorld();need=true;
+}
+function fit(){
+  if(!group)return;var b=new THREE.Box3().setFromObject(group),s=b.getSize(new V3()),r=s.length()/2,d=r/Math.sin(camera.fov*Math.PI/360);
+  b.getCenter(target);if(camera.aspect<1)d/=camera.aspect;dist=d*0.95;setCam();
+}
+function setPreset(p){if(p==='iso'){th=Math.PI/4;ph=1.05;}else if(p==='plan'){th=0;ph=0.01;}else{th=0;ph=Math.PI/2;}fit();}
+var ptrs={};
+cvs.addEventListener('contextmenu',function(e){e.preventDefault()});
+cvs.addEventListener('pointerdown',function(e){try{cvs.setPointerCapture(e.pointerId)}catch(x){}ptrs[e.pointerId]={x:e.clientX,y:e.clientY,pan:e.button===2||e.shiftKey||e.ctrlKey};$('v3tip').style.display='none';});
+function endP(e){delete ptrs[e.pointerId];}
+cvs.addEventListener('pointerup',endP);cvs.addEventListener('pointercancel',endP);
+cvs.addEventListener('pointermove',function(e){
+  var p=ptrs[e.pointerId];if(!p){hov=e;need=true;return;}
+  var ids=Object.keys(ptrs),n=ids.length;
+  if(n===1){var dx=e.clientX-p.x,dy=e.clientY-p.y;
+    if(p.pan){var f=2*dist*Math.tan(camera.fov*Math.PI/360)/(wrap.clientHeight||400),r=new V3().setFromMatrixColumn(camera.matrixWorld,0),u=new V3().setFromMatrixColumn(camera.matrixWorld,1);target.addScaledVector(r,-dx*f).addScaledVector(u,dy*f);}
+    else{th-=dx*0.006;ph-=dy*0.006;}
+  }else if(n===2){var o=ptrs[ids[0]]===p?ptrs[ids[1]]:ptrs[ids[0]],d0=Math.hypot(p.x-o.x,p.y-o.y),d1=Math.hypot(e.clientX-o.x,e.clientY-o.y);if(d1>0)dist*=d0/d1;}
+  p.x=e.clientX;p.y=e.clientY;setCam();
+});
+cvs.addEventListener('wheel',function(e){e.preventDefault();dist*=Math.exp(e.deltaY*0.0012);setCam();},{passive:false});
+cvs.addEventListener('pointerleave',function(){hov=null;$('v3tip').style.display='none';});
+
+var axc=$('v3ax'),axx=axc?axc.getContext('2d'):null;
+function drawAxes(){
+  if(!axx)return;
+  var dpr=Math.min(window.devicePixelRatio||1,2),S=84;
+  if(axc.width!==Math.round(S*dpr)){axc.width=axc.height=Math.round(S*dpr);}
+  axx.setTransform(dpr,0,0,dpr,0,0);axx.clearRect(0,0,S,S);
+  var C=colors(),dirs=[['x',new V3(1,0,0),C.bad],['y',new V3(0,0,1),C.ok],['z',new V3(0,-1,0),C.acc]];
+  var arr=dirs.map(function(d){var c=d[1].clone().transformDirection(camera.matrixWorldInverse);return {n:d[0],x:c.x,y:c.y,z:c.z,col:'#'+d[2].getHexString()};}).sort(function(a,b){return a.z-b.z;});
+  var cx=S/2,cy=S/2,L=S*0.33;
+  axx.lineWidth=2;axx.font='700 12px sans-serif';axx.textAlign='center';axx.textBaseline='middle';
+  arr.forEach(function(a){
+    var ex=cx+a.x*L,ey=cy-a.y*L;if(!isFinite(ex)||!isFinite(ey))return;
+    axx.globalAlpha=a.z<-0.25?0.5:1;axx.strokeStyle=a.col;axx.fillStyle=a.col;
+    axx.beginPath();axx.moveTo(cx,cy);axx.lineTo(ex,ey);axx.stroke();
+    var an=Math.atan2(ey-cy,ex-cx),hl=6;
+    if(Math.hypot(ex-cx,ey-cy)>4){axx.beginPath();axx.moveTo(ex,ey);axx.lineTo(ex-hl*Math.cos(an-0.4),ey-hl*Math.sin(an-0.4));axx.lineTo(ex-hl*Math.cos(an+0.4),ey-hl*Math.sin(an+0.4));axx.closePath();axx.fill();}
+    var lx=cx+a.x*(L+10),ly=cy-a.y*(L+10);axx.fillText(a.n,Math.max(6,Math.min(S-6,lx)),Math.max(6,Math.min(S-6,ly)));
+  });
+  axx.globalAlpha=1;
+}
+/* ---------- render loop ---------- */
+var rc=new THREE.Raycaster(),tip=$('v3tip');
+function doHover(e){
+  var r=cvs.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  rc.setFromCamera(new THREE.Vector2(x/r.width*2-1,-(y/r.height)*2+1),camera);
+  var vis=pick.filter(function(o){return o.parent&&o.parent.visible}),hit=rc.intersectObjects(vis,false)[0];
+  if(hit){tip.textContent=hit.object.userData.info;tip.style.display='block';tip.style.left=Math.min(x+12,Math.max(0,r.width-tip.offsetWidth-4))+'px';tip.style.top=Math.max(4,y-26)+'px';}else tip.style.display='none';
+}
+function render(){try{render0();}catch(e){fail('3D render error: '+e.message);console.error(e);}}
+function render0(){
+  plane.constant=secOn?(-curBy/2+curBy*(+$('v3sec').value)/100):1e6;
+  renderer.render(scene,camera);drawAxes();
+  var w=wrap.clientWidth,h=wrap.clientHeight;
+  if(LY.lab)labels.forEach(function(l){var p=l.pos.clone().project(camera);if(p.z>1||p.z<-1){l.el.style.display='none';return;}l.el.style.display='';l.el.style.left=((p.x*0.5+0.5)*w)+'px';l.el.style.top=((-p.y*0.5+0.5)*h)+'px';});
+}
+function tick(){requestAnimationFrame(tick);if(hov){var e=hov;hov=null;doHover(e);}if(need){need=false;render();}}
+function resize(){var w=wrap.clientWidth,h=wrap.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();need=true;}
+if(window.ResizeObserver)new ResizeObserver(resize).observe(wrap);else window.addEventListener('resize',resize);
+
+/* ---------- UI ---------- */
+$('v3bar').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  if(b.dataset.l){LY[b.dataset.l]=LY[b.dataset.l]?0:1;b.setAttribute('aria-pressed',LY[b.dataset.l]?'true':'false');applyLayers();}
+  else if(b.dataset.p)setPreset(b.dataset.p);
+  else if(b.dataset.act==='fit')fit();
+  else if(b.dataset.act==='toe'){toeOut=!toeOut;b.setAttribute('aria-pressed',toeOut?'true':'false');b.textContent=toeOut?'Toes outward':'Toes inward';build();}
+  else if(b.dataset.act==='sec'){secOn=!secOn;b.setAttribute('aria-pressed',secOn?'true':'false');$('v3secl').style.display=secOn?'':'none';need=true;}
+});
+$('v3sec').addEventListener('input',function(){need=true;});
+var tmr=null;function sched(){clearTimeout(tmr);tmr=setTimeout(build,100);}
+function onIn(e){if(e.target.closest&&e.target.closest('#v3'))return;sched();}
+document.addEventListener('input',onIn);document.addEventListener('change',onIn);
+if(window.matchMedia){var mq=matchMedia('(prefers-color-scheme: dark)');if(mq.addEventListener)mq.addEventListener('change',sched);}
+new MutationObserver(sched).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+window.V3snap=function(){try{render0();return cvs.toDataURL('image/png')}catch(e){return ''}};
+resize();build();tick();
+})();
+</script>
+</body>
+</html>
+
+</body></html>

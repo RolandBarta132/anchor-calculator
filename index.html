@@ -434,6 +434,33 @@ function calcPryout(model){
   return {k8auto:k8auto,k8:k8,VRd:VRd};
 }
 
+function calcShearSteel(model){
+  var dsa=Math.sqrt(4*model.Asa/Math.PI),Wel=Math.PI*Math.pow(dsa,3)/32;
+  var k6=model.fuk<=500?0.6:0.5,k7=model.ductile?1:0.8;
+  var VRds=(model.shearMode==="l")?(model.alphaM)*1.2*Wel*model.fuk*(1-Math.min(1,model.N1/model.NRds))/(model.tg+0.5*model.da)/model.gMsV/1000:k7*k6*model.Asa*model.fuk/model.gMsV/1000;
+  return {dsa:dsa,Wel:Wel,k6:k6,k7:k7,VRds:VRds};
+}
+
+function calcShearEdgeBreakout(model){
+  var VRdc=Infinity,edgeGov=null,edgeTxt=[];
+  model.edgesList.forEach(function(E){
+    var comp=model.vx*E.nx+model.vy*E.ny,c1=E.c;
+    if(model.Vres<=0||comp<=1e-9*model.Vres||!(c1>0)||c1>=Math.max(10*model.hef,60*model.da))return;
+    var cosA=Math.min(1,comp/model.Vres),sinA=Math.sqrt(Math.max(0,1-cosA*cosA));
+    var lf=Math.min(model.hef,8*model.da),al=0.1*Math.pow(lf/c1,0.5),be=0.1*Math.pow(model.da/c1,0.2);
+    var V0=(model.cracked?1.7:2.4)*Math.pow(model.da,al)*Math.pow(lf,be)*Math.sqrt(model.fck)*Math.pow(c1,1.5)/1000;
+    var c2=Math.min(E.c2[0],E.c2[1]),wid=Math.min(E.c2[0],1.5*c1)+(E.np-1)*Math.min(E.sp,3*c1)+Math.min(E.c2[1],1.5*c1);
+    var Acv=Math.min(1.5*c1,model.Hb)*wid,A0v=4.5*c1*c1;
+    var pS=Math.min(1,0.7+0.3*c2/(1.5*c1)),pH=Math.max(1,Math.sqrt(1.5*c1/model.Hb)),pE=Math.min(1,1+0)/(1+2*model.eVv/(3*c1));
+    pE=Math.min(1,1/(1+2*model.eVv/(3*c1)));
+    var pA=Math.max(1,Math.sqrt(1/(cosA*cosA+0.25*sinA*sinA))),pR=model.pR;
+    var vrd=V0*(Acv/A0v)*pS*pH*pE*pA*pR/model.gm;
+    edgeTxt.push(E.k+" "+f(vrd)+" kN");
+    if(vrd<VRdc){VRdc=vrd;edgeGov={k:E.k,c1:c1,c2:c2,Ac:Acv,A0:A0v,V0:V0,lf:lf,pS:pS,pH:pH,pE:pE,pA:pA,pR:pR,ang:Math.acos(cosA)*180/Math.PI};}
+  });
+  return {VRdc:VRdc,edgeGov:edgeGov,edgeTxt:edgeTxt,c1V:edgeGov?edgeGov.c1:0};
+}
+
 function calculateDesignLegacy(){
 syncEngineeringGeometry();solveLoadTransfer();
 var fck=v("fck"),hef=v("hef"),gm=v("gm")||1.5,NEd=v("NEd"),VEd=v("VEd");
@@ -468,25 +495,13 @@ var po=calcPullout({cracked:cracked,Ah:Ah,fck:fck,gm:gm});
 var NRdp=po.NRdp;
 var sb=calcSideFaceBlowout({cracked:cracked,Ah:Ah,fck:fck,gm:gm,hef:hef,eg:eg});
 var NRdcb=sb.NRdcb,c1b=sb.c1b,c2b=sb.c2b;
-var dsa=Math.sqrt(4*Asa/Math.PI),Wel=Math.PI*Math.pow(dsa,3)/32;
-var k6=fuk<=500?0.6:0.5,k7=$("duc").checked?1:0.8;
-var VRds=($("sm").value==="l")?(+$("am").value)*1.2*Wel*fuk*(1-Math.min(1,N1/NRds))/(v("tg")+0.5*da)/gMsV/1000:k7*k6*Asa*fuk/gMsV/1000;
-var VRdc=Infinity,LS=lugSplit(v('Vx'),v('Vy')),vx=LS.ax,vy=LS.ay,Vres=Math.hypot(vx,vy),c1V=0,edgeGov=null,edgeTxt=[];
+var ss=calcShearSteel({Asa:Asa,fuk:fuk,ductile:$("duc").checked,alphaM:+$("am").value,shearMode:$("sm").value,N1:N1,NRds:NRds,tg:v("tg"),da:da,gMsV:gMsV});
+var dsa=ss.dsa,Wel=ss.Wel,k6=ss.k6,k7=ss.k7,VRds=ss.VRds;
+var LS=lugSplit(v('Vx'),v('Vy')),vx=LS.ax,vy=LS.ay,Vres=Math.hypot(vx,vy);
 var shL=v('cl'),shR=v('cr2'),shT=v('ct'),shB=v('cb'),eVv=Vres>0?Math.abs(v('Mz'))*1000/Vres:0;
-[{k:'right',nx:1,ny:0,c:shR,c2:[shT,shB],np:ny,sp:sy},{k:'left',nx:-1,ny:0,c:shL,c2:[shT,shB],np:ny,sp:sy},{k:'bottom',nx:0,ny:1,c:shB,c2:[shL,shR],np:nx,sp:sx},{k:'top',nx:0,ny:-1,c:shT,c2:[shL,shR],np:nx,sp:sx}].forEach(function(E){
-  var comp=vx*E.nx+vy*E.ny,c1=E.c;
-  if(Vres<=0||comp<=1e-9*Vres||!(c1>0)||c1>=Math.max(10*hef,60*da))return;
-  var cosA=Math.min(1,comp/Vres),sinA=Math.sqrt(Math.max(0,1-cosA*cosA));
-  var lf=Math.min(hef,8*da),al=0.1*Math.pow(lf/c1,0.5),be=0.1*Math.pow(da/c1,0.2);
-  var V0=(cracked?1.7:2.4)*Math.pow(da,al)*Math.pow(lf,be)*Math.sqrt(fck)*Math.pow(c1,1.5)/1000;
-  var c2=Math.min(E.c2[0],E.c2[1]),wid=Math.min(E.c2[0],1.5*c1)+(E.np-1)*Math.min(E.sp,3*c1)+Math.min(E.c2[1],1.5*c1);
-  var Acv=Math.min(1.5*c1,Hb)*wid,A0v=4.5*c1*c1;
-  var pS=Math.min(1,0.7+0.3*c2/(1.5*c1)),pH=Math.max(1,Math.sqrt(1.5*c1/Hb)),pE=Math.min(1,1/(1+2*eVv/(3*c1))),pA=Math.max(1,Math.sqrt(1/(cosA*cosA+0.25*sinA*sinA))),pR=+$("rev").value;
-  var vrd=V0*(Acv/A0v)*pS*pH*pE*pA*pR/gm;
-  edgeTxt.push(E.k+" "+f(vrd)+" kN");
-  if(vrd<VRdc){VRdc=vrd;edgeGov={k:E.k,c1:c1,c2:c2,Ac:Acv,A0:A0v,V0:V0,lf:lf,pS:pS,pH:pH,pE:pE,pA:pA,pR:pR,ang:Math.acos(cosA)*180/Math.PI};}
-});
-if(edgeGov)c1V=edgeGov.c1;
+var edgesList=[{k:'right',nx:1,ny:0,c:shR,c2:[shT,shB],np:ny,sp:sy},{k:'left',nx:-1,ny:0,c:shL,c2:[shT,shB],np:ny,sp:sy},{k:'bottom',nx:0,ny:1,c:shB,c2:[shL,shR],np:nx,sp:sx},{k:'top',nx:0,ny:-1,c:shT,c2:[shL,shR],np:nx,sp:sx}];
+var se=calcShearEdgeBreakout({edgesList:edgesList,vx:vx,vy:vy,Vres:Vres,hef:hef,da:da,cracked:cracked,fck:fck,Hb:Hb,eVv:eVv,pR:+$("rev").value,gm:gm});
+var VRdc=se.VRdc,edgeGov=se.edgeGov,edgeTxt=se.edgeTxt,c1V=se.c1V;;
 var LG={on:false,Vl:0};
 if(LS.on){
   var LGm=lugGeom($("lugp").value,$("lugo").value),lb=LGm.bw,lh=v("lugh"),lt=LGm.dl,lfy=+$("lugfy").value||235,lgg=v("lugg"),lk=v("lugk")||1;

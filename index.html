@@ -359,25 +359,41 @@ function lugSplit(Vx,Vy){var alX=Math.abs(Vx)>=Math.abs(Vy);
 if(!($('lug').checked&&$('useF').checked))return {on:false,alX:alX,vl:0,ax:Vx,ay:Vy};
 var sh=Math.max(0,Math.min(100,v('lugsh')))/100,vl=(alX?Vx:Vy)*sh;
 return {on:true,alX:alX,vl:vl,ax:alX?Vx-vl:Vx,ay:alX?Vy:Vy-vl};}
+function calcConcreteBreakout(model){
+  var fck=model.fck,hef=model.hef,gm=model.gm,cracked=model.cracked,cast=model.cast;
+  var nx=model.nx,ny=model.ny,sx=model.sx,sy=model.sy,psecG=model.psecG;
+  var k1=cast?(cracked?8.9:12.7):(cracked?7.7:11.0);
+  var N0=k1*Math.sqrt(fck)*Math.pow(hef,1.5)/1000;
+  var h15=1.5*hef,scr=3*hef,A0=scr*scr;
+  var psire=model.dense?1:Math.min(1,0.5+hef/200);
+  function grp(gx,gy,eL,eR,eT,eB){
+    var Lx=Math.min(eL,h15)+Math.min(eR,h15)+(gx-1)*Math.min(sx,scr);
+    var Ly=Math.min(eT,h15)+Math.min(eR,h15)+(gy-1)*Math.min(sy,scr);
+    var c=Math.min(eL,eR,eT,eB),ps=Math.min(1,0.7+0.3*c/h15);
+    return {Ac:Lx*Ly,ps:ps,N:N0*(Lx*Ly/A0)*ps*psire};
+  }
+  var tx=Math.min(model.tx,nx),ty=Math.min(model.ty,ny),hs=model.hs,vs=model.vs;
+  var eg=edges(nx,ny,tx,ty,hs,vs);
+  var G=grp(tx,ty,eg.l,eg.r,eg.t,eg.b),Gall=grp(nx,ny,model.cl,model.cr,model.ct,model.cb);
+  var Ac=G.Ac,psis=G.ps,NRk=G.N*psecG,NRd=NRk/gm;
+  return {fck:fck,hef:hef,gm:gm,cracked:cracked,cast:cast,nx:nx,ny:ny,sx:sx,sy:sy,
+    k1:k1,N0:N0,h15:h15,scr:scr,A0:A0,psire:psire,tx:tx,ty:ty,hs:hs,vs:vs,eg:eg,
+    G:G,Gall:Gall,Ac:Ac,psis:psis,NRk:NRk,NRd:NRd};
+}
+
 function calculateDesignLegacy(){
 syncEngineeringGeometry();solveLoadTransfer();
 var fck=v("fck"),hef=v("hef"),gm=v("gm")||1.5,NEd=v("NEd"),VEd=v("VEd");
 var cracked=$("cr").value==="1",cast=$("type").value==="c";
 var nx=+$("nx").value,ny=+$("ny").value,sx=v("sx"),sy=v("sy");
-var k1=cast?(cracked?8.9:12.7):(cracked?7.7:11.0);
-var N0=k1*Math.sqrt(fck)*Math.pow(hef,1.5)/1000;
-var h15=1.5*hef,scr=3*hef;
-var A0=scr*scr;
-var psire=$("dense").checked?1:Math.min(1,0.5+hef/200);
-function grp(gx,gy,eL,eR,eT,eB){
-var Lx=Math.min(eL,h15)+Math.min(eR,h15)+(gx-1)*Math.min(sx,scr);
-var Ly=Math.min(eT,h15)+Math.min(eB,h15)+(gy-1)*Math.min(sy,scr);
-var c=Math.min(eL,eR,eT,eB),ps=Math.min(1,0.7+0.3*c/h15);
-return {Ac:Lx*Ly,ps:ps,N:N0*(Lx*Ly/A0)*ps*psire};}
-var tx=Math.min(+$("tx").value,nx),ty=Math.min(+$("ty").value,ny),hs=$("hs").value,vs=$("vs").value;
-var eg=edges(nx,ny,tx,ty,hs,vs);
-var G=grp(tx,ty,eg.l,eg.r,eg.t,eg.b),Gall=grp(nx,ny,v("cl"),v("cr2"),v("ct"),v("cb"));
-var Ac=G.Ac,psis=G.ps,NRk=G.N*psecG,NRd=NRk/gm;
+var cb=calcConcreteBreakout({
+  fck:fck,hef:hef,gm:gm,cracked:cracked,cast:cast,nx:nx,ny:ny,sx:sx,sy:sy,
+  tx:+$("tx").value,ty:+$("ty").value,hs:$("hs").value,vs:$("vs").value,
+  cl:v("cl"),cr:v("cr2"),ct:v("ct"),cb:v("cb"),dense:$("dense").checked,psecG:psecG
+});
+var k1=cb.k1,N0=cb.N0,h15=cb.h15,scr=cb.scr,A0=cb.A0,psire=cb.psire;
+var tx=cb.tx,ty=cb.ty,hs=cb.hs,vs=cb.vs,eg=cb.eg,G=cb.G,Gall=cb.Gall;
+var Ac=cb.Ac,psis=cb.psis,NRk=cb.NRk,NRd=cb.NRd;
 var k8auto=hef>=60?2:1,k8s=$("k8in").value.trim(),k8=(k8s!==""&&+k8s>0)?+k8s:k8auto,VRd=k8*Gall.N/gm;
 var ds=v("dvb"),fyk=v("fyk"),eta=+$("eta").value,amp=v("amp")||1;
 var Hb=v("hb"),cv=v("cv");

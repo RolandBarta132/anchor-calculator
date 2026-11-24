@@ -579,11 +579,11 @@ var wasOpen=$("bars").querySelector("details")&&$("bars").querySelector("details
 /* When supplementary reinforcement is explicitly selected, the unreinforced
    cone remains visible as a reference result but is not an active failure.
    The reinforcement load path must pass its own resistance check. */
-var UR=bars.map(function(b,i){var u=b[2]>0?b[1]/b[2]:Infinity;var reference=($("usere").checked&&i===0)||(!$("usere").checked&&i>=1&&i<=3)||(i===14&&!$("clchk").checked);return {b:b,u:u,reference:reference,bad:reference?false:!(u<=1)};});
+var UR=bars.map(function(b,i){var u=b[2]>0?b[1]/b[2]:Infinity;var isCageClearance=b[0].indexOf("Cage clearance:")===0;var reference=($("usere").checked&&i===0)||(!$("usere").checked&&i>=1&&i<=3)||(isCageClearance&&!$("clchk").checked);return {b:b,u:u,reference:reference,bad:reference?false:!(u<=1)};});
 var active=UR.filter(function(x){return !x.reference;});
 var nBad=active.filter(function(x){return x.bad}).length,gvU=active.reduce(function(m,x){return x.u>m.u?x:m},active[0]||UR[0]);
 var crow=function(x){var b=x.b;var tag=x.reference?'Reference':(x.bad?'Fails':'OK');return '<div class="cr'+(x.bad?' bad':'')+'"><span class="cl">'+b[0]+'</span><span class="ctr"><i style="width:'+Math.min(100,(isFinite(x.u)?x.u:1)*100)+'%"></i></span><span class="cp">'+(isFinite(x.u)?Math.round(x.u*100)+' %':'∞')+'</span><span class="tag"'+(x.bad&&b[4]?' tabindex="0" data-hint="'+esc(b[4])+'"':'')+'>'+tag+'</span>'+(x.bad||x.reference?'<span class="cv">'+f(b[1])+' / '+f(b[2])+' '+b[3]+'</span>':'')+'</div>';};
-var crit=UR.filter(function(x){return x.reference||x.bad||x.u>=0.8}),rest=UR.filter(function(x){return !(x.reference||x.bad||x.u>=0.8)});
+var crit=UR.filter(function(x){return !(x.reference&&x.b[0].indexOf("Cage clearance:")===0)&&(x.bad||x.reference||x.u>=0.8)}),rest=UR.filter(function(x){return !(x.reference&&x.b[0].indexOf("Cage clearance:")===0)&&!(x.reference||x.bad||x.u>=0.8)});
 setH($("bars"),'<div class="usum'+(nBad?' bad':'')+'"><span class="tag">'+(nBad?nBad+(nBad>1?' active checks fail':' active check fails'):'All active checks OK')+'</span><span>Governing: '+gvU.b[0]+', '+(isFinite(gvU.u)?Math.round(gvU.u*100)+' %':'∞')+'</span></div>'+crit.map(crow).join("")+(rest.length?'<details class="more"'+(wasOpen?' open':'')+'><summary>'+rest.length+' more active checks, all below 80 %</summary>'+rest.map(crow).join("")+'</details>':'') );
 RES=UR.map(function(x){return {l:x.b[0],u:x.u,h:x.b[4]||"",reference:x.reference};});
 var rows=[
@@ -760,8 +760,8 @@ function renderSum(all){
   if(!all){sec.hidden=true;return;}
   sec.hidden=false;
   var names=LC.map(function(c){return c.n}),fail=[];
-  all.forEach(function(r,k){if(r.some(function(x){return !(x.u<=1)}))fail.push(names[k]);});
-  var items=all[0].map(function(c0,i){var mx=-1,mk=0;all.forEach(function(r,k){if(r[i].u>mx){mx=r[i].u;mk=k;}});return {i:i,l:c0.l,mx:mx,mk:mk};});
+  all.forEach(function(r,k){if(r.some(function(x){return !x.reference&&!(x.u<=1)}))fail.push(names[k]);});
+  var items=all[0].map(function(c0,i){if(c0.reference&&c0.l.indexOf("Cage clearance:")===0)return null;var mx=-1,mk=0;all.forEach(function(r,k){if(r[i].reference)return;if(r[i].u>mx){mx=r[i].u;mk=k;}});return {i:i,l:c0.l,mx:mx,mk:mk};}).filter(function(x){return x!==null;});
   var gv=items.reduce(function(m,x){return x.mx>m.mx?x:m},items[0]);
   var vd='<div class="usum'+(fail.length?' bad':'')+'"><span class="tag">'+(fail.length?'Fails in '+esc(fail.join(", ")):'All cases OK')+'</span><span>Governing: '+esc(gv.l)+', '+(isFinite(gv.mx)?Math.round(gv.mx*100)+' %':'∞')+' ('+esc(names[gv.mk])+')</span></div>';
   var th='<tr><td>Check</td>'+names.map(function(nm,k){return '<td><button type="button" class="lcsel'+(k===cur?' on':'')+'" data-k="'+k+'">'+esc(nm)+'</button></td>'}).join("")+'</tr>';

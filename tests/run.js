@@ -23,8 +23,7 @@ function run(c){
   el('fck').dispatchEvent(new w.Event('input',{bubbles:true}));        // one recalculation with all values set
   if(!w.ENGINE) throw new Error('ENGINE not initialized; '+errors.join(' | '));
   const loads={N:+el('Nc').value,Vx:+el('Vx').value,Vy:+el('Vy').value,Mx:+el('Mx').value,My:+el('My').value,Mz:+el('Mz').value};
-  const out=w.ENGINE.calculate(loads);
-  const V=out&&out.transfer||null;
+  const V=w.ENGINE.loadTransfer(loads);
   const res=(w.__RES||[]).map(r=>({id:r.id,l:r.l,u:sig(r.u),ref:!!r.reference,hidden:!!r.hidden,category:r.category,hint:r.h||''}));
   let explicit=null;
   if(c.multiLoad){
@@ -80,7 +79,7 @@ function diff(a,b){
     if(!x)out.push('row removed: '+l);else if(!y)out.push('row added: '+l);
     else{if(!close(x.u,y.u))out.push(l+': '+y.u+' -> '+x.u);if(x.ref!==y.ref)out.push(l+': reference '+y.ref+' -> '+x.ref);if(x.hidden!==y.hidden)out.push(l+': hidden '+y.hidden+' -> '+x.hidden);}}
   ['T','qx','qy'].forEach(k=>{const x=a[k]||[],y=b[k]||[];if(x.length!==y.length||x.some((v,i)=>!close(v,y[i])))out.push('anchor '+k+': ['+y.join(', ')+'] -> ['+x.join(', ')+']');});
-  if(a.manual!==b.manual)out.push('manual mode changed: '+b.manual+' -> '+a.manual);
+  if(a.manual!==undefined&&b.manual!==undefined&&a.manual!==b.manual)out.push('manual mode changed: '+b.manual+' -> '+a.manual);
   if((a.explicitT||[]).length||(b.explicitT||[]).length){const x=a.explicitT||[],y=b.explicitT||[];if(x.length!==y.length||x.some((v,i)=>!close(v,y[i])))out.push('explicit load transfer T changed: ['+y.join(', ')+'] -> ['+x.join(', ')+']');}
   return out;
 }

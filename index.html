@@ -124,6 +124,7 @@ body>*:not(#rep){display:none!important}body{background:#fff}#rep{display:block!
 <h1>Cast-in anchors: breakout, pryout and anchor reinforcement</h1>
 <p>Hand-check to EN 1992-4 using forces taken from IDEA StatiCa. Enter the group tension and shear of the governing load case. Results update as you type.</p>
 </header>
+<div id="calcerr" role="alert" style="display:none;max-width:1100px;margin:10px auto 0;padding:10px 14px;border:1px solid var(--bad);background:var(--badbg);color:var(--bad);border-radius:6px"></div>
 <div class="tb2"><button type="button" id="pdfbtn">Export PDF report</button><p class="note">Opens the print dialog with the full report (inputs, forces, figures, utilisation and calculation steps). Choose “Save as PDF”.</p></div>
 <main>
 <div>
@@ -309,6 +310,12 @@ var s='<g class="axt" transform="translate(22,20)" aria-hidden="true"><title>Axe
 if(kind==='plan')s+=aR(cx)+aD(cy)+into(cz)+tx('x',L+4,4,cx)+tx('y',-4,L+14,cy)+tx('z',-15,-7,cz);
 else s+=aR(cx)+aD(cz)+outo(cy)+tx('x',L+4,4,cx)+tx('z',-4,L+14,cz)+tx('y',-15,-7,cy);
 return s+'</g>';}
+/* Input guard for the extracted calc functions: a missing field is a programming error and throws;
+   a NaN is recorded in window.__WARN so the page keeps running but the regression tests fail. */
+window.__WARN=[];
+function need(fn,m,keys){keys.forEach(function(k){
+  if(m[k]===undefined)throw new Error(fn+': input "'+k+'" was not passed');
+  if(typeof m[k]==="number"&&isNaN(m[k])){window.__WARN.push(fn+': input "'+k+'" is NaN');console.warn(fn+': input "'+k+'" is NaN');}});}
 var OV=null;var v=function(i){var x=parseFloat(OV&&OV[i]!==undefined?OV[i]:$(i).value);return isFinite(x)?x:0};
 var f=function(x,d){return isFinite(x)?x.toFixed(d===undefined?1:d):"–"};
 var esc=function(t){return String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
@@ -360,6 +367,7 @@ if(!($('lug').checked&&$('useF').checked))return {on:false,alX:alX,vl:0,ax:Vx,ay
 var sh=Math.max(0,Math.min(100,v('lugsh')))/100,vl=(alX?Vx:Vy)*sh;
 return {on:true,alX:alX,vl:vl,ax:alX?Vx-vl:Vx,ay:alX?Vy:Vy-vl};}
 function calcConcreteBreakout(model){
+  need("calcConcreteBreakout",model,["cast","cb","cl","cr","cracked","ct","dense","fck","gm","hef","hs","nx","ny","psecG","sx","sy","tx","ty","vs"]);
   var fck=model.fck,hef=model.hef,gm=model.gm,cracked=model.cracked,cast=model.cast;
   var nx=model.nx,ny=model.ny,sx=model.sx,sy=model.sy,psecG=model.psecG;
   var k1=cast?(cracked?8.9:12.7):(cracked?7.7:11.0);
@@ -382,6 +390,7 @@ function calcConcreteBreakout(model){
 }
 
 function calcSupplementaryReinforcement(model){
+  need("calcSupplementaryReinforcement",model,["Bx","By","Hb","NEd","amp","cv","ds","dst","eta","fck","fyk","hef","hs","kre","nx","ny","reOn","sx","sy","tx","ty","vs"]);
   var ds=model.ds,fyk=model.fyk,eta=model.eta,amp=model.amp,Hb=model.Hb,cv=model.cv;
   var fck=model.fck,hef=model.hef,NEd=model.NEd,nx=model.nx,ny=model.ny,sx=model.sx,sy=model.sy;
   var As=Math.PI*ds*ds/4;
@@ -413,28 +422,33 @@ function calcSupplementaryReinforcement(model){
 }
 
 function calcPullout(model){
+  need("calcPullout",model,["Ah","cracked","fck","gm"]);
   var NRdp=(model.cracked?7.5:10.5)*model.Ah*model.fck/model.gm/1000;
   return {NRdp:NRdp};
 }
 
 function calcSideFaceBlowout(model){
+  need("calcSideFaceBlowout",model,["Ah","cracked","eg","fck","gm","hef"]);
   var eh=Math.min(model.eg.l,model.eg.r),ev=Math.min(model.eg.t,model.eg.b),c1b=Math.min(eh,ev),c2b=(c1b===eh)?ev:eh;
   var NRdcb=(c1b>0&&c1b<=0.5*model.hef)?(model.cracked?8.7:12.2)*c1b*Math.sqrt(model.Ah)*Math.sqrt(model.fck)*(1+Math.min(c2b,3*c1b)/c1b)/4/model.gm/1000:Infinity;
   return {NRdcb:NRdcb,c1b:c1b,c2b:c2b};
 }
 
 function calcAnchorSteel(model){
+  need("calcAnchorSteel",model,["Asa","fuk","fy2"]);
   var gMsN=Math.max(1.4,1.2*model.fuk/model.fy2),gMsV=(model.fuk<=800&&model.fy2/model.fuk<=0.8)?Math.max(1.25,model.fuk/model.fy2):1.5;
   var NRds=model.Asa*model.fuk/gMsN/1000;
   return {gMsN:gMsN,gMsV:gMsV,NRds:NRds};
 }
 
 function calcPryout(model){
+  need("calcPryout",model,["GallN","gm","hef","k8s"]);
   var k8auto=model.hef>=60?2:1,k8s=model.k8s,k8=(k8s!==""&&+k8s>0)?+k8s:k8auto,VRd=k8*model.GallN/model.gm;
   return {k8auto:k8auto,k8:k8,VRd:VRd};
 }
 
 function calcShearSteel(model){
+  need("calcShearSteel",model,["Asa","N1","NRds","alphaM","da","ductile","fuk","gMsV","shearMode","tg"]);
   var dsa=Math.sqrt(4*model.Asa/Math.PI),Wel=Math.PI*Math.pow(dsa,3)/32;
   var k6=model.fuk<=500?0.6:0.5,k7=model.ductile?1:0.8;
   var VRds=(model.shearMode==="l")?(model.alphaM)*1.2*Wel*model.fuk*(1-Math.min(1,model.N1/model.NRds))/(model.tg+0.5*model.da)/model.gMsV/1000:k7*k6*model.Asa*model.fuk/model.gMsV/1000;
@@ -442,6 +456,7 @@ function calcShearSteel(model){
 }
 
 function calcShearEdgeBreakout(model){
+  need("calcShearEdgeBreakout",model,["Hb","Vres","cracked","da","eVv","edgesList","fck","gm","hef","pR","vx","vy"]);
   var VRdc=Infinity,edgeGov=null,edgeTxt=[];
   model.edgesList.forEach(function(E){
     var comp=model.vx*E.nx+model.vy*E.ny,c1=E.c;
@@ -462,6 +477,7 @@ function calcShearEdgeBreakout(model){
 }
 
 function calcInteraction(model){
+  need("calcInteraction",model,["N1","NEd","NEdre","NRd","NRdcb","NRdp","NRdre","NRds","V1","VEd","VRd","VRdc","VRds","useReinforcement"]);
   var bN=Math.max(model.useReinforcement?model.NEdre/model.NRdre:model.NEd/model.NRd,model.N1/model.NRdp,isFinite(model.NRdcb)?model.N1/model.NRdcb:0);
   var bV=Math.max(model.VEd/model.VRd,isFinite(model.VRdc)?model.VEd/model.VRdc:0);
   var intS=Math.pow(model.N1/model.NRds,2)+Math.pow(model.V1/model.VRds,2);
@@ -482,7 +498,8 @@ var cb=calcConcreteBreakout({
 var k1=cb.k1,N0=cb.N0,h15=cb.h15,scr=cb.scr,A0=cb.A0,psire=cb.psire;
 var tx=cb.tx,ty=cb.ty,hs=cb.hs,vs=cb.vs,eg=cb.eg,G=cb.G,Gall=cb.Gall;
 var Ac=cb.Ac,psis=cb.psis,NRk=cb.NRk,NRd=cb.NRd;
-var pr=calcPryout({hef:hef,k8s:$("k8in").value.trim(),GallN:Gall.N,gm:gm});
+var k8s=$("k8in").value.trim();
+var pr=calcPryout({hef:hef,k8s:k8s,GallN:Gall.N,gm:gm});
 var k8auto=pr.k8auto,k8=pr.k8,VRd=pr.VRd;
 var sr=calcSupplementaryReinforcement({
   ds:v("dvb"),fyk:v("fyk"),eta:+$("eta").value,amp:v("amp")||1,Hb:v("hb"),cv:v("cv"),
@@ -529,7 +546,7 @@ if(LS.on){
     VRcL=V0L*(AcL/A0L)*psL*phL*(+$("rev").value)/gm;}
   LG={on:true,Vl:Vl,dir:dirL,alX:LS.alX,prof:$("lugp").value,ori:$("lugo").value,lb:lb,lh:lh,lt:lt,fy:lfy,lg:lgg,lk:lk,c1:c1L,c2a:c2a,c2b:c2b,sig:sigL,fRd:fRdL,MEd:MEdL,MRd:MRdL,VRs:VRsL,VRc:VRcL,V0:V0L,Ac:AcL,A0:A0L,ps:psL,ph:phL,lf:lfL,dq:dq};
 }
-var ix=calcInteraction({useReinforcement:$("usere").checked,NEdre:NEdre,NRdre:NRdre,NEd:NEd,NRd:NRd,N1:N1,NRdp:NRdp,NRdcb:NRdcb,VEd:VEd,VRd:VRd,VRdc:VRdc,NRds:NRds,V1:V1});
+var ix=calcInteraction({useReinforcement:$("usere").checked,NEdre:NEdre,NRdre:NRdre,NEd:NEd,NRd:NRd,N1:N1,NRdp:NRdp,NRdcb:NRdcb,VEd:VEd,VRd:VRd,VRdc:VRdc,NRds:NRds,VRds:VRds,V1:V1});
 var bN=ix.bN,bV=ix.bV,intS=ix.intS,intC=ix.intC;
 var bars=[
 ["Concrete breakout, unreinforced",NEd,NRd,"kN"],
@@ -825,6 +842,11 @@ function syncEngineeringGeometry(){syncF();}
 function solve(){return solveLoadTransfer();}
 
 function calc(){
+  var eb=$("calcerr");
+  try{calcInner();eb.style.display="none";window.__RES=RES;}
+  catch(e){console.error(e);eb.textContent="Calculation stopped: "+e.message+" (see the browser console for details)";eb.style.display="block";}
+}
+function calcInner(){
 var pcs=$('ht').value==='c';$('hd').parentNode.style.display=pcs?'none':'';['pofs','ptp','phs','pts','pfy'].forEach(function(id){$(id).parentNode.style.display=pcs?'':'none'});
 $("lugf").hidden=!$("lug").checked;$("lugnote").style.color=($("lug").checked&&!$("useF").checked)?"var(--bad)":"";
   MANC.vb=0;cage();LC[cur]=readCase();refreshLC();hideTip();

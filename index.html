@@ -876,7 +876,7 @@ var hef=v('hef');if(hef<=0)return;
 var h=1.5*hef,nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),cl=v('cl'),cr=v('cr2'),ct=v('ct'),cb=v('cb'),Hb=v('hb')||hef*1.6,cv=v('cv'),da=+$('dia').value.split('|')[1],dh=v('hd');
 var tx=Math.min(+$('tx').value,nx),ty=Math.min(+$('ty').value,ny),hs=$('hs').value,vs=$('vs').value,eg=edges(nx,ny,tx,ty,hs,vs);
 var colT=function(i){return hs=='l'?i<tx:i>=nx-tx},rowT=function(j){return vs=='t'?j<ty:j>=ny-ty};
-var tS=function(i,j){var V=window.VEC;return V&&V.T?V.T[j*nx+i]>1e-6:(colT(i)&&rowT(j))},colA=function(i){for(var j=0;j<ny;j++)if(tS(i,j))return true;return false};
+var tS=function(i,j){var V=currentTransfer();return V&&V.T?V.T[j*nx+i]>1e-6:(colT(i)&&rowT(j))},colA=function(i){for(var j=0;j<ny;j++)if(tS(i,j))return true;return false};
 var R=function(x){return Math.round(x*10)/10},xe=(nx-1)*sx,ye=(ny-1)*sy,P='a1',i,j,o;
 var L=function(a,b,c){return a+`<tspan dy='3' font-size='8'>${b}</tspan><tspan dy='-3'>${c}</tspan>`};
 var defs=function(){return `<defs><marker id='${P}' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='6' markerHeight='6' orient='auto-start-reverse'><path d='M0 0L10 5L0 10z' style='fill:var(--mute)'/></marker><pattern id='${P}h' width='7' height='7' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><line x1='0' y1='0' x2='0' y2='7' style='stroke:var(--line)'/></pattern></defs>`};
@@ -1200,7 +1200,7 @@ function build0(){
   });
   if(m.pc){var PX=(m.nx-1)*m.sx+2*m.pofs,PZ=(m.ny-1)*m.sy+2*m.pofs,pm=mat(new THREE.Color('#c28a2c')),ppl=new THREE.Mesh(new THREE.BoxGeometry(PX,m.ptp,PZ),pm);ppl.position.set(0,-(m.hef+m.ptp/2),0);ppl.userData.info='Common head plate '+Math.round(PX)+' x '+Math.round(PZ)+' x '+m.ptp+' mm, bearing face at h_ef';G.anch.add(ppl);pick.push(ppl);
     var rxx=m.nx>=2,rl=rxx?(m.nx-1)*m.sx:(m.ny-1)*m.sy;if(rl>0){var prb=new THREE.Mesh(new THREE.BoxGeometry(rxx?rl:m.pts,m.phs,rxx?m.pts:rl),pm);prb.position.set(0,-(m.hef-m.phs/2),0);prb.userData.info='Stiffener '+Math.round(rl)+' x '+m.phs+' x '+m.pts+' mm';G.anch.add(prb);pick.push(prb);}}
-  var VC=window.VEC;
+  var VC=currentTransfer();
   if(VC&&VC.T){var Fm=Math.max(1e-9,Math.abs(VC.N),Math.abs(VC.Vx),Math.abs(VC.Vy)),Tm=Math.max.apply(null,VC.T.concat(VC.qx.map(function(a,k){return Math.hypot(a,VC.qy[k])})).concat([1e-9])),Ls=0.45*Math.max(m.Bx,m.By),up=new V3(0,1,0),yc=yTop+40,PU='#8e44ad',OR='#d9822b',AC='#'+C.acc.getHexString();
     var arr=function(o,d,col,txt,r){var L=d.length();if(L<5)return;var dir=d.clone().normalize(),q=new THREE.Quaternion().setFromUnitVectors(up,dir),hl=Math.min(L*0.4,r*6),M=new THREE.MeshBasicMaterial({color:col,clippingPlanes:[plane]}),sh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,L-hl,10),M),hd=new THREE.Mesh(new THREE.ConeGeometry(r*2.4,hl,14),M);
       sh.position.copy(o).addScaledVector(dir,(L-hl)/2);hd.position.copy(o).addScaledVector(dir,L-hl/2);sh.quaternion.copy(q);hd.quaternion.copy(q);G.vec.add(sh);G.vec.add(hd);if(txt)labels.push({pos:o.clone().add(d),text:txt});};

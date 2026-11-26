@@ -22,7 +22,8 @@ function run(c){
   for(const k in c.set){const e=el(k);if(e.type==='checkbox')e.checked=!!c.set[k];else e.value=String(c.set[k]);}
   el('fck').dispatchEvent(new w.Event('input',{bubbles:true}));        // one recalculation with all values set
   if(!w.ENGINE) throw new Error('ENGINE not initialized; '+errors.join(' | '));
-  const out=w.ENGINE.calculate();
+  const loads={N:+el('Nc').value,Vx:+el('Vx').value,Vy:+el('Vy').value,Mx:+el('Mx').value,My:+el('My').value,Mz:+el('Mz').value};
+  const out=w.ENGINE.calculate(loads);
   const V=out&&out.transfer||null;
   const res=(w.__RES||[]).map(r=>({id:r.id,l:r.l,u:sig(r.u),ref:!!r.reference,hidden:!!r.hidden,category:r.category,hint:r.h||''}));
   let explicit=null;

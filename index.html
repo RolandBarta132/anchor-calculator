@@ -320,7 +320,7 @@ function need(fn,m,keys){keys.forEach(function(k){
    summary, remedy hints, report, tests) reads these objects; nothing depends on row position or label text. */
 function mkChk(id,label,category,demand,resistance,unit){return {id:id,label:label,category:category,demand:demand,resistance:resistance,unit:unit};}
 function resById(list,id){for(var i=0;i<list.length;i++)if(list[i].id===id)return list[i];return null;}
-var OV=null;var v=function(i){var x=parseFloat(OV&&OV[i]!==undefined?OV[i]:$(i).value);return isFinite(x)?x:0};
+var v=function(i){var x=parseFloat($(i).value);return isFinite(x)?x:0};
 var f=function(x,d){return isFinite(x)?x.toFixed(d===undefined?1:d):"–"};
 var esc=function(t){return String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
 function edges(nx,ny,tx,ty,hs,vs){var sx=v("sx"),sy=v("sy");return{l:(tx<nx&&hs=="r")?(nx-tx)*sx+v("cl"):v("cl"),r:(tx<nx&&hs=="l")?(nx-tx)*sx+v("cr2"):v("cr2"),t:(ty<ny&&vs=="b")?(ny-ty)*sy+v("ct"):v("ct"),b:(ty<ny&&vs=="t")?(ny-ty)*sy+v("cb"):v("cb")};}
@@ -682,7 +682,7 @@ function buildFEMModel(){
   var nxA=+$('nx').value,nyA=+$('ny').value,sx=v('sx'),sy=v('sy');
   for(j=0;j<nyA;j++)for(i=0;i<nxA;i++){
     var x=GEO.anc(Bx,nxA,sx,i)-Bx/2,y=GEO.anc(By,nyA,sy,j)-By/2;
-    model.anchors.push({id:'A'+(j*nxA+i+1),x:x,y:y,z:0,hef:v('hef'),diameter:parseFloat($('dia').value.split('|')[1])||0,head:v('hd'),tension:FA.length?FA[j*nxA+i]:null});
+    model.anchors.push({id:'A'+(j*nxA+i+1),x:x,y:y,z:0,hef:v('hef'),diameter:parseFloat($('dia').value.split('|')[1])||0,head:v('hd'),tension:currentTransfer().T?currentTransfer().T[j*nxA+i]:null});
   }
   if($('femusebars').checked){
     var bars=cbars(),bd=femVal('dvb',12),cover=femVal('cv',50),dst=femVal('dst',8),zc0=cover+dst+bd/2;
@@ -751,7 +751,7 @@ function femSolve(){
   for(it=0;it<6000&&res>1e-9*Math.sqrt(b2)+1e-12;it++){Ap=mv(p);var pAp=0;for(i=0;i<nd;i++)pAp+=p[i]*Ap[i];al=rz/pAp;rzn=0;res=0;
     for(i=0;i<nd;i++){u[i]+=al*p[i];r[i]-=al*Ap[i];z[i]=r[i]/dg[i];rzn+=r[i]*z[i];res+=r[i]*r[i];}res=Math.sqrt(res);var be=rzn/rz;rz=rzn;for(i=0;i<nd;i++)p[i]=z[i]+be*p[i];}
   var Rw=mv(u,true),Rx=0,Ry=0,Rz=0;for(i=0;i<FIX.length;i+=3){Rx+=Rw[FIX[i]];Ry+=Rw[FIX[i+1]];Rz+=Rw[FIX[i+2]];}
-  var cmp=(window.VEC&&$('useF').checked)?window.VEC:null,rows='',maxS=0;
+  var cmp=$('useF').checked?solveLoadTransfer():null,rows='',maxS=0;
   AN.forEach(function(a,n){var sx=u[MS]-a.ry*u[MS+5],sy=u[MS+1]+a.rx*u[MS+5],sz=u[MS+2]+a.ry*u[MS+3]-a.rx*u[MS+4],h=3*(a.h-1)+2,tp=3*(a.t-1),T=-ka*(sz-u[h])/1000,Vv=Math.hypot(kl*(sx-u[tp]),kl*(sy-u[tp+1]))/1000,Tr=cmp?cmp.T[n]:NaN,Vr=cmp?Math.hypot(cmp.qx[n],cmp.qy[n]):NaN;
     rows+='<tr><td>'+a.id+' tension (kN)</td><td>'+f(Tr,1)+'</td><td>'+f(T,1)+'</td><td>'+f(T-Tr,1)+'</td></tr><tr><td>'+a.id+' shear (kN)</td><td>'+f(Vr,1)+'</td><td>'+f(Vv,1)+'</td><td>'+f(Vv-Vr,1)+'</td></tr>';});
   var bmax=-1e9,bmin=1e9,fb={};BT.forEach(function(e2){var F=e2[2]*(u[3*(e2[1]-1)+2]-u[3*(e2[0]-1)+2])/1000;bmax=Math.max(bmax,F);bmin=Math.min(bmin,F);});
@@ -830,9 +830,8 @@ var ENGINE={
     m.edges={left:v('cl'),right:v('cr2'),top:v('ct'),bottom:v('cb')};
     return m;
   },
-  loadTransfer:function(){
-    solveLoadTransfer();
-    return window.VEC||null;
+  loadTransfer:function(loads){
+    return solveLoadTransfer(loads);
   },
   concreteBreakout:function(){
     /* Named stage: current verified implementation remains in the legacy
@@ -843,17 +842,17 @@ var ENGINE={
   anchorSteel:function(){return {stage:'anchorSteel'};},
   shear:function(){return {stage:'shear'};},
   interaction:function(){return {stage:'interaction'};},
-  calculate:function(){
-    var model=this.buildModel();
-    this.loadTransfer();
-    calculateDesignLegacy();
-    return {model:model,vector:window.VEC||null};
+  calculate:function(loads){
+    var model=this.buildModel(),transfer=this.loadTransfer(loads);
+    calculateDesignLegacy(loads,transfer);
+    return {model:model,transfer:transfer};
   }
 };
 
 /* Backward-compatible aliases used by geometry/FEM code. */
 function syncEngineeringGeometry(){syncF();}
 function solve(){return solveLoadTransfer();}
+function currentTransfer(){return solveLoadTransfer();}
 
 function calc(){
   var eb=$("calcerr");
@@ -866,8 +865,8 @@ $("lugf").hidden=!$("lug").checked;$("lugnote").style.color=($("lug").checked&&!
   MANC.vb=0;cage();LC[cur]=readCase();refreshLC();hideTip();
   var on=$("useF").checked,multi=on&&LC.length>1,all=[];
   $("lcnote").textContent=(!on&&LC.length>1)?"Load cases need the rigid-plate analysis. Tick it to check all cases.":"";
-  if(multi){LC.forEach(function(c){OV=c;try{ENGINE.calculate();}finally{OV=null;}all.push(RES);});}
-  ENGINE.calculate();
+  if(multi){LC.forEach(function(c){var out=ENGINE.calculate({N:+c.Nc,Vx:+c.Vx,Vy:+c.Vy,My:+c.My,Mx:+c.Mx,Mz:+c.Mz});all.push(out&&out.transfer?out.transfer:RES.slice());});}
+  ENGINE.calculate({N:+LC[cur].Nc,Vx:+LC[cur].Vx,Vy:+LC[cur].Vy,My:+LC[cur].My,Mx:+LC[cur].Mx,Mz:+LC[cur].Mz});
   window.MAN={vb:Math.ceil(MANC.vb/5)*5};
   renderSum(multi?all:null);
 }
@@ -904,8 +903,8 @@ QQ.forEach(function(q){o+=`<circle cx='${ccx(q.x)}' cy='${ccy(q.y)}' r='${R(Math
 o+='</g>';
 [[cl,X(-cl),X(-cl),Y(ymin),Y(ymax),eg.l],[cr,X(xe+cr),X(xe+cr),Y(ymin),Y(ymax),eg.r],[ct,X(xmin),X(xmax),Y(-ct),Y(-ct),eg.t],[cb,X(xmin),X(xmax),Y(ye+cb),Y(ye+cb),eg.b]].forEach(function(e){if(e[0]<=1.3*h)o+=`<line class='${e[5]<h?'edge':'edge2'}' x1='${e[1]}' x2='${e[2]}' y1='${e[3]}' y2='${e[4]}'/>`});
 var ra=Math.max(4.5,da/2*s),rh=Math.max(ra+3,dh/2*s);if($('ht').value==='c'){var po2=v('pofs');o+=`<rect class='hd' x='${X(-po2)}' y='${Y(-po2)}' width='${R((xe+2*po2)*s)}' height='${R((ye+2*po2)*s)}'/>`;rh=ra+3;}
-for(i=0;i<nx;i++)for(j=0;j<ny;j++){var tn=tS(i,j);o+=`<circle class='hd' cx='${X(i*sx)}' cy='${Y(j*sy)}' r='${R(rh)}'/><circle class='${tn?'anc':'cmp'}' cx='${X(i*sx)}' cy='${Y(j*sy)}' r='${R(ra)}'/><text class='sm' x='${R(X(i*sx)+rh+3)}' y='${R(Y(j*sy)-rh)}'>A${j*nx+i+1}${FA.length?': '+f(FA[j*nx+i],1)+' kN':''}</text>`;}
-var VC=window.VEC;
+for(i=0;i<nx;i++)for(j=0;j<ny;j++){var tn=tS(i,j);o+=`<circle class='hd' cx='${X(i*sx)}' cy='${Y(j*sy)}' r='${R(rh)}'/><circle class='${tn?'anc':'cmp'}' cx='${X(i*sx)}' cy='${Y(j*sy)}' r='${R(ra)}'/><text class='sm' x='${R(X(i*sx)+rh+3)}' y='${R(Y(j*sy)-rh)}'>A${j*nx+i+1}${currentTransfer().T?': '+f(currentTransfer().T[j*nx+i],1)+' kN':''}</text>`;}
+var VC=currentTransfer();
 if(VC&&VC.qx){var ah=function(x1,y1,x2,y2,c,sw){var a=Math.atan2(y2-y1,x2-x1),k=6.5;return `<line x1='${R(x1)}' y1='${R(y1)}' x2='${R(x2)}' y2='${R(y2)}' style='stroke:${c};stroke-width:${sw}'/><path d='M${R(x2)} ${R(y2)}L${R(x2-k*Math.cos(a-.4))} ${R(y2-k*Math.sin(a-.4))}L${R(x2-k*Math.cos(a+.4))} ${R(y2-k*Math.sin(a+.4))}z' style='fill:${c}'/>`},tx2=function(x,y,t,c){return `<text class='tg' x='${R(x)}' y='${R(y)}' style='fill:${c}'>${t}</text>`};
 var mq=Math.max.apply(null,VC.qx.map(function(a,k){return Math.hypot(a,VC.qy[k])}).concat([1e-9])),OR='#d9822b',PU='#8e44ad',cx=X(xe/2),cy=Y(ye/2),mv=Math.max(Math.abs(VC.Vx),Math.abs(VC.Vy),1e-9),sg=Math.sign;
 VC.qx.forEach(function(qx,k){var qh=Math.hypot(qx,VC.qy[k]),L=qh/mq*44;if(L<3)return;var ax=X((k%nx)*sx),ay=Y(Math.floor(k/nx)*sy);o+=ah(ax,ay,ax+qx/qh*L,ay+VC.qy[k]/qh*L,OR,2.4);});
@@ -1132,7 +1131,7 @@ function model(m){
   var ex=(m.Bx-(m.nx-1)*m.sx)/2,ey=(m.By-(m.ny-1)*m.sy)/2;
   for(j=0;j<m.ny;j++)for(i=0;i<m.nx;i++){
     var tn=(m.hs==='l'?i<m.tx:i>=m.nx-m.tx)&&(m.vs==='t'?j<m.ty:j>=m.ny-m.ty);
-    anchors.push({x:GEO.anc(m.Bx,m.nx,m.sx,i),y:GEO.anc(m.By,m.ny,m.sy,j),tb:tn,t:(window.VEC&&window.VEC.T?window.VEC.T[j*m.nx+i]>1e-6:tn),n:j*m.nx+i+1,gap:1e9});}
+    anchors.push({x:GEO.anc(m.Bx,m.nx,m.sx,i),y:GEO.anc(m.By,m.ny,m.sy,j),tb:tn,t:(currentTransfer().T?currentTransfer().T[j*m.nx+i]>1e-6:tn),n:j*m.nx+i+1,gap:1e9});}
   var ta=anchors.filter(function(a){return a.tb});
   bars.forEach(function(b){var d=1e9;ta.forEach(function(a){d=Math.min(d,Math.hypot(a.x-b.x,a.y-b.y))});b.ok=d<=m.kre*m.hef;});
   var inn=m.cv+m.dst,hh=Math.min(m.nx>1?m.sx-m.dh:1e9,m.ny>1?m.sy-m.dh:1e9);

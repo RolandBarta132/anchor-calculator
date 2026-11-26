@@ -325,42 +325,39 @@ var f=function(x,d){return isFinite(x)?x.toFixed(d===undefined?1:d):"–"};
 var esc=function(t){return String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
 function edges(nx,ny,tx,ty,hs,vs){var sx=v("sx"),sy=v("sy");return{l:(tx<nx&&hs=="r")?(nx-tx)*sx+v("cl"):v("cl"),r:(tx<nx&&hs=="l")?(nx-tx)*sx+v("cr2"):v("cr2"),t:(ty<ny&&vs=="b")?(ny-ty)*sy+v("ct"):v("ct"),b:(ty<ny&&vs=="t")?(ny-ty)*sy+v("cb"):v("cb")};}
 function gs(A,b){var n=3,M=A.map(function(r,i){return r.concat(b[i])}),i,j,k;for(i=0;i<n;i++){var pv=i;for(j=i+1;j<n;j++)if(Math.abs(M[j][i])>Math.abs(M[pv][i]))pv=j;var t=M[i];M[i]=M[pv];M[pv]=t;if(Math.abs(M[i][i])<1e-300)continue;for(j=i+1;j<n;j++){var f2=M[j][i]/M[i][i];for(k=i;k<=n;k++)M[j][k]-=f2*M[i][k];}}var x=[0,0,0];for(i=n-1;i>=0;i--){var s=M[i][n];for(j=i+1;j<n;j++)s-=M[i][j]*x[j];x[i]=Math.abs(M[i][i])<1e-300?0:s/M[i][i];}return x;}
-var FA=[],psecG=1,SIG=0,RES=[];
-function solveLoadTransfer(){
-/* External axial load follows IDEA StatiCa: +N = tension, -N = compression. The legacy plate model uses the opposite internal sign, so Nc is negated once here. */
-var on=$('useF').checked;
-$('manF').style.display=on?'none':'';var lev=$('sm').value==='l';$('tg').parentNode.style.display=lev?'':'none';$('am').parentNode.style.display=lev?'':'none';$('duc').parentNode.style.display=lev?'none':'';
-if(!on){window.VEC=null;FA=[];psecG=1;SIG=0;$('fres').innerHTML='';return;}
-var nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),As=+$('dia').value.split('|')[0],fck=v('fck'),hef=v('hef'),bear=$('bear').checked;
-var Ec=22000*Math.pow((fck+8)/10,0.3),kA=210000/Ec*As,Lx=v('Lpx'),Ly=v('Lpy'),nc=24,dA=Lx*Ly/(nc*nc);
-var Nt=-v('Nc')*1000/Ec,Mxt=v('Mx')*1e6/Ec,Myt=v('My')*1e6/Ec,an=[],cells=[],i,j,k;
-for(j=0;j<ny;j++)for(i=0;i<nx;i++)an.push([(i-(nx-1)/2)*sx,(j-(ny-1)/2)*sy,i,j]);
-if(bear)for(i=0;i<nc;i++)for(j=0;j<nc;j++)cells.push([-Lx/2+(i+.5)*Lx/nc,-Ly/2+(j+.5)*Ly/nc]);
-var res=function(p){var r=[-Nt,Myt,Mxt],e;
-cells.forEach(function(c){e=p[0]+p[1]*c[0]+p[2]*c[1];if(e>0){var F=e*dA;r[0]+=F;r[1]+=F*c[0];r[2]+=F*c[1];}});
-an.forEach(function(a){e=p[0]+p[1]*a[0]+p[2]*a[1];var F=(bear&&e>0)?0:kA*e;r[0]+=F;r[1]+=F*a[0];r[2]+=F*a[1];});
-return r;};
-var nrm=function(r){return Math.abs(r[0])+Math.abs(r[1])/100+Math.abs(r[2])/100},tol=1e-9*(Math.abs(Nt)+Math.abs(Myt)/100+Math.abs(Mxt)/100+1e-9),p=[Nt/(Lx*Ly)||0,0,0],ok=false;
-for(var it=0;it<80;it++){var r=res(p),n0=nrm(r);if(n0<tol){ok=true;break;}
-var hh=[1e-8,1e-11,1e-11],J=[[0,0,0],[0,0,0],[0,0,0]];
-for(k=0;k<3;k++){var q=p.slice();q[k]+=hh[k];var r2=res(q);for(var m=0;m<3;m++)J[m][k]=(r2[m]-r[m])/hh[k];}
-for(k=0;k<3;k++)J[k][k]+=1e-9*Math.abs(J[k][k])+1e-30;
-var d=gs(J,r),t=1,pn=p;for(var ls=0;ls<30;ls++){pn=[p[0]-t*d[0],p[1]-t*d[1],p[2]-t*d[2]];if(nrm(res(pn))<n0)break;t/=2;}p=pn;}
-var Fk=Ec/1000,T=an.map(function(a){var e=p[0]+p[1]*a[0]+p[2]*a[1],F=(bear&&e>0)?0:kA*e;return -F*Fk;}),C=0,emax=0;
-cells.forEach(function(c){var e=p[0]+p[1]*c[0]+p[2]*c[1];if(e>0){C+=e*dA*Fk;emax=Math.max(emax,e);}});
-SIG=emax*Ec;
-var LSs=lugSplit(v('Vx'),v('Vy')),Vx=LSs.ax,Vy=LSs.ay,Mz=v('Mz')*1000,Vm=Math.hypot(Vx,Vy),Vr=Math.max(0,Vm-v('mu')*C),sc=Vm>0?Vr/Vm:0,n=an.length,rr=an.reduce(function(s,a){return s+a[0]*a[0]+a[1]*a[1]},0)||1;
-var S=an.map(function(a){var qx=sc*Vx/n-Mz*a[1]/rr,qy=sc*Vy/n+Mz*a[0]/rr;return [qx,qy,Math.hypot(qx,qy)]});
-var tn=[],TT=0,Tmax=0,sxx=0,syy=0;
-an.forEach(function(a,q){if(T[q]>1e-6){tn.push(q);TT+=T[q];Tmax=Math.max(Tmax,T[q]);sxx+=T[q]*a[0];syy+=T[q]*a[1];}});
-FA=T;psecG=1;window.VEC={T:T.slice(),qx:S.map(function(q){return q[0]}),qy:S.map(function(q){return q[1]}),N:v('Nc'),Vx:v('Vx'),Vy:v('Vy'),Mx:v('Mx'),My:v('My'),Mz:v('Mz')};
-if(tn.length){var cols=[],rows=[],gx=0,gy=0;tn.forEach(function(q){var a=an[q];if(cols.indexOf(a[2])<0)cols.push(a[2]);if(rows.indexOf(a[3])<0)rows.push(a[3]);gx+=a[0];gy+=a[1];});
-$('tx').value=String(cols.length);$('ty').value=String(rows.length);$('hs').value=Math.min.apply(null,cols)===0?'l':'r';$('vs').value=Math.min.apply(null,rows)===0?'t':'b';
-var ex=Math.abs(sxx/TT-gx/tn.length),ey=Math.abs(syy/TT-gy/tn.length),s3=3*hef;psecG=Math.min(1,1/(1+2*ex/s3))*Math.min(1,1/(1+2*ey/s3));}
-var R1=function(x){return Math.round(x*10)/10};
-$('NEd').value=R1(TT);$('N1').value=R1(Tmax);$('VEd').value=R1(S.reduce(function(s,q){return s+q[2]},0));$('V1').value=R1(Math.max.apply(null,S.map(function(q){return q[2]})));
-var rowsH=an.map(function(a,q){return `<tr><td>A${q+1}</td><td>${f(T[q],1)}</td><td>${f(S[q][0],1)}</td><td>${f(S[q][1],1)}</td><td>${f(S[q][2],1)}</td></tr>`}).join('');
-$('fres').innerHTML=(ok?'':`<p class='note' style='color:var(--bad)'>No equilibrium found: check the plate size and the loads.</p>`)+`<table><tr><td><b>Anchor</b></td><td><b>N (kN, + tension / − compression)</b></td><td><b>V<sub>x</sub></b></td><td><b>V<sub>y</sub></b></td><td><b>V</b></td></tr>${rowsH}</table><p class='note'>Compression under the plate ${f(C,1)} kN, maximum bearing stress ${f(SIG,1)} MPa. Friction takes ${f(Math.min(Vm,v('mu')*C),1)} kN of the shear. With bearing on grout, anchors in the compression zone show 0 because the concrete carries the compression.</p>`;
+var RES=[];
+
+function readLoadActions(loads){
+  loads=loads||{};
+  return {N:isFinite(+loads.N)?+loads.N:v("Nc"),Vx:isFinite(+loads.Vx)?+loads.Vx:v("Vx"),Vy:isFinite(+loads.Vy)?+loads.Vy:v("Vy"),Mx:isFinite(+loads.Mx)?+loads.Mx:v("Mx"),My:isFinite(+loads.My)?+loads.My:v("My"),Mz:isFinite(+loads.Mz)?+loads.Mz:v("Mz")};
+}
+function solveLoadTransfer(loads){
+  var on=$("useF").checked,L=readLoadActions(loads),nx=+$("nx").value,ny=+$("ny").value,sx=v("sx"),sy=v("sy"),As=+$("dia").value.split("|")[0],fck=v("fck"),hef=v("hef"),bear=$("bear").checked;
+  var Ec=22000*Math.pow((fck+8)/10,0.3),kA=210000/Ec*As,Lx=v("Lpx"),Ly=v("Lpy"),nc=24,dA=Lx*Ly/(nc*nc),an=[],cells=[],i,j,k;
+  for(j=0;j<ny;j++)for(i=0;i<nx;i++)an.push([(i-(nx-1)/2)*sx,(j-(ny-1)/2)*sy,i,j]);
+  if(bear)for(i=0;i<nc;i++)for(j=0;j<nc;j++)cells.push([-Lx/2+(i+.5)*Lx/nc,-Ly/2+(j+.5)*Ly/nc]);
+  if(!on){
+    var Tm=[],txm=Math.min(+$("tx").value,nx),tym=Math.min(+$("ty").value,ny),hsm=$("hs").value,vsm=$("vs").value;
+    for(j=0;j<ny;j++)for(i=0;i<nx;i++)if((hsm==="l"?i<txm:i>=nx-txm)&&(vsm==="t"?j<tym:j>=ny-tym))Tm.push(v("NEd")/Math.max(1,txm*tym));
+    var qm=v("VEd")/Math.max(1,an.length);
+    return {manual:true,T:Tm,qx:an.map(function(){return 0}),qy:an.map(function(){return qm}),N:L.N,Vx:L.Vx,Vy:L.Vy,Mx:L.Mx,My:L.My,Mz:L.Mz,psec:1,SIG:0,compression:0,NEd:v("NEd"),N1:v("N1"),VEd:v("VEd"),V1:v("V1"),tx:txm,ty:tym,hs:hsm,vs:vsm,equilibrium:true,anchors:an.map(function(a){return {x:a[0],y:a[1],i:a[2],j:a[3]}})};
+  }
+  var Nt=-L.N*1000/Ec,Mxt=L.Mx*1e6/Ec,Myt=L.My*1e6/Ec;
+  var residual=function(p){var r=[-Nt,Myt,Mxt],e;cells.forEach(function(c){e=p[0]+p[1]*c[0]+p[2]*c[1];if(e>0){var F=e*dA;r[0]+=F;r[1]+=F*c[0];r[2]+=F*c[1];}});an.forEach(function(a){e=p[0]+p[1]*a[0]+p[2]*a[1];var F=(bear&&e>0)?0:kA*e;r[0]+=F;r[1]+=F*a[0];r[2]+=F*a[1];});return r;};
+  var nrm=function(r){return Math.abs(r[0])+Math.abs(r[1])/100+Math.abs(r[2])/100},tol=1e-9*(Math.abs(Nt)+Math.abs(Myt)/100+Math.abs(Mxt)/100+1e-9),p=[Nt/(Lx*Ly)||0,0,0],ok=false;
+  for(var it=0;it<80;it++){var r=residual(p),n0=nrm(r);if(n0<tol){ok=true;break;}var hh=[1e-8,1e-11,1e-11],J=[[0,0,0],[0,0,0],[0,0,0]];for(k=0;k<3;k++){var q=p.slice();q[k]+=hh[k];var r2=residual(q);for(var m=0;m<3;m++)J[m][k]=(r2[m]-r[m])/hh[k];}for(k=0;k<3;k++)J[k][k]+=1e-9*Math.abs(J[k][k])+1e-30;var d=gs(J,r),t=1,pn=p;for(var ls=0;ls<30;ls++){pn=[p[0]-t*d[0],p[1]-t*d[1],p[2]-t*d[2]];if(nrm(residual(pn))<n0)break;t/=2;}p=pn;}
+  var Fk=Ec/1000,T=an.map(function(a){var e=p[0]+p[1]*a[0]+p[2]*a[1],F=(bear&&e>0)?0:kA*e;return -F*Fk;}),C=0,emax=0;cells.forEach(function(c){var e=p[0]+p[1]*c[0]+p[2]*c[1];if(e>0){C+=e*dA*Fk;emax=Math.max(emax,e);}});
+  var SIGv=emax*Ec,LSs=lugSplit(L.Vx,L.Vy),Vx=LSs.ax,Vy=LSs.ay,Mz=L.Mz*1000,Vm=Math.hypot(Vx,Vy),Vr=Math.max(0,Vm-v("mu")*C),sc=Vm>0?Vr/Vm:0,n=an.length,rr=an.reduce(function(sum,a){return sum+a[0]*a[0]+a[1]*a[1]},0)||1;
+  var S=an.map(function(a){var qx=sc*Vx/n-Mz*a[1]/rr,qy=sc*Vy/n+Mz*a[0]/rr;return [qx,qy,Math.hypot(qx,qy)]}),tn=[],TT=0,Tmax=0,sxx=0,syy=0;
+  an.forEach(function(a,q){if(T[q]>1e-6){tn.push(q);TT+=T[q];Tmax=Math.max(Tmax,T[q]);sxx+=T[q]*a[0];syy+=T[q]*a[1];}});
+  var psec=1,tx=0,ty=0,hs="r",vs="b";
+  if(tn.length){var cols=[],rows=[],gx=0,gy=0;tn.forEach(function(q){var aa=an[q];if(cols.indexOf(aa[2])<0)cols.push(aa[2]);if(rows.indexOf(aa[3])<0)rows.push(aa[3]);gx+=aa[0];gy+=aa[1];});tx=cols.length;ty=rows.length;hs=Math.min.apply(null,cols)===0?"l":"r";vs=Math.min.apply(null,rows)===0?"t":"b";var ex=Math.abs(sxx/TT-gx/tn.length),ey=Math.abs(syy/TT-gy/tn.length),s3=3*hef;psec=Math.min(1,1/(1+2*ex/s3))*Math.min(1,1/(1+2*ey/s3));}
+  return {manual:false,ok:ok,anchors:an.map(function(a){return {x:a[0],y:a[1],i:a[2],j:a[3]}}),T:T.slice(),qx:S.map(function(q){return q[0]}),qy:S.map(function(q){return q[1]}),N:L.N,Vx:L.Vx,Vy:L.Vy,Mx:L.Mx,My:L.My,Mz:L.Mz,psec:psec,SIG:SIGv,compression:C,NEd:TT,N1:Tmax,VEd:S.reduce(function(sum,q){return sum+q[2]},0),V1:Math.max.apply(null,S.map(function(q){return q[2]})),tx:tx,ty:ty,hs:hs,vs:vs,friction:Math.min(Vm,v("mu")*C),equilibrium:ok};
+}
+function renderLoadTransfer(transfer){
+  var an=transfer.anchors||[],T=transfer.T||[],qx=transfer.qx||[],qy=transfer.qy||[];
+  var rowsH=an.map(function(a,q){return `<tr><td>A${q+1}</td><td>${f(T[q],1)}</td><td>${f(qx[q],1)}</td><td>${f(qy[q],1)}</td><td>${f(Math.hypot(qx[q],qy[q]),1)}</td></tr>`}).join("");
+  $("fres").innerHTML=(transfer.equilibrium?"":`<p class='note' style='color:var(--bad)'>No equilibrium found: check the plate size and the loads.</p>`)+`<table><tr><td><b>Anchor</b></td><td><b>N (kN, + tension / − compression)</b></td><td><b>V<sub>x</sub></b></td><td><b>V<sub>y</sub></b></td><td><b>V</b></td></tr>${rowsH}</table><p class='note'>Compression under the plate ${f(transfer.compression,1)} kN, maximum bearing stress ${f(transfer.SIG,1)} MPa. Friction takes ${f(transfer.friction,1)} kN of the shear. With bearing on grout, anchors in the compression zone show 0 because the concrete carries the compression.</p>`;
 }
 function cbars(){var c0=v('cv')+v('dst')+v('dvb')/2;return GEO.vbars(v('Bx'),v('By'),c0,Math.max(2,+$('nbx').value),Math.max(2,+$('nby').value),v('dvb')).map(function(b){return [b.x,b.y]});}
 function qual(){var nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),x0=v('cl'),y0=v('ct'),hef=v('hef'),kre=v('kre'),tx=Math.min(+$('tx').value,nx),ty=Math.min(+$('ty').value,ny),hs=$('hs').value,vs=$('vs').value,ta=[],i,j;

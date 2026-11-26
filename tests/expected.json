@@ -1,0 +1,1693 @@
+{
+ "default": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.10708,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.208082,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0446436,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.317945,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.757289,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.36132,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.827588,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.512686,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.731207,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 1.71923,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "pure_tension": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 9.98795,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.594315,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.594315,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.508288,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.612745,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0542669,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.38648,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.375457,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.458169,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.888825,
+    "ref": false
+   }
+  },
+  "T": [
+   150,
+   150
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   0,
+   0
+  ]
+ },
+ "pure_shear": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 0,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.998795,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 1.78834,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 2.51286,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 3.19815,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 3.98339,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0,
+    "ref": false
+   }
+  },
+  "T": [
+   0,
+   0
+  ],
+  "qx": [
+   30,
+   30
+  ],
+  "qy": [
+   0,
+   0
+  ]
+ },
+ "pure_moment_My": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 5.11383,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.519417,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.519417,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.444231,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.627451,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0555693,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.395756,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 1.04031,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.393695,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.374347,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.910157,
+    "ref": false
+   }
+  },
+  "T": [
+   0,
+   153.615
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   0,
+   0
+  ]
+ },
+ "symmetric_tension_3x2": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 21.2315,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.954257,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.954257,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.819144,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.408497,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0226546,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.16687,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.932176,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": "Infinity",
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.375282,
+    "ref": false
+   }
+  },
+  "T": [
+   100,
+   100,
+   100,
+   100,
+   100,
+   100
+  ],
+  "qx": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "qy": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "moment_Mx_group": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 5.64985,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.365947,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.365947,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.320446,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.346405,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0202429,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.245741,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0.897713,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.119997,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.221375,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": "Infinity",
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.334988,
+    "ref": false
+   }
+  },
+  "T": [
+   0,
+   0,
+   84.8477,
+   84.8477
+  ],
+  "qx": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "qy": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "torsion": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 0,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 1.45158,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 1.29953,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 1.68877,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 1.74889,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": "Infinity",
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0,
+    "ref": false
+   }
+  },
+  "T": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "qx": [
+   12.6689,
+   12.6689,
+   -12.6689,
+   -12.6689
+  ],
+  "qy": [
+   -17.7365,
+   17.7365,
+   -17.7365,
+   17.7365
+  ]
+ },
+ "doc_geometry_lug": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 4.24103,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.530716,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.530716,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.445643,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.144502,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.46201,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0321845,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.226928,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.698063,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.291225,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.700745,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.543788,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.530554,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 1.36055,
+    "ref": false
+   }
+  },
+  "T": [
+   55.7658,
+   113.134
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "k8_manual": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.10708,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.277443,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0446436,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.317945,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.757289,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.36132,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.827588,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.512686,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.731207,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 1.71923,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "uncracked": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 4.27976,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.145821,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0318883,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.226731,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.757289,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.255935,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.827588,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.424974,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.731207,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 1.21779,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "lug_off": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.10708,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 1.21021,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0446436,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.317945,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 4.36343,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 3.01079,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 19.2936,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 5.51971,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.731207,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   35.8,
+   35.8
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "reinforcement_off": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.10708,
+    "ref": false
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": true
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": true
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": true
+   },
+   "Concrete pryout": {
+    "u": 0.208082,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0446436,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.317945,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.757289,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.36132,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.827588,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 15.3093,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.731207,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 1.71923,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "weak_axis_lug": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.10708,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.208082,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0446436,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.317945,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.757289,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.36132,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.827588,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.512686,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.731207,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.138545,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.257186,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.113674,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 1.74816,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "no_lever_arm": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.10708,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 1.21021,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0446436,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.317945,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.308926,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 3.01079,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.349537,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 5.51971,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 10,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.731207,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   35.8,
+   35.8
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "round_head": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.10708,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.443644,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.379426,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 1.21021,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.504085,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.184703,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.64671,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 4.36343,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 3.01079,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 19.2936,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 5.74429,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 1.66667,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0,
+    "ref": false
+   }
+  },
+  "T": [
+   45.5214,
+   123.379
+  ],
+  "qx": [
+   35.8,
+   35.8
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "small_block_edges": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 6.95247,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.847739,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.579877,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.847739,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.219765,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.4375,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.550654,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0622887,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.441587,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.835772,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.441474,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0.130376,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 1.00173,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 1.07387,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": "Infinity",
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 1.01176,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 2.14255,
+    "ref": false
+   }
+  },
+  "T": [
+   42.4135,
+   134.761
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ },
+ "single_anchor": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 0,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.318915,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 1.22799,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.509724,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 1.50796,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.363918,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": 0.153223,
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0,
+    "ref": false
+   }
+  },
+  "T": [
+   "NaN"
+  ],
+  "qx": [
+   20
+  ],
+  "qy": [
+   5
+  ]
+ },
+ "cage_fails": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 13.0631,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.286853,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.286853,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.266662,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.432802,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.276552,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.020583,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.383773,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.255436,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.583351,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0.111251,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 0.141729,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.683294,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": "Infinity",
+    "ref": false
+   },
+   "Common plate: bending of the overhang": {
+    "u": 0.338754,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 2.68356,
+    "ref": false
+   }
+  },
+  "T": [
+   20.2926,
+   67.6877,
+   20.2926,
+   67.6877
+  ],
+  "qx": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "qy": [
+   3.125,
+   3.125,
+   3.125,
+   3.125
+  ]
+ },
+ "cage_check_off": {
+  "results": {
+   "Concrete breakout, unreinforced": {
+    "u": 13.1236,
+    "ref": true
+   },
+   "Anchor reinforcement carries tension": {
+    "u": 0.36816,
+    "ref": false
+   },
+   "Reinforcement steel (legs in reach)": {
+    "u": 0.36816,
+    "ref": false
+   },
+   "Reinforcement anchorage (bond above cone)": {
+    "u": 0.3319,
+    "ref": false
+   },
+   "Concrete pryout": {
+    "u": 0.432802,
+    "ref": false
+   },
+   "Block depth: h_ef + cover must fit in h": {
+    "u": 0.55,
+    "ref": false
+   },
+   "Anchor steel, tension (one anchor)": {
+    "u": 0.550654,
+    "ref": false
+   },
+   "Pull-out of the head (one anchor)": {
+    "u": 0.0622887,
+    "ref": false
+   },
+   "Side blow-out (only if c ≤ 0.5·h_ef)": {
+    "u": 0.565232,
+    "ref": false
+   },
+   "Anchor steel, shear (one anchor)": {
+    "u": 0.835772,
+    "ref": false
+   },
+   "Concrete edge breakout in shear (needs c₁)": {
+    "u": 0.568162,
+    "ref": false
+   },
+   "Concrete bearing under plate": {
+    "u": 0.130376,
+    "ref": false
+   },
+   "Interaction, steel (N² + V²)": {
+    "u": 1.00173,
+    "ref": false
+   },
+   "Interaction, concrete (N^1.5 + V^1.5)": {
+    "u": 0.853213,
+    "ref": false
+   },
+   "Cage clearance: required / available": {
+    "u": "Infinity",
+    "ref": true
+   },
+   "Common plate: bending of the overhang": {
+    "u": 1.01176,
+    "ref": false
+   },
+   "Shear lug: bearing on concrete": {
+    "u": 0.17549,
+    "ref": false
+   },
+   "Shear lug: plate bending": {
+    "u": 0.253188,
+    "ref": false
+   },
+   "Shear lug: plate shear": {
+    "u": 0.413119,
+    "ref": false
+   },
+   "Shear lug: concrete edge breakout": {
+    "u": 2.68356,
+    "ref": false
+   }
+  },
+  "T": [
+   42.4135,
+   134.761
+  ],
+  "qx": [
+   0,
+   0
+  ],
+  "qy": [
+   6.25,
+   6.25
+  ]
+ }
+}

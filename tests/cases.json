@@ -6,6 +6,8 @@
   "pure_shear":         { "set": {"lug":false,"Nc":0,"Vx":60,"Vy":0,"My":0,"Mx":0,"Mz":0},
                           "independent":{"source":"hand calculation: 60 kN shear / 2 symmetric anchors","T":[0,0],"qx":[30,30],"qy":[0,0],"tolPct":0.01},
                           "assert":[{"type":"sumShear","axis":"x","target":60,"tolPct":1},{"type":"noTension"}] },
+  "manual_force_mode":  { "note": "manual forces are read without the load-transfer stage writing to inputs", "set": {"useF":false,"tx":2,"ty":1,"hs":"l","vs":"t","NEd":150,"N1":75,"VEd":60,"V1":15}, "assert":[{"type":"manualMode"}] },
+  "multi_load_case":    { "note": "explicit second load case is passed to solveLoadTransfer without changing page inputs", "set": {"nx":2,"ny":1,"lug":false,"Nc":300,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0}, "multiLoad":{"N":600,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0}, "assert":[{"type":"explicitTension","target":[300,300],"tolPct":0.01}] },
   "pure_moment_My":     { "set": {"lug":false,"Nc":0,"Vx":0,"Vy":0,"My":50,"Mx":0,"Mz":0},
                           "assert":[{"type":"tensionOnlyAt","index":1}] },
   "symmetric_tension_3x2": { "set": {"nx":3,"ny":2,"sx":250,"sy":200,"lug":false,"Nc":600,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0},

@@ -56,6 +56,7 @@ function checkInvariants(name,c,r){
       else actual.forEach((v,i)=>{if(Math.abs(v-target[i])>Math.max(1e-6,Math.abs(target[i])*tol/100))f.push('independent '+k+'['+i+'] = '+v+', expected '+target[i]+' ('+c.independent.source+')');});
     }
   }
+  if(c.multiLoad&&c.assert){}
   (c.assert||[]).forEach(a=>{
     const near=(x,t,p)=>Math.abs(x-t)<=Math.max(1e-6,Math.abs(t)*p/100);
     if(a.type==='sumTension'&&!near(S(T),a.target,a.tolPct))f.push('sum of anchor tension = '+S(T).toFixed(2)+', expected '+a.target);
@@ -65,6 +66,8 @@ function checkInvariants(name,c,r){
     if(a.type==='tensionOnlyAt'&&!(T[a.index]>1e-6&&T.every((t,i)=>i===a.index||t<=1e-6)))f.push('tension should act only on anchor '+a.index+': '+T.join(', '));
     if(a.type==='rowPresent'&&!r.barsText.includes(a.label))f.push('row "'+a.label+'" missing');
     if(a.type==='rowAbsent'&&r.barsText.includes(a.label))f.push('row "'+a.label+'" should be hidden');
+    if(a.type==='manualMode'&&!r.snap.manual)f.push('manual-force mode did not return a manual transfer object');
+    if(a.type==='explicitTension'){const x=r.snap.explicitT||[];if(x.length!==a.target.length||x.some((v,i)=>Math.abs(v-a.target[i])>Math.max(1e-6,Math.abs(a.target[i])*a.tolPct/100)))f.push('explicit load transfer T = ['+x.join(', ')+'], expected ['+a.target.join(', ')+']');}
   });
   return f;
 }

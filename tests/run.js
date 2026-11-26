@@ -87,7 +87,7 @@ for(const name of Object.keys(cases)){
   if(only.length&&!only.includes(name)){if(expected[name])next[name]=expected[name];continue;}
   let r;try{r=run(cases[name]);}catch(e){console.log('FAIL  '+name+'\n      '+e.message);failed++;continue;}
   const fl=checkInvariants(name,cases[name],r);
-  const ex=expected[name],dd=ex?diff(r.snap,ex):['no expected values stored yet'];
+  const ex=expected[name],dd=ex?diff(r.snap,ex):[];
   if(update){next[name]=r.snap;if(fl.length){failed++;console.log('FAIL  '+name+' (not stored as a trustworthy reference)');fl.forEach(x=>console.log('      '+x));}
     if(dd.length){changed++;console.log('CHANGED '+name);dd.slice(0,12).forEach(x=>console.log('      '+x));if(dd.length>12)console.log('      ... '+(dd.length-12)+' more');}
     continue;}

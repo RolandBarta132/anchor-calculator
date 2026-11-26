@@ -194,18 +194,18 @@ body>*:not(#rep){display:none!important}body{background:#fff}#rep{display:block!
 <p class="note" id="lcnote" style="margin:0 0 10px"></p>
 <div class="g">
 <label class="chk"><input id="useF" type="checkbox" checked> Compute the anchor forces from these actions (rigid base plate). Untick to type the group and anchor forces by hand.</label>
-<label>N axial (kN, compression +)<input id="Nc" type="number" value="-168.9"></label>
-<label>V<sub>x</sub> (kN)<input id="Vx" type="number" value="71.6"></label>
-<label>V<sub>y</sub> (kN)<input id="Vy" type="number" value="12.5"></label>
-<label>M<sub>y</sub> (kNm, + = tension on right column)<input id="My" type="number" value="10.9"></label>
-<label>M<sub>x</sub> (kNm, + = tension on bottom row)<input id="Mx" type="number" value="0"></label>
-<label>Torsion about vertical axis T (kNm)<input id="Mz" type="number" value="0"></label>
+<label>N axial (kN, IDEA: + tension / − compression)<input id="Nc" type="number" value="168.9"></label>
+<label>V<sub>x</sub> (kN, positive in plan x direction)<input id="Vx" type="number" value="71.6"></label>
+<label>V<sub>y</sub> (kN, positive in plan y direction)<input id="Vy" type="number" value="12.5"></label>
+<label>M<sub>y</sub> (kNm, right-hand rule)<input id="My" type="number" value="10.9"></label>
+<label>M<sub>x</sub> (kNm, right-hand rule)<input id="Mx" type="number" value="0"></label>
+<label>M<sub>z</sub> / torsion about vertical axis (kNm, right-hand rule)<input id="Mz" type="number" value="0"></label>
 <label>Plate size L<sub>x</sub> (mm)<input id="Lpx" type="number" value="420"></label>
 <label>Plate size L<sub>y</sub> (mm)<input id="Lpy" type="number" value="320"></label>
 <label>Friction coefficient μ (0 = ignore)<input id="mu" type="number" step="0.05" value="0"></label>
 <label>Bearing factor k<sub>j</sub><input id="kj" type="number" step="0.1" value="1"></label>
 <label class="chk"><input id="bear" type="checkbox" checked> Plate bears on grout and concrete, so anchors take tension only. Untick if the plate sits on levelling nuts and the anchors also take compression.</label>
-</div><p class="note">Plan axes are as in the plan view: x to the right, y downward. The plate is assumed centred on the anchor group.</p></section>
+</div><p class="note">Loads use the IDEA StatiCa axial sign convention: positive N = tension, negative N = compression. Moments use the right-hand rule. Plan shear axes remain x to the right and y downward; the plate is assumed centred on the anchor group.</p></section>
 <section id="manF"><h2>Forces on the anchors (manual input)</h2><div class="g">
 <label>Anchors in tension, x direction<select id="tx"><option>1</option><option selected>2</option><option>3</option></select></label>
 <label>Anchors in tension, y direction<select id="ty"><option>1</option><option selected>2</option><option>3</option></select></label>
@@ -327,12 +327,13 @@ function edges(nx,ny,tx,ty,hs,vs){var sx=v("sx"),sy=v("sy");return{l:(tx<nx&&hs=
 function gs(A,b){var n=3,M=A.map(function(r,i){return r.concat(b[i])}),i,j,k;for(i=0;i<n;i++){var pv=i;for(j=i+1;j<n;j++)if(Math.abs(M[j][i])>Math.abs(M[pv][i]))pv=j;var t=M[i];M[i]=M[pv];M[pv]=t;if(Math.abs(M[i][i])<1e-300)continue;for(j=i+1;j<n;j++){var f2=M[j][i]/M[i][i];for(k=i;k<=n;k++)M[j][k]-=f2*M[i][k];}}var x=[0,0,0];for(i=n-1;i>=0;i--){var s=M[i][n];for(j=i+1;j<n;j++)s-=M[i][j]*x[j];x[i]=Math.abs(M[i][i])<1e-300?0:s/M[i][i];}return x;}
 var FA=[],psecG=1,SIG=0,RES=[];
 function solveLoadTransfer(){
+/* External axial load follows IDEA StatiCa: +N = tension, -N = compression. The legacy plate model uses the opposite internal sign, so Nc is negated once here. */
 var on=$('useF').checked;
 $('manF').style.display=on?'none':'';var lev=$('sm').value==='l';$('tg').parentNode.style.display=lev?'':'none';$('am').parentNode.style.display=lev?'':'none';$('duc').parentNode.style.display=lev?'none':'';
 if(!on){window.VEC=null;FA=[];psecG=1;SIG=0;$('fres').innerHTML='';return;}
 var nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),As=+$('dia').value.split('|')[0],fck=v('fck'),hef=v('hef'),bear=$('bear').checked;
 var Ec=22000*Math.pow((fck+8)/10,0.3),kA=210000/Ec*As,Lx=v('Lpx'),Ly=v('Lpy'),nc=24,dA=Lx*Ly/(nc*nc);
-var Nt=v('Nc')*1000/Ec,Mxt=v('Mx')*1e6/Ec,Myt=v('My')*1e6/Ec,an=[],cells=[],i,j,k;
+var Nt=-v('Nc')*1000/Ec,Mxt=v('Mx')*1e6/Ec,Myt=v('My')*1e6/Ec,an=[],cells=[],i,j,k;
 for(j=0;j<ny;j++)for(i=0;i<nx;i++)an.push([(i-(nx-1)/2)*sx,(j-(ny-1)/2)*sy,i,j]);
 if(bear)for(i=0;i<nc;i++)for(j=0;j<nc;j++)cells.push([-Lx/2+(i+.5)*Lx/nc,-Ly/2+(j+.5)*Ly/nc]);
 var res=function(p){var r=[-Nt,Myt,Mxt],e;
@@ -359,7 +360,7 @@ var ex=Math.abs(sxx/TT-gx/tn.length),ey=Math.abs(syy/TT-gy/tn.length),s3=3*hef;p
 var R1=function(x){return Math.round(x*10)/10};
 $('NEd').value=R1(TT);$('N1').value=R1(Tmax);$('VEd').value=R1(S.reduce(function(s,q){return s+q[2]},0));$('V1').value=R1(Math.max.apply(null,S.map(function(q){return q[2]})));
 var rowsH=an.map(function(a,q){return `<tr><td>A${q+1}</td><td>${f(T[q],1)}</td><td>${f(S[q][0],1)}</td><td>${f(S[q][1],1)}</td><td>${f(S[q][2],1)}</td></tr>`}).join('');
-$('fres').innerHTML=(ok?'':`<p class='note' style='color:var(--bad)'>No equilibrium found: check the plate size and the loads.</p>`)+`<table><tr><td><b>Anchor</b></td><td><b>N (kN, + tension)</b></td><td><b>V<sub>x</sub></b></td><td><b>V<sub>y</sub></b></td><td><b>V</b></td></tr>${rowsH}</table><p class='note'>Compression under the plate ${f(C,1)} kN, maximum bearing stress ${f(SIG,1)} MPa. Friction takes ${f(Math.min(Vm,v('mu')*C),1)} kN of the shear. With bearing on grout, anchors in the compression zone show 0 because the concrete carries the compression.</p>`;
+$('fres').innerHTML=(ok?'':`<p class='note' style='color:var(--bad)'>No equilibrium found: check the plate size and the loads.</p>`)+`<table><tr><td><b>Anchor</b></td><td><b>N (kN, + tension / − compression)</b></td><td><b>V<sub>x</sub></b></td><td><b>V<sub>y</sub></b></td><td><b>V</b></td></tr>${rowsH}</table><p class='note'>Compression under the plate ${f(C,1)} kN, maximum bearing stress ${f(SIG,1)} MPa. Friction takes ${f(Math.min(Vm,v('mu')*C),1)} kN of the shear. With bearing on grout, anchors in the compression zone show 0 because the concrete carries the compression.</p>`;
 }
 function cbars(){var c0=v('cv')+v('dst')+v('dvb')/2;return GEO.vbars(v('Bx'),v('By'),c0,Math.max(2,+$('nbx').value),Math.max(2,+$('nby').value),v('dvb')).map(function(b){return [b.x,b.y]});}
 function qual(){var nx=+$('nx').value,ny=+$('ny').value,sx=v('sx'),sy=v('sy'),x0=v('cl'),y0=v('ct'),hef=v('hef'),kre=v('kre'),tx=Math.min(+$('tx').value,nx),ty=Math.min(+$('ty').value,ny),hs=$('hs').value,vs=$('vs').value,ta=[],i,j;

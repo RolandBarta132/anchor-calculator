@@ -849,6 +849,8 @@ var ENGINE={
   }
 };
 
+window.ENGINE=ENGINE;
+
 /* Backward-compatible aliases used by geometry/FEM code. */
 function syncEngineeringGeometry(){syncF();}
 function solve(){return solveLoadTransfer();}

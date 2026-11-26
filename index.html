@@ -510,7 +510,7 @@ var k8auto=pr.k8auto,k8=pr.k8,VRd=pr.VRd;
 var sr=calcSupplementaryReinforcement({
   ds:v("dvb"),fyk:v("fyk"),eta:+$("eta").value,amp:v("amp")||1,Hb:v("hb"),cv:v("cv"),
   fck:fck,hef:hef,NEd:NEd,nx:nx,ny:ny,sx:sx,sy:sy,
-  dst:v("dst"),kre:v("kre"),dsh:v("dsh"),tx:+$("tx").value,ty:+$("ty").value,
+  dst:v("dst"),kre:v("kre"),dsh:v("dsh"),tx:txT,ty:tyT,
   hs:hsT,vs:vsT,Bx:v("Bx"),By:v("By"),reOn:$("usere").checked,T:FA
 });
 var ds=sr.ds,fyk=sr.fyk,eta=sr.eta,amp=sr.amp,Hb=sr.Hb,cv=sr.cv,As=sr.As;
@@ -1127,13 +1127,13 @@ function barMesh(pts,dia,material){
 }
 
 /* ---------- model ---------- */
-function model(m){
+function model(m,transfer){
   var c0=m.cv+m.dst+m.dvb/2,bars=[],anchors=[],k,i,j;
   bars=window.GEO.vbars(m.Bx,m.By,c0,m.nbx,m.nby,m.dvb);
   var ex=(m.Bx-(m.nx-1)*m.sx)/2,ey=(m.By-(m.ny-1)*m.sy)/2;
   for(j=0;j<m.ny;j++)for(i=0;i<m.nx;i++){
-    var tn=(m.hs==='l'?i<m.tx:i>=m.nx-m.tx)&&(m.vs==='t'?j<m.ty:j>=m.ny-m.ty);
-    anchors.push({x:GEO.anc(m.Bx,m.nx,m.sx,i),y:GEO.anc(m.By,m.ny,m.sy,j),tb:tn,t:(currentTransfer().T?currentTransfer().T[j*m.nx+i]>1e-6:tn),n:j*m.nx+i+1,gap:1e9});}
+    var ti=j*m.nx+i,tn=transfer&&transfer.T?transfer.T[ti]>1e-6:(m.hs==='l'?i<m.tx:i>=m.nx-m.tx)&&(m.vs==='t'?j<m.ty:j>=m.ny-m.ty);
+    anchors.push({x:GEO.anc(m.Bx,m.nx,m.sx,i),y:GEO.anc(m.By,m.ny,m.sy,j),tb:tn,t:tn,n:ti+1,gap:1e9});}
   var ta=anchors.filter(function(a){return a.tb});
   bars.forEach(function(b){var d=1e9;ta.forEach(function(a){d=Math.min(d,Math.hypot(a.x-b.x,a.y-b.y))});b.ok=d<=m.kre*m.hef;});
   var inn=m.cv+m.dst,hh=Math.min(m.nx>1?m.sx-m.dh:1e9,m.ny>1?m.sy-m.dh:1e9);
@@ -1152,7 +1152,7 @@ function build0(){
   var m=inp();if(m.Bx<=0||m.By<=0||m.H<=0||m.hef<=0)return;
   if(group){scene.remove(group);disposeG(group);}
   group=new THREE.Group();labels=[];pick=[];W.n=0;curBy=m.By;$('v3lab').innerHTML='';
-  var C=colors(),md=model(m),F=forces();
+  var transfer=currentTransfer(),C=colors(),md=model(m,transfer),F=forces();
   G={conc:new THREE.Group(),stir:new THREE.Group(),bars:new THREE.Group(),anch:new THREE.Group(),cone:new THREE.Group(),vec:new THREE.Group()};
   for(var key in G)group.add(G[key]);
   var ox=m.Bx/2,oz=m.By/2,i,j;
@@ -1202,7 +1202,7 @@ function build0(){
   });
   if(m.pc){var PX=(m.nx-1)*m.sx+2*m.pofs,PZ=(m.ny-1)*m.sy+2*m.pofs,pm=mat(new THREE.Color('#c28a2c')),ppl=new THREE.Mesh(new THREE.BoxGeometry(PX,m.ptp,PZ),pm);ppl.position.set(0,-(m.hef+m.ptp/2),0);ppl.userData.info='Common head plate '+Math.round(PX)+' x '+Math.round(PZ)+' x '+m.ptp+' mm, bearing face at h_ef';G.anch.add(ppl);pick.push(ppl);
     var rxx=m.nx>=2,rl=rxx?(m.nx-1)*m.sx:(m.ny-1)*m.sy;if(rl>0){var prb=new THREE.Mesh(new THREE.BoxGeometry(rxx?rl:m.pts,m.phs,rxx?m.pts:rl),pm);prb.position.set(0,-(m.hef-m.phs/2),0);prb.userData.info='Stiffener '+Math.round(rl)+' x '+m.phs+' x '+m.pts+' mm';G.anch.add(prb);pick.push(prb);}}
-  var VC=currentTransfer();
+  var VC=transfer;
   if(VC&&VC.T){var Fm=Math.max(1e-9,Math.abs(VC.N),Math.abs(VC.Vx),Math.abs(VC.Vy)),Tm=Math.max.apply(null,VC.T.concat(VC.qx.map(function(a,k){return Math.hypot(a,VC.qy[k])})).concat([1e-9])),Ls=0.45*Math.max(m.Bx,m.By),up=new V3(0,1,0),yc=yTop+40,PU='#8e44ad',OR='#d9822b',AC='#'+C.acc.getHexString();
     var arr=function(o,d,col,txt,r){var L=d.length();if(L<5)return;var dir=d.clone().normalize(),q=new THREE.Quaternion().setFromUnitVectors(up,dir),hl=Math.min(L*0.4,r*6),M=new THREE.MeshBasicMaterial({color:col,clippingPlanes:[plane]}),sh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,L-hl,10),M),hd=new THREE.Mesh(new THREE.ConeGeometry(r*2.4,hl,14),M);
       sh.position.copy(o).addScaledVector(dir,(L-hl)/2);hd.position.copy(o).addScaledVector(dir,L-hl/2);sh.quaternion.copy(q);hd.quaternion.copy(q);G.vec.add(sh);G.vec.add(hd);if(txt)labels.push({pos:o.clone().add(d),text:txt});};

@@ -43,6 +43,14 @@ function checkInvariants(name,c,r){
     if(!x.ref&&!x.hidden&&x.u>1&&!x.hint)f.push('failing check '+x.id+' has no remedy hint');});
   r.res.forEach(x=>{if(x.u==='NaN')f.push('NaN utilisation: '+x.l)});
   const T=r.snap.T||[],S=a=>a.reduce((s,x)=>s+x,0);
+  if(c.independent){
+    const tol=c.independent.tolPct==null?1:c.independent.tolPct;
+    for(const k of ['T','qx','qy']){
+      const actual=r.snap[k]||[],target=c.independent[k]||[];
+      if(actual.length!==target.length)f.push('independent '+k+' length = '+actual.length+', expected '+target.length);
+      else actual.forEach((v,i)=>{if(Math.abs(v-target[i])>Math.max(1e-6,Math.abs(target[i])*tol/100))f.push('independent '+k+'['+i+'] = '+v+', expected '+target[i]+' ('+c.independent.source+')');});
+    }
+  }
   (c.assert||[]).forEach(a=>{
     const near=(x,t,p)=>Math.abs(x-t)<=Math.max(1e-6,Math.abs(t)*p/100);
     if(a.type==='sumTension'&&!near(S(T),a.target,a.tolPct))f.push('sum of anchor tension = '+S(T).toFixed(2)+', expected '+a.target);

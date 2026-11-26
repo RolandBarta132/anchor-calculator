@@ -352,7 +352,7 @@ function solveLoadTransfer(loads){
   an.forEach(function(a,q){if(T[q]>1e-6){tn.push(q);TT+=T[q];Tmax=Math.max(Tmax,T[q]);sxx+=T[q]*a[0];syy+=T[q]*a[1];}});
   var psec=1,tx=0,ty=0,hs="r",vs="b";
   if(tn.length){var cols=[],rows=[],gx=0,gy=0;tn.forEach(function(q){var aa=an[q];if(cols.indexOf(aa[2])<0)cols.push(aa[2]);if(rows.indexOf(aa[3])<0)rows.push(aa[3]);gx+=aa[0];gy+=aa[1];});tx=cols.length;ty=rows.length;hs=Math.min.apply(null,cols)===0?"l":"r";vs=Math.min.apply(null,rows)===0?"t":"b";var ex=Math.abs(sxx/TT-gx/tn.length),ey=Math.abs(syy/TT-gy/tn.length),s3=3*hef;psec=Math.min(1,1/(1+2*ex/s3))*Math.min(1,1/(1+2*ey/s3));}
-  return {manual:false,ok:ok,anchors:an.map(function(a){return {x:a[0],y:a[1],i:a[2],j:a[3]}}),T:T.slice(),qx:S.map(function(q){return q[0]}),qy:S.map(function(q){return q[1]}),N:L.N,Vx:L.Vx,Vy:L.Vy,Mx:L.Mx,My:L.My,Mz:L.Mz,psec:psec,SIG:SIGv,compression:C,NEd:TT,N1:Tmax,VEd:S.reduce(function(sum,q){return sum+q[2]},0),V1:Math.max.apply(null,S.map(function(q){return q[2]})),tx:tx,ty:ty,hs:hs,vs:vs,friction:Math.min(Vm,v("mu")*C),equilibrium:ok};
+  return {manual:false,ok:ok,anchors:an.map(function(a){return {x:a[0],y:a[1],i:a[2],j:a[3]}}),T:T.slice(),qx:S.map(function(q){return q[0]}),qy:S.map(function(q){return q[1]}),N:L.N,Vx:L.Vx,Vy:L.Vy,Mx:L.Mx,My:L.My,Mz:L.Mz,psec:psec,SIG:SIGv,compression:C,NEd:Math.round(TT*10)/10,N1:Math.round(Tmax*10)/10,VEd:Math.round(S.reduce(function(sum,q){return sum+q[2]},0)*10)/10,V1:Math.round(Math.max.apply(null,S.map(function(q){return q[2]}))*10)/10,tx:tx,ty:ty,hs:hs,vs:vs,friction:Math.min(Vm,v("mu")*C),equilibrium:ok};
 }
 function renderLoadTransfer(transfer){
   var an=transfer.anchors||[],T=transfer.T||[],qx=transfer.qx||[],qy=transfer.qy||[];

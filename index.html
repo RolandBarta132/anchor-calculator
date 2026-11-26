@@ -517,7 +517,7 @@ var ds=sr.ds,fyk=sr.fyk,eta=sr.eta,amp=sr.amp,Hb=sr.Hb,cv=sr.cv,As=sr.As;
 var fctm=sr.fctm,fctd=sr.fctd,fbd=sr.fbd,fsd=sr.fsd,Fs=sr.Fs,lbd=sr.lbd,al1=sr.al1,lbmin=sr.lbmin,lbdes=sr.lbdes;
 var TA=sr.TA,Tt=sr.Tt,QL=sr.QL,nre=sr.nre,NEdre=sr.NEdre,mS=sr.mS,mA=sr.mA,mG=sr.mG,shM=sr.shM,leg=sr.leg;
 var NRdre=sr.NRdre,Fb=sr.Fb,l1m=sr.l1m,NRdreS=sr.NRdreS,NRdreA=sr.NRdreA,reOn=sr.reOn,legsReq=sr.legsReq;
-var gp=$("gr").value.split("|"),fuk=+gp[0],fy2=+gp[1],dp=$("dia").value.split("|"),Asa=+dp[0],da=+dp[1],N1=v("N1"),V1=v("V1");
+var gp=$("gr").value.split("|"),fuk=+gp[0],fy2=+gp[1],dp=$("dia").value.split("|"),Asa=+dp[0],da=+dp[1],N1=transfer.N1,V1=transfer.V1;
 var as=calcAnchorSteel({fuk:fuk,fy2:fy2,Asa:Asa});
 var gMsN=as.gMsN,gMsV=as.gMsV,NRds=as.NRds;
 var PCc=$("ht").value==="c",tpc=v("ptp"),ofc=v("pofs"),pfy=v("pfy")||355,PLc=(nx-1)*sx+2*ofc,PWc=(ny-1)*sy+2*ofc,dh=v("hd"),Ah=PCc?Math.max(0,(PLc*PWc-nx*ny*Math.PI/4*da*da)/(nx*ny)):Math.max(0,$("ht").value==="r"?Math.PI/4*(dh*dh-da*da):dh*dh-Math.PI/4*da*da);

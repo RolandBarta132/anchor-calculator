@@ -316,6 +316,10 @@ window.__WARN=[];
 function need(fn,m,keys){keys.forEach(function(k){
   if(m[k]===undefined)throw new Error(fn+': input "'+k+'" was not passed');
   if(typeof m[k]==="number"&&isNaN(m[k])){window.__WARN.push(fn+': input "'+k+'" is NaN');console.warn(fn+': input "'+k+'" is NaN');}});}
+/* One check = one result object with a stable id. Everything downstream (utilisation list, load-case
+   summary, remedy hints, report, tests) reads these objects; nothing depends on row position or label text. */
+function mkChk(id,label,category,demand,resistance,unit){return {id:id,label:label,category:category,demand:demand,resistance:resistance,unit:unit};}
+function resById(list,id){for(var i=0;i<list.length;i++)if(list[i].id===id)return list[i];return null;}
 var OV=null;var v=function(i){var x=parseFloat(OV&&OV[i]!==undefined?OV[i]:$(i).value);return isFinite(x)?x:0};
 var f=function(x,d){return isFinite(x)?x.toFixed(d===undefined?1:d):"–"};
 var esc=function(t){return String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
@@ -548,61 +552,69 @@ if(LS.on){
 }
 var ix=calcInteraction({useReinforcement:$("usere").checked,NEdre:NEdre,NRdre:NRdre,NEd:NEd,NRd:NRd,N1:N1,NRdp:NRdp,NRdcb:NRdcb,VEd:VEd,VRd:VRd,VRdc:VRdc,NRds:NRds,VRds:VRds,V1:V1});
 var bN=ix.bN,bV=ix.bV,intS=ix.intS,intC=ix.intC;
-var bars=[
-["Concrete breakout, unreinforced",NEd,NRd,"kN"],
-["Anchor reinforcement carries tension",NEdre,NRdre,"kN"],["Reinforcement steel (legs in reach)",NEdre,NRdreS,"kN"],["Reinforcement anchorage (bond above cone)",NEdre,NRdreA,"kN"],
-["Concrete pryout",VEd,VRd,"kN"],
-["Block depth: h_ef + cover must fit in h",hef+cv,Hb,"mm"],
-["Anchor steel, tension (one anchor)",N1,NRds,"kN"],
-["Pull-out of the head (one anchor)",N1,NRdp,"kN"],
-["Side blow-out (only if c ≤ 0.5·h_ef)",N1,NRdcb,"kN"],
-["Anchor steel, shear (one anchor)",V1,VRds,"kN"],
-["Concrete edge breakout in shear (needs c₁)",VEd,VRdc,"kN"],
-["Concrete bearing under plate",SIG,2/3*v('kj')*0.85*fck/1.5,"MPa"],
-["Interaction, steel (N² + V²)",intS,1,""],
-["Interaction, concrete (N^1.5 + V^1.5)",intC,1,""],["Cage clearance: required / available",(window.CLR||{req:0}).req,(window.CLR||{mn:1e9}).mn,"mm"],["Common plate: bending of the overhang",PCc?MEdP:0,PCc?MRdP:1,"Nmm/mm"]];
+var CHK=[
+mkChk("concrete_breakout","Concrete breakout, unreinforced","tension",NEd,NRd,"kN"),
+mkChk("reinforcement_tension","Anchor reinforcement carries tension","tension",NEdre,NRdre,"kN"),
+mkChk("reinforcement_steel","Reinforcement steel (legs in reach)","tension",NEdre,NRdreS,"kN"),
+mkChk("reinforcement_anchorage","Reinforcement anchorage (bond above cone)","tension",NEdre,NRdreA,"kN"),
+mkChk("pryout","Concrete pryout","shear",VEd,VRd,"kN"),
+mkChk("block_depth","Block depth: h_ef + cover must fit in h","geometry",hef+cv,Hb,"mm"),
+mkChk("anchor_steel_tension","Anchor steel, tension (one anchor)","tension",N1,NRds,"kN"),
+mkChk("pullout","Pull-out of the head (one anchor)","tension",N1,NRdp,"kN"),
+mkChk("side_blowout","Side blow-out (only if c ≤ 0.5·h_ef)","tension",N1,NRdcb,"kN"),
+mkChk("anchor_steel_shear","Anchor steel, shear (one anchor)","shear",V1,VRds,"kN"),
+mkChk("shear_edge_breakout","Concrete edge breakout in shear (needs c₁)","shear",VEd,VRdc,"kN"),
+mkChk("plate_bearing","Concrete bearing under plate","load_transfer",SIG,2/3*v('kj')*0.85*fck/1.5,"MPa"),
+mkChk("interaction_steel","Interaction, steel (N² + V²)","interaction",intS,1,""),
+mkChk("interaction_concrete","Interaction, concrete (N^1.5 + V^1.5)","interaction",intC,1,""),
+mkChk("cage_clearance","Cage clearance: required / available","detailing",(window.CLR||{req:0}).req,(window.CLR||{mn:1e9}).mn,"mm"),
+mkChk("plate_bending","Common plate: bending of the overhang","plate",PCc?MEdP:0,PCc?MRdP:1,"Nmm/mm")];
 var bdD=(ds<=16?4:7)*ds,bdC0=cv+v("dst")+ds/2,bdSp=Math.min((v("Bx")-2*bdC0)/(Math.max(2,+$("nbx").value)-1),(v("By")-2*bdC0)/(Math.max(2,+$("nby").value)-1)),bdAb=Math.max(1,Math.min(bdC0,bdSp/2)),bdF=($("usere").checked&&nre)?Math.min(NEdre/nre,leg):0,bdReq=bdF*1000*(1/bdAb+1/(2*ds))/(0.85*fck/gm),bdUse=Math.max(bdD,bdReq);MANC.vb=Math.max(MANC.vb,bdUse);
-if(LG.on){bars.push(["Shear lug: bearing on concrete",LG.sig,LG.fRd,"MPa"],["Shear lug: plate bending",LG.MEd,LG.MRd,"kNm"],["Shear lug: plate shear",LG.Vl,LG.VRs,"kN"],["Shear lug: concrete edge breakout",LG.Vl,LG.VRc,"kN"]);}
+if(LG.on){CHK.push(mkChk("lug_bearing","Shear lug: bearing on concrete","lug",LG.sig,LG.fRd,"MPa"),mkChk("lug_bending","Shear lug: plate bending","lug",LG.MEd,LG.MRd,"kNm"),mkChk("lug_shear","Shear lug: plate shear","lug",LG.Vl,LG.VRs,"kN"),mkChk("lug_edge_breakout","Shear lug: concrete edge breakout","lug",LG.Vl,LG.VRc,"kN"));}
 
 
 var P=function(u){return isFinite(u)?Math.round((u-1)*100)+" %":"a large amount"};
 var szTxt=function(fac,pw){var need=Asa*Math.pow(fac,pw),o=$("dia").options,t=null;for(var i=0;i<o.length;i++){if(+o[i].value.split("|")[0]>=need){t=o[i].text;break;}}return t?"use at least "+t+" (or a higher steel grade)":"use a higher steel grade or more anchors";};
 var lev=$("sm").value==="l",kr=v("kre");
-var H=[
-function(u){return "Capacity must rise by about "+P(u)+". Options: increase h_ef; increase edge distances or spacing, or enlarge the block, so the cone area grows (now "+f(Ac/100,0)+" of "+f(A0/100,0)+" cm² possible, ψs,N = "+f(psis,2)+"); reduce the eccentricity of the tension forces (ψec,N = "+f(psecG,2)+"); or provide anchor reinforcement and tick the option to use it.";},
-function(u){var g=Fb<Fs;return "N_Rd,re = "+f(NRdre)+" kN is below the required "+f(NEdre)+" kN. "+(nre?nre+" bar(s) are counted, each carrying about "+f(leg)+" kN"+(legsReq?" (about "+legsReq+" needed)":"")+". "+(g?"Anchorage above the cone governs: increase h_ef or reduce the cover so l₁ grows (now about "+f(l1m,0)+" mm). ":"Bar steel governs: use a larger bar (max Ø20) or a higher f_yk. "):"No bar lies within "+f(kr*hef,0)+" mm of a tension anchor. ")+"Add bars or stirrup legs close to the tension anchors (within "+f(kr*hef,0)+" mm).";},
-function(u){return "Steel of the "+nre+" leg(s) in reach is "+f(NRdreS)+" kN against "+f(NEdre*amp)+" kN. Use a larger bar (max Ø20), a higher f_yk, or add legs within "+f(kr*hef,0)+" mm of the tension anchors.";},
-function(u){return "Bond anchorage above the cone gives "+f(NRdreA)+" kN against "+f(NEdre*amp)+" kN. Available l₁ is about "+f(l1m,0)+" mm, required l_bd = "+f(lbdes,0)+" mm (l_b,rqd = "+f(lbd,0)+", α₁ = "+f(al1,2)+(al1<1?"":": cover at the bend is not above 3Ø, so no bend credit")+"). Increase h_ef, reduce cover, increase cover at the bend above 3Ø, or use more legs.";},
-function(u){return "Capacity must rise by about "+P(u)+". Options: increase h_ef; increase edge distances or enlarge the block; add an anchor row or column; or keep shear off the anchors (shear lug, grout bearing, friction μ above).";},
-function(u){return "Increase the foundation height h to at least "+f(hef+cv,0)+" mm, or reduce h_ef to at most "+f(Hb-cv,0)+" mm.";},
-function(u){return "The most loaded anchor is overstressed by about "+P(u)+". "+szTxt(u,1)+"; or share the tension between more anchors.";},
-function(u){if(PCc)return "Bearing area per anchor is "+f(Ah,0)+" mm² (plate area less the bolts, shared by the anchors), too small by about "+P(u)+". Increase the plate offset or width, or use more anchors.";var r=$("ht").value==="r",Ar=Ah*u,dr=r?Math.sqrt(4*Ar/Math.PI+da*da):Math.sqrt(Ar+Math.PI/4*da*da);return "The head bearing area is too small by about "+P(u)+". Enlarge the head or washer to about "+f(Math.ceil(dr/5)*5,0)+" mm ("+(r?"diameter":"side")+"), or use more anchors to cut the force per anchor.";},
-function(u){return "The edge distance c₁ = "+f(c1b,0)+" mm is at most 0.5·h_ef = "+f(0.5*hef,0)+" mm. Increase the edge distance above "+f(0.5*hef,0)+" mm (larger block) so this check no longer applies, or enlarge the head.";},
-function(u){return "The most loaded anchor is overstressed in shear by about "+P(u)+". "+(lev?"Reduce the grout gap t_g, use full grout bearing, or detail a fixed head (α_M = 2). "+szTxt(u,2/3):"Use ductile steel (A₅ > 8 %, k₇ = 1.0) if available; "+szTxt(u,1))+". Alternatively take the shear with a lug, friction or grout bearing.";},
-function(u){return "Capacity must rise by about "+P(u)+". Options: increase the edge distance c₁ in the shear direction (now "+f(c1V,0)+" mm, resistance grows with c₁^1.5); select edge reinforcement ψre,V (1.2 / 1.4) if it is really provided; make the block taller (h ≥ 1.5·c₁ = "+f(1.5*c1V,0)+" mm); add anchors along the edge; or add a shear lug (section Shear lug) so the anchors carry less shear.";},
-function(u){return "Bearing stress "+f(SIG,1)+" MPa exceeds "+f(2/3*v("kj")*0.85*fck/1.5,1)+" MPa. Enlarge the base plate (L_x, L_y), reduce the moment, or raise k_j only if the concrete around the plate justifies it.";},
-function(u){return "Combined tension and shear on the anchor steel is too high (sum "+f(u,2)+"). Reduce either force, or "+szTxt(Math.sqrt(u),1)+".";},
-function(u){return "Combined concrete tension and shear is too high (β_N = "+f(bN,2)+", β_V = "+f(bV,2)+"). Improve the larger one first: check the breakout, pull-out, pryout and edge breakout bars above.";},
-function(u){var C=window.CLR||{mn:0,req:0};return "Smallest clearance between anchors or heads and the bars or stirrups is "+f(C.mn,0)+" mm, required "+f(C.req,0)+" mm. Reduce the head size, move the anchors, change the bar count or stirrup spacing so bars pass between the anchors, or widen the block.";},
-function(u){return "Plate overhang bending: M_Ed = "+f(MEdP,0)+" Nmm/mm against M_Rd = "+f(MRdP,0)+" Nmm/mm (cantilever "+f(ccP,0)+" mm beyond the bolt, bearing pressure "+f(ppP,1)+" MPa). Use a plate of at least "+f(tpc*Math.sqrt(u),0)+" mm, a higher steel grade, or a smaller offset.";},
-function(u){return "Lug bearing stress "+f(LG.sig,1)+" MPa exceeds "+f(LG.fRd,1)+" MPa. The bearing area b·h_l must grow to about "+f(LG.Vl*1000/LG.fRd,0)+" mm² (now "+f(LG.lb*LG.lh,0)+"): increase the lug embedment h_l or use a wider HEA, raise k_lug only if confinement justifies it, or lower the lug share of the shear.";},
-function(u){var n1=lugNext(LG.MEd,LG.Vl,LG.fy,LG.ori),n2=lugNext(LG.MEd,LG.Vl,355,LG.ori);return LG.prof+": lug bending M_Ed = "+f(LG.MEd,2)+" kNm against M_Rd = "+f(LG.MRd,2)+" kNm. "+(n1?"Use "+n1+" or larger.":(n2?"Use S355 with "+n2+" or larger.":"No HEA up to HEA 400 is enough in this orientation. Use the strong axis or reduce the lug share."))+" You can also reduce the lever arm (grout "+f(LG.lg,0)+" mm plus half the embedment) or share the shear with the anchors.";},
-function(u){var n1=lugNext(LG.MEd,LG.Vl,LG.fy,LG.ori),n2=lugNext(LG.MEd,LG.Vl,355,LG.ori);return LG.prof+": the shear area is too small for "+f(LG.Vl)+" kN (V_Rd = "+f(LG.VRs)+" kN). "+(n1?"Use "+n1+" or larger.":(n2?"Use S355 with "+n2+" or larger.":"No HEA up to HEA 400 is enough in this orientation. Use the strong axis or reduce the lug share."));},
-function(u){return "Lug edge breakout capacity "+f(LG.VRc)+" kN is below "+f(LG.Vl)+" kN (c₁ = "+f(LG.c1,0)+" mm to the edge, side edges "+f(Math.min(LG.c2a,LG.c2b),0)+" mm). Increase the block size so c₁ and the side distances grow, reduce the lug share, or make the lug embedment h_l larger (up to the limit l_f).";}
-];
-bars.forEach(function(b,i){var u=b[2]>0?b[1]/b[2]:Infinity;b[4]=u>1?H[i](u):"";});
+var HINT={
+"concrete_breakout":function(u){return "Capacity must rise by about "+P(u)+". Options: increase h_ef; increase edge distances or spacing, or enlarge the block, so the cone area grows (now "+f(Ac/100,0)+" of "+f(A0/100,0)+" cm² possible, ψs,N = "+f(psis,2)+"); reduce the eccentricity of the tension forces (ψec,N = "+f(psecG,2)+"); or provide anchor reinforcement and tick the option to use it.";},
+"reinforcement_tension":function(u){var g=Fb<Fs;return "N_Rd,re = "+f(NRdre)+" kN is below the required "+f(NEdre)+" kN. "+(nre?nre+" bar(s) are counted, each carrying about "+f(leg)+" kN"+(legsReq?" (about "+legsReq+" needed)":"")+". "+(g?"Anchorage above the cone governs: increase h_ef or reduce the cover so l₁ grows (now about "+f(l1m,0)+" mm). ":"Bar steel governs: use a larger bar (max Ø20) or a higher f_yk. "):"No bar lies within "+f(kr*hef,0)+" mm of a tension anchor. ")+"Add bars or stirrup legs close to the tension anchors (within "+f(kr*hef,0)+" mm).";},
+"reinforcement_steel":function(u){return "Steel of the "+nre+" leg(s) in reach is "+f(NRdreS)+" kN against "+f(NEdre*amp)+" kN. Use a larger bar (max Ø20), a higher f_yk, or add legs within "+f(kr*hef,0)+" mm of the tension anchors.";},
+"reinforcement_anchorage":function(u){return "Bond anchorage above the cone gives "+f(NRdreA)+" kN against "+f(NEdre*amp)+" kN. Available l₁ is about "+f(l1m,0)+" mm, required l_bd = "+f(lbdes,0)+" mm (l_b,rqd = "+f(lbd,0)+", α₁ = "+f(al1,2)+(al1<1?"":": cover at the bend is not above 3Ø, so no bend credit")+"). Increase h_ef, reduce cover, increase cover at the bend above 3Ø, or use more legs.";},
+"pryout":function(u){return "Capacity must rise by about "+P(u)+". Options: increase h_ef; increase edge distances or enlarge the block; add an anchor row or column; or keep shear off the anchors (shear lug, grout bearing, friction μ above).";},
+"block_depth":function(u){return "Increase the foundation height h to at least "+f(hef+cv,0)+" mm, or reduce h_ef to at most "+f(Hb-cv,0)+" mm.";},
+"anchor_steel_tension":function(u){return "The most loaded anchor is overstressed by about "+P(u)+". "+szTxt(u,1)+"; or share the tension between more anchors.";},
+"pullout":function(u){if(PCc)return "Bearing area per anchor is "+f(Ah,0)+" mm² (plate area less the bolts, shared by the anchors), too small by about "+P(u)+". Increase the plate offset or width, or use more anchors.";var r=$("ht").value==="r",Ar=Ah*u,dr=r?Math.sqrt(4*Ar/Math.PI+da*da):Math.sqrt(Ar+Math.PI/4*da*da);return "The head bearing area is too small by about "+P(u)+". Enlarge the head or washer to about "+f(Math.ceil(dr/5)*5,0)+" mm ("+(r?"diameter":"side")+"), or use more anchors to cut the force per anchor.";},
+"side_blowout":function(u){return "The edge distance c₁ = "+f(c1b,0)+" mm is at most 0.5·h_ef = "+f(0.5*hef,0)+" mm. Increase the edge distance above "+f(0.5*hef,0)+" mm (larger block) so this check no longer applies, or enlarge the head.";},
+"anchor_steel_shear":function(u){return "The most loaded anchor is overstressed in shear by about "+P(u)+". "+(lev?"Reduce the grout gap t_g, use full grout bearing, or detail a fixed head (α_M = 2). "+szTxt(u,2/3):"Use ductile steel (A₅ > 8 %, k₇ = 1.0) if available; "+szTxt(u,1))+". Alternatively take the shear with a lug, friction or grout bearing.";},
+"shear_edge_breakout":function(u){return "Capacity must rise by about "+P(u)+". Options: increase the edge distance c₁ in the shear direction (now "+f(c1V,0)+" mm, resistance grows with c₁^1.5); select edge reinforcement ψre,V (1.2 / 1.4) if it is really provided; make the block taller (h ≥ 1.5·c₁ = "+f(1.5*c1V,0)+" mm); add anchors along the edge; or add a shear lug (section Shear lug) so the anchors carry less shear.";},
+"plate_bearing":function(u){return "Bearing stress "+f(SIG,1)+" MPa exceeds "+f(2/3*v("kj")*0.85*fck/1.5,1)+" MPa. Enlarge the base plate (L_x, L_y), reduce the moment, or raise k_j only if the concrete around the plate justifies it.";},
+"interaction_steel":function(u){return "Combined tension and shear on the anchor steel is too high (sum "+f(u,2)+"). Reduce either force, or "+szTxt(Math.sqrt(u),1)+".";},
+"interaction_concrete":function(u){return "Combined concrete tension and shear is too high (β_N = "+f(bN,2)+", β_V = "+f(bV,2)+"). Improve the larger one first: check the breakout, pull-out, pryout and edge breakout bars above.";},
+"cage_clearance":function(u){var C=window.CLR||{mn:0,req:0};return "Smallest clearance between anchors or heads and the bars or stirrups is "+f(C.mn,0)+" mm, required "+f(C.req,0)+" mm. Reduce the head size, move the anchors, change the bar count or stirrup spacing so bars pass between the anchors, or widen the block.";},
+"plate_bending":function(u){return "Plate overhang bending: M_Ed = "+f(MEdP,0)+" Nmm/mm against M_Rd = "+f(MRdP,0)+" Nmm/mm (cantilever "+f(ccP,0)+" mm beyond the bolt, bearing pressure "+f(ppP,1)+" MPa). Use a plate of at least "+f(tpc*Math.sqrt(u),0)+" mm, a higher steel grade, or a smaller offset.";},
+"lug_bearing":function(u){return "Lug bearing stress "+f(LG.sig,1)+" MPa exceeds "+f(LG.fRd,1)+" MPa. The bearing area b·h_l must grow to about "+f(LG.Vl*1000/LG.fRd,0)+" mm² (now "+f(LG.lb*LG.lh,0)+"): increase the lug embedment h_l or use a wider HEA, raise k_lug only if confinement justifies it, or lower the lug share of the shear.";},
+"lug_bending":function(u){var n1=lugNext(LG.MEd,LG.Vl,LG.fy,LG.ori),n2=lugNext(LG.MEd,LG.Vl,355,LG.ori);return LG.prof+": lug bending M_Ed = "+f(LG.MEd,2)+" kNm against M_Rd = "+f(LG.MRd,2)+" kNm. "+(n1?"Use "+n1+" or larger.":(n2?"Use S355 with "+n2+" or larger.":"No HEA up to HEA 400 is enough in this orientation. Use the strong axis or reduce the lug share."))+" You can also reduce the lever arm (grout "+f(LG.lg,0)+" mm plus half the embedment) or share the shear with the anchors.";},
+"lug_shear":function(u){var n1=lugNext(LG.MEd,LG.Vl,LG.fy,LG.ori),n2=lugNext(LG.MEd,LG.Vl,355,LG.ori);return LG.prof+": the shear area is too small for "+f(LG.Vl)+" kN (V_Rd = "+f(LG.VRs)+" kN). "+(n1?"Use "+n1+" or larger.":(n2?"Use S355 with "+n2+" or larger.":"No HEA up to HEA 400 is enough in this orientation. Use the strong axis or reduce the lug share."));},
+"lug_edge_breakout":function(u){return "Lug edge breakout capacity "+f(LG.VRc)+" kN is below "+f(LG.Vl)+" kN (c₁ = "+f(LG.c1,0)+" mm to the edge, side edges "+f(Math.min(LG.c2a,LG.c2b),0)+" mm). Increase the block size so c₁ and the side distances grow, reduce the lug share, or make the lug embedment h_l larger (up to the limit l_f).";}
+};
 
 var wasOpen=$("bars").querySelector("details")&&$("bars").querySelector("details").open;
 /* When supplementary reinforcement is explicitly selected, the unreinforced
    cone remains visible as a reference result but is not an active failure.
    The reinforcement load path must pass its own resistance check. */
-var UR=bars.map(function(b,i){var u=b[2]>0?b[1]/b[2]:Infinity;var isCageClearance=b[0].indexOf("Cage clearance:")===0;var reference=($("usere").checked&&i===0)||(!$("usere").checked&&i>=1&&i<=3)||(isCageClearance&&!$("clchk").checked);return {b:b,u:u,reference:reference,bad:reference?false:!(u<=1)};});
+var useRe=$("usere").checked,clOn=$("clchk").checked,REF_WHEN_CONCRETE={reinforcement_tension:1,reinforcement_steel:1,reinforcement_anchorage:1};
+/* active = takes part in pass/fail and in the governing check; reference = shown for information only; hidden = not shown at all */
+var UR=CHK.map(function(c){var u=c.resistance>0?c.demand/c.resistance:Infinity;
+  var reference=(useRe&&c.id==="concrete_breakout")||(!useRe&&!!REF_WHEN_CONCRETE[c.id])||(c.id==="cage_clearance"&&!clOn),hidden=(c.id==="cage_clearance"&&!clOn),bad=reference?false:!(u<=1);
+  return {id:c.id,label:c.label,category:c.category,demand:c.demand,resistance:c.resistance,unit:c.unit,u:u,utilisation:u,reference:reference,active:!reference,hidden:hidden,bad:bad,
+    status:reference?"REFERENCE":(bad?"FAIL":"OK"),hint:(u>1&&HINT[c.id])?HINT[c.id](u):""};});
 var active=UR.filter(function(x){return !x.reference;});
 var nBad=active.filter(function(x){return x.bad}).length,gvU=active.reduce(function(m,x){return x.u>m.u?x:m},active[0]||UR[0]);
-var crow=function(x){var b=x.b;var tag=x.reference?'Reference':(x.bad?'Fails':'OK');return '<div class="cr'+(x.bad?' bad':'')+'"><span class="cl">'+b[0]+'</span><span class="ctr"><i style="width:'+Math.min(100,(isFinite(x.u)?x.u:1)*100)+'%"></i></span><span class="cp">'+(isFinite(x.u)?Math.round(x.u*100)+' %':'∞')+'</span><span class="tag"'+(x.bad&&b[4]?' tabindex="0" data-hint="'+esc(b[4])+'"':'')+'>'+tag+'</span>'+(x.bad||x.reference?'<span class="cv">'+f(b[1])+' / '+f(b[2])+' '+b[3]+'</span>':'')+'</div>';};
-var crit=UR.filter(function(x){return !(x.reference&&x.b[0].indexOf("Cage clearance:")===0)&&(x.bad||x.reference||x.u>=0.8)}),rest=UR.filter(function(x){return !(x.reference&&x.b[0].indexOf("Cage clearance:")===0)&&!(x.reference||x.bad||x.u>=0.8)});
-setH($("bars"),'<div class="usum'+(nBad?' bad':'')+'"><span class="tag">'+(nBad?nBad+(nBad>1?' active checks fail':' active check fails'):'All active checks OK')+'</span><span>Governing: '+gvU.b[0]+', '+(isFinite(gvU.u)?Math.round(gvU.u*100)+' %':'∞')+'</span></div>'+crit.map(crow).join("")+(rest.length?'<details class="more"'+(wasOpen?' open':'')+'><summary>'+rest.length+' more active checks, all below 80 %</summary>'+rest.map(crow).join("")+'</details>':'') );
-RES=UR.map(function(x){return {l:x.b[0],u:x.u,h:x.b[4]||"",reference:x.reference};});
+var crow=function(x){var tag=x.reference?'Reference':(x.bad?'Fails':'OK');return '<div class="cr'+(x.bad?' bad':'')+'"><span class="cl">'+x.label+'</span><span class="ctr"><i style="width:'+Math.min(100,(isFinite(x.u)?x.u:1)*100)+'%"></i></span><span class="cp">'+(isFinite(x.u)?Math.round(x.u*100)+' %':'∞')+'</span><span class="tag"'+(x.bad&&x.hint?' tabindex="0" data-hint="'+esc(x.hint)+'"':'')+'>'+tag+'</span>'+(x.bad||x.reference?'<span class="cv">'+f(x.demand)+' / '+f(x.resistance)+' '+x.unit+'</span>':'')+'</div>';};
+var crit=UR.filter(function(x){return !x.hidden&&(x.bad||x.reference||x.u>=0.8)}),rest=UR.filter(function(x){return !x.hidden&&!(x.reference||x.bad||x.u>=0.8)});
+setH($("bars"),'<div class="usum'+(nBad?' bad':'')+'"><span class="tag">'+(nBad?nBad+(nBad>1?' active checks fail':' active check fails'):'All active checks OK')+'</span><span>Governing: '+gvU.label+', '+(isFinite(gvU.u)?Math.round(gvU.u*100)+' %':'∞')+'</span></div>'+crit.map(crow).join("")+(rest.length?'<details class="more"'+(wasOpen?' open':'')+'><summary>'+rest.length+' more active checks, all below 80 %</summary>'+rest.map(crow).join("")+'</details>':'') );
+RES=UR.map(function(x){return {id:x.id,l:x.label,category:x.category,u:x.u,h:x.hint,reference:x.reference,active:x.active,hidden:x.hidden};});
 var rows=[
 ["#Tension: concrete cone breakout"],["k₁ (cracked / type)",f(k1,1),""],
 ["N⁰<sub>Rk,c</sub> = k₁·√f<sub>ck</sub>·h<sub>ef</sub><sup>1.5</sup>",f(N0),"kN",f(k1,1)+" · √"+fck+" · "+hef+"^1.5 / 1000"],
@@ -778,13 +790,13 @@ function renderSum(all){
   sec.hidden=false;
   var names=LC.map(function(c){return c.n}),fail=[];
   all.forEach(function(r,k){if(r.some(function(x){return !x.reference&&!(x.u<=1)}))fail.push(names[k]);});
-  var items=all[0].map(function(c0,i){if(c0.reference&&c0.l.indexOf("Cage clearance:")===0)return null;var mx=-1,mk=0;all.forEach(function(r,k){if(r[i].reference)return;if(r[i].u>mx){mx=r[i].u;mk=k;}});return {i:i,l:c0.l,mx:mx,mk:mk};}).filter(function(x){return x!==null;});
+  var items=all[0].filter(function(c0){return !c0.hidden}).map(function(c0){var mx=-1,mk=0;all.forEach(function(r,k){var q=resById(r,c0.id);if(!q||q.reference)return;if(q.u>mx){mx=q.u;mk=k;}});return {id:c0.id,l:c0.l,mx:mx,mk:mk};});
   var gv=items.reduce(function(m,x){return x.mx>m.mx?x:m},items[0]);
   var vd='<div class="usum'+(fail.length?' bad':'')+'"><span class="tag">'+(fail.length?'Fails in '+esc(fail.join(", ")):'All cases OK')+'</span><span>Governing: '+esc(gv.l)+', '+(isFinite(gv.mx)?Math.round(gv.mx*100)+' %':'∞')+' ('+esc(names[gv.mk])+')</span></div>';
   var th='<tr><td>Check</td>'+names.map(function(nm,k){return '<td><button type="button" class="lcsel'+(k===cur?' on':'')+'" data-k="'+k+'">'+esc(nm)+'</button></td>'}).join("")+'</tr>';
   var vis=items.filter(function(x){return SUMALL||!(x.mx<0.8)});
-  var rows=vis.map(function(x){var cells=all.map(function(r,k){var u=r[x.i].u,bad=!(u<=1);
-      return '<td class="'+(bad?'bd':'')+'"'+(bad&&r[x.i].h?' tabindex="0" data-hint="'+esc(names[k]+": "+r[x.i].h)+'"':'')+'>'+(isFinite(u)?Math.round(u*100)+' %':'∞')+'</td>';}).join("");
+  var rows=vis.map(function(x){var cells=all.map(function(r,k){var q=resById(r,x.id);if(!q)return '<td>–</td>';var u=q.u,bad=!(u<=1);
+      return '<td class="'+(bad?'bd':'')+'"'+(bad&&q.h?' tabindex="0" data-hint="'+esc(names[k]+": "+q.h)+'"':'')+'>'+(isFinite(u)?Math.round(u*100)+' %':'∞')+'</td>';}).join("");
     return '<tr><td>'+esc(x.l)+'</td>'+cells+'</tr>';}).join("");
   setH($("lcsumbody"),vd+'<div class="lcm"><table>'+th+rows+'</table></div><button type="button" id="lcall">'+(SUMALL?'Show only checks at 80 % or more':'Show all '+items.length+' checks')+'</button><p class="note">Utilisation per load case. Click a case name to open its full detail. Hover or focus a red value for hints.</p>');
 }

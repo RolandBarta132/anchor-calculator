@@ -1,6 +1,6 @@
 {
   "default":            { "note": "page defaults, as shipped", "set": {} },
-  "pure_tension":       { "set": {"lug":false,"Nc":-300,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0},
+  "pure_tension":       { "set": {"lug":false,"Nc":300,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0},
                           "independent":{"source":"hand calculation: 300 kN total tension / 2 symmetric anchors","T":[150,150],"qx":[0,0],"qy":[0,0],"tolPct":0.01},
                           "assert":[{"type":"sumTension","target":300,"tolPct":1},{"type":"symmetry"}] },
   "pure_shear":         { "set": {"lug":false,"Nc":0,"Vx":60,"Vy":0,"My":0,"Mx":0,"Mz":0},
@@ -8,7 +8,7 @@
                           "assert":[{"type":"sumShear","axis":"x","target":60,"tolPct":1},{"type":"noTension"}] },
   "pure_moment_My":     { "set": {"lug":false,"Nc":0,"Vx":0,"Vy":0,"My":50,"Mx":0,"Mz":0},
                           "assert":[{"type":"tensionOnlyAt","index":1}] },
-  "symmetric_tension_3x2": { "set": {"nx":3,"ny":2,"sx":250,"sy":200,"lug":false,"Nc":-600,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0},
+  "symmetric_tension_3x2": { "set": {"nx":3,"ny":2,"sx":250,"sy":200,"lug":false,"Nc":600,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0},
                           "independent":{"source":"hand calculation: 600 kN total tension / 6 symmetric anchors","T":[100,100,100,100,100,100],"qx":[0,0,0,0,0,0],"qy":[0,0,0,0,0,0],"tolPct":0.01},
                           "assert":[{"type":"sumTension","target":600,"tolPct":1}] },
   "moment_Mx_group":    { "set": {"nx":2,"ny":2,"lug":false,"Nc":0,"Vx":0,"Vy":0,"My":0,"Mx":40,"Mz":0} },

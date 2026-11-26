@@ -2,6 +2,10 @@
 
 Branch: `refactor/stage-a-trusted-baseline`
 
+## Load sign convention
+
+The calculator input convention is aligned with the IDEA StatiCa convention used by the reference exports: **N positive = tension and N negative = compression**. Moments use the right-hand rule. The existing plan shear axes remain x to the right and y downward. The legacy plate equilibrium solver keeps its historical internal axial sign; the conversion is made once at the load-transfer boundary.
+
 ## Purpose
 
 This branch establishes a correctness baseline before the load-transfer and model refactors. The existing regression suite remains the protection against accidental changes; the independent values below are separate hand-calculated anchors-force checks.
@@ -11,7 +15,7 @@ This branch establishes a correctness baseline before the load-transfer and mode
 The following cases now carry explicit independent values in `tests/cases.json`, and `tests/run.js` verifies them with a tolerance:
 
 1. **pure_tension**
-   - Actions: N = -300 kN, Vx = Vy = Mx = My = Mz = 0.
+   - Actions: N = +300 kN (IDEA convention), Vx = Vy = Mx = My = Mz = 0.
    - Two symmetric anchors.
    - Independent result: T = [150, 150] kN; qx = [0, 0]; qy = [0, 0].
    - Basis: 300 kN total tension divided equally between two symmetric anchors.
@@ -23,7 +27,7 @@ The following cases now carry explicit independent values in `tests/cases.json`,
    - Basis: 60 kN shear divided equally between two symmetric anchors.
 
 3. **symmetric_tension_3x2**
-   - Actions: N = -600 kN, all moments and shear zero.
+   - Actions: N = +600 kN (IDEA convention), all moments and shear zero.
    - Six symmetric anchors (3 × 2).
    - Independent result: T = [100, 100, 100, 100, 100, 100] kN; qx/qy all zero.
    - Basis: 600 kN total tension divided equally between six symmetric anchors.
@@ -44,7 +48,7 @@ The geometry previously identified for that case is preserved here as a reproduc
 - common plate: hd 100 mm, t = 10 mm, offset 50 mm, stiffener 100 × 10 mm
 - lever-arm shear transfer; grout gap 50 mm
 - shear lug: HEA 120, strong orientation, 200 mm embedment, 100% shear share
-- actions currently available: N = -168.9 kN, Vx = 71.6 kN, Vy = 12.5 kN, My = 10.9 kNm, Mx = 0, Mz = 0
+- actions currently available: N = +168.9 kN (IDEA convention), Vx = 71.6 kN, Vy = 12.5 kN, My = 10.9 kNm, Mx = 0, Mz = 0
 - plate 420 × 320 mm; friction 0; bearing factor 1; plate bears
 - supplementary reinforcement enabled; fyk 500 MPa; reach 0.75 hef; d0 = 0.25 hef
 

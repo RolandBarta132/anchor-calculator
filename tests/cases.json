@@ -1,283 +1,33 @@
 {
-  "default": {
-    "note": "page defaults, as shipped",
-    "set": {}
-  },
-  "pure_tension": {
-    "set": {
-      "lug": false,
-      "Nc": -300,
-      "Vx": 0,
-      "Vy": 0,
-      "My": 0,
-      "Mx": 0,
-      "Mz": 0
-    },
-    "assert": [
-      {
-        "type": "sumTension",
-        "target": 300,
-        "tolPct": 1
-      },
-      {
-        "type": "symmetry"
-      }
-    ],
-    "independent": {
-      "source": "hand calculation: 300 kN total tension / 2 symmetric anchors",
-      "T": [
-        150,
-        150
-      ],
-      "qx": [
-        0,
-        0
-      ],
-      "qy": [
-        0,
-        0
-      ],
-      "tolPct": 0.01
-    }
-  },
-  "pure_shear": {
-    "set": {
-      "lug": false,
-      "Nc": 0,
-      "Vx": 60,
-      "Vy": 0,
-      "My": 0,
-      "Mx": 0,
-      "Mz": 0
-    },
-    "assert": [
-      {
-        "type": "sumShear",
-        "axis": "x",
-        "target": 60,
-        "tolPct": 1
-      },
-      {
-        "type": "noTension"
-      }
-    ],
-    "independent": {
-      "source": "hand calculation: 60 kN shear / 2 symmetric anchors",
-      "T": [
-        0,
-        0
-      ],
-      "qx": [
-        30,
-        30
-      ],
-      "qy": [
-        0,
-        0
-      ],
-      "tolPct": 0.01
-    }
-  },
-  "pure_moment_My": {
-    "set": {
-      "lug": false,
-      "Nc": 0,
-      "Vx": 0,
-      "Vy": 0,
-      "My": 50,
-      "Mx": 0,
-      "Mz": 0
-    },
-    "assert": [
-      {
-        "type": "tensionOnlyAt",
-        "index": 1
-      }
-    ]
-  },
-  "symmetric_tension_3x2": {
-    "set": {
-      "nx": 3,
-      "ny": 2,
-      "sx": 250,
-      "sy": 200,
-      "lug": false,
-      "Nc": -600,
-      "Vx": 0,
-      "Vy": 0,
-      "My": 0,
-      "Mx": 0,
-      "Mz": 0
-    },
-    "assert": [
-      {
-        "type": "sumTension",
-        "target": 600,
-        "tolPct": 1
-      }
-    ],
-    "independent": {
-      "source": "hand calculation: 600 kN total tension / 6 symmetric anchors",
-      "T": [
-        100,
-        100,
-        100,
-        100,
-        100,
-        100
-      ],
-      "qx": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "qy": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "tolPct": 0.01
-    }
-  },
-  "moment_Mx_group": {
-    "set": {
-      "nx": 2,
-      "ny": 2,
-      "lug": false,
-      "Nc": 0,
-      "Vx": 0,
-      "Vy": 0,
-      "My": 0,
-      "Mx": 40,
-      "Mz": 0
-    }
-  },
-  "torsion": {
-    "set": {
-      "nx": 2,
-      "ny": 2,
-      "lug": false,
-      "Nc": 0,
-      "Vx": 0,
-      "Vy": 0,
-      "My": 0,
-      "Mx": 0,
-      "Mz": 15
-    },
-    "assert": [
-      {
-        "type": "noTension"
-      }
-    ]
-  },
-  "doc_geometry_lug": {
-    "note": "geometry of the roadmap test case (loads = defaults)",
-    "set": {
-      "sx": 380,
-      "sy": 200,
-      "Bx": 600,
-      "By": 600,
-      "hb": 1000,
-      "lug": true
-    }
-  },
-  "k8_manual": {
-    "note": "regression for the k8s bug",
-    "set": {
-      "k8in": 1.5
-    }
-  },
-  "uncracked": {
-    "set": {
-      "cr": "0"
-    }
-  },
-  "lug_off": {
-    "set": {
-      "lug": false
-    }
-  },
-  "reinforcement_off": {
-    "set": {
-      "usere": false
-    }
-  },
-  "weak_axis_lug": {
-    "set": {
-      "lug": true,
-      "lugo": "w",
-      "lugp": "HEA 160"
-    }
-  },
-  "no_lever_arm": {
-    "set": {
-      "sm": "n",
-      "lug": false
-    }
-  },
-  "round_head": {
-    "set": {
-      "ht": "r",
-      "hd": 80,
-      "lug": false
-    }
-  },
-  "small_block_edges": {
-    "note": "edge breakout and side blow-out branches",
-    "set": {
-      "Bx": 420,
-      "By": 420,
-      "sx": 200,
-      "sy": 200,
-      "hb": 800,
-      "hef": 300
-    }
-  },
-  "single_anchor": {
-    "set": {
-      "nx": 1,
-      "ny": 1,
-      "lug": false,
-      "Vx": 20,
-      "Vy": 5
-    }
-  },
-  "cage_fails": {
-    "set": {
-      "Bx": 350,
-      "By": 350,
-      "sx": 200,
-      "sy": 200,
-      "nx": 2,
-      "ny": 2
-    },
-    "assert": [
-      {
-        "type": "rowPresent",
-        "label": "Cage clearance"
-      }
-    ]
-  },
-  "cage_check_off": {
-    "note": "unchecked: row must vanish, everything else must stay",
-    "set": {
-      "Bx": 350,
-      "By": 350,
-      "sx": 200,
-      "sy": 200,
-      "clchk": false
-    },
-    "assert": [
-      {
-        "type": "rowAbsent",
-        "label": "Cage clearance"
-      }
-    ]
-  }
+  "default":            { "note": "page defaults, as shipped", "set": {} },
+  "pure_tension":       { "set": {"lug":false,"Nc":-300,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0},
+                          "independent":{"source":"hand calculation: 300 kN total tension / 2 symmetric anchors","T":[150,150],"qx":[0,0],"qy":[0,0],"tolPct":0.01},
+                          "assert":[{"type":"sumTension","target":300,"tolPct":1},{"type":"symmetry"}] },
+  "pure_shear":         { "set": {"lug":false,"Nc":0,"Vx":60,"Vy":0,"My":0,"Mx":0,"Mz":0},
+                          "independent":{"source":"hand calculation: 60 kN shear / 2 symmetric anchors","T":[0,0],"qx":[30,30],"qy":[0,0],"tolPct":0.01},
+                          "assert":[{"type":"sumShear","axis":"x","target":60,"tolPct":1},{"type":"noTension"}] },
+  "pure_moment_My":     { "set": {"lug":false,"Nc":0,"Vx":0,"Vy":0,"My":50,"Mx":0,"Mz":0},
+                          "assert":[{"type":"tensionOnlyAt","index":1}] },
+  "symmetric_tension_3x2": { "set": {"nx":3,"ny":2,"sx":250,"sy":200,"lug":false,"Nc":-600,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":0},
+                          "independent":{"source":"hand calculation: 600 kN total tension / 6 symmetric anchors","T":[100,100,100,100,100,100],"qx":[0,0,0,0,0,0],"qy":[0,0,0,0,0,0],"tolPct":0.01},
+                          "assert":[{"type":"sumTension","target":600,"tolPct":1}] },
+  "moment_Mx_group":    { "set": {"nx":2,"ny":2,"lug":false,"Nc":0,"Vx":0,"Vy":0,"My":0,"Mx":40,"Mz":0} },
+  "torsion":            { "set": {"nx":2,"ny":2,"lug":false,"Nc":0,"Vx":0,"Vy":0,"My":0,"Mx":0,"Mz":15},
+                          "assert":[{"type":"noTension"}] },
+  "doc_geometry_lug":   { "note": "geometry of the roadmap test case (loads = defaults)",
+                          "set": {"sx":380,"sy":200,"Bx":600,"By":600,"hb":1000,"lug":true} },
+  "k8_manual":          { "note": "regression for the k8s bug", "set": {"k8in":1.5} },
+  "uncracked":          { "set": {"cr":"0"} },
+  "lug_off":            { "set": {"lug":false} },
+  "reinforcement_off":  { "set": {"usere":false} },
+  "weak_axis_lug":      { "set": {"lug":true,"lugo":"w","lugp":"HEA 160"} },
+  "no_lever_arm":       { "set": {"sm":"n","lug":false} },
+  "round_head":         { "set": {"ht":"r","hd":80,"lug":false} },
+  "small_block_edges":  { "note": "edge breakout and side blow-out branches", "set": {"Bx":420,"By":420,"sx":200,"sy":200,"hb":800,"hef":300} },
+  "single_anchor":      { "set": {"nx":1,"ny":1,"lug":false,"Vx":20,"Vy":5} },
+  "cage_fails":         { "set": {"Bx":350,"By":350,"sx":200,"sy":200,"nx":2,"ny":2},
+                          "assert":[{"type":"rowPresent","label":"Cage clearance"}] },
+  "cage_check_off":     { "note": "unchecked: row must vanish, everything else must stay",
+                          "set": {"Bx":350,"By":350,"sx":200,"sy":200,"clchk":false},
+                          "assert":[{"type":"rowAbsent","label":"Cage clearance"}] }
 }

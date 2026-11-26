@@ -21,11 +21,16 @@ function run(c){
   const el=id=>{const e=D.getElementById(id);if(!e)throw new Error('unknown input id "'+id+'" in cases.json');return e};
   for(const k in c.set){const e=el(k);if(e.type==='checkbox')e.checked=!!c.set[k];else e.value=String(c.set[k]);}
   el('fck').dispatchEvent(new w.Event('input',{bubbles:true}));        // one recalculation with all values set
+  const out=w.ENGINE.calculate();
+  const V=out&&out.transfer||null;
   const res=(w.__RES||[]).map(r=>({id:r.id,l:r.l,u:sig(r.u),ref:!!r.reference,hidden:!!r.hidden,category:r.category,hint:r.h||''}));
-  const V=w.VEC||null;
+  let explicit=null;
+  if(c.multiLoad){
+    explicit=w.ENGINE.loadTransfer(c.multiLoad).T.map(sig);
+  }
   return {errors,warn:(w.__WARN||[]).slice(),banner:(()=>{const b=D.getElementById('calcerr');return b&&b.style.display!=='none'?b.textContent:''})(),
     stepRows:D.querySelectorAll('#steps tr').length,barsText:D.getElementById('bars').textContent,
-    snap:{results:Object.fromEntries(res.map(r=>[r.id,{label:r.l,u:r.u,ref:r.ref,hidden:r.hidden}])),T:V?V.T.map(sig):null,qx:V?V.qx.map(sig):null,qy:V?V.qy.map(sig):null},res};
+    snap:{results:Object.fromEntries(res.map(r=>[r.id,{label:r.l,u:r.u,ref:r.ref,hidden:r.hidden}])),T:V?V.T.map(sig):null,qx:V?V.qx.map(sig):null,qy:V?V.qy.map(sig):null,manual:!!(V&&V.manual),explicitT:explicit},res};
 }
 function checkInvariants(name,c,r){
   const f=[];
@@ -70,6 +75,8 @@ function diff(a,b){
     if(!x)out.push('row removed: '+l);else if(!y)out.push('row added: '+l);
     else{if(!close(x.u,y.u))out.push(l+': '+y.u+' -> '+x.u);if(x.ref!==y.ref)out.push(l+': reference '+y.ref+' -> '+x.ref);if(x.hidden!==y.hidden)out.push(l+': hidden '+y.hidden+' -> '+x.hidden);}}
   ['T','qx','qy'].forEach(k=>{const x=a[k]||[],y=b[k]||[];if(x.length!==y.length||x.some((v,i)=>!close(v,y[i])))out.push('anchor '+k+': ['+y.join(', ')+'] -> ['+x.join(', ')+']');});
+  if(a.manual!==b.manual)out.push('manual mode changed: '+b.manual+' -> '+a.manual);
+  if((a.explicitT||[]).length||(b.explicitT||[]).length){const x=a.explicitT||[],y=b.explicitT||[];if(x.length!==y.length||x.some((v,i)=>!close(v,y[i])))out.push('explicit load transfer T changed: ['+y.join(', ')+'] -> ['+x.join(', ')+']');}
   return out;
 }
 let failed=0,changed=0;const next={};

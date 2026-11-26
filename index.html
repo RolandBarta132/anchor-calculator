@@ -392,10 +392,10 @@ function calcConcreteBreakout(model){
 }
 
 function calcSupplementaryReinforcement(model){
-  need("calcSupplementaryReinforcement",model,["Bx","By","Hb","NEd","amp","cv","ds","dst","eta","fck","fyk","hef","hs","kre","nx","ny","reOn","sx","sy","tx","ty","vs"]);
+  need("calcSupplementaryReinforcement",model,["Bx","By","Hb","NEd","amp","cv","ds","dst","eta","fck","fyk","hef","hs","kre","nx","ny","reOn","sx","sy","tx","ty","vs","T"]);
   if(model.ds>16)throw new Error("calcSupplementaryReinforcement: supplementary reinforcement diameter must be ≤ 16 mm per EN 1992-4");
   var ds=model.ds,fyk=model.fyk,eta=model.eta,amp=model.amp,Hb=model.Hb,cv=model.cv;
-  var fck=model.fck,hef=model.hef,NEd=model.NEd,nx=model.nx,ny=model.ny,sx=model.sx,sy=model.sy;
+  var fck=model.fck,hef=model.hef,NEd=model.NEd,nx=model.nx,ny=model.ny,sx=model.sx,sy=model.sy,Tforces=model.T||[];
   var As=Math.PI*ds*ds/4;
   var fctm=fck<=50?0.3*Math.pow(fck,2/3):2.12*Math.log(1+(fck+8)/10);
   var fctd=0.7*fctm/1.5,fbd=2.25*eta*fctd;
@@ -404,8 +404,8 @@ function calcSupplementaryReinforcement(model){
   var TA=[],kre_=model.kre,dsh=Math.max(0.05,model.dsh||0.25);
   (function(){var tx_=Math.min(model.tx,nx),ty_=Math.min(model.ty,ny),hs_=model.hs,vs_=model.vs,i,j;
     for(j=0;j<ny;j++)for(i=0;i<nx;i++){
-      var ten=FA.length?FA[j*nx+i]>1e-6:((hs_=='l'?i<tx_:i>=nx-tx_)&&(vs_=='t'?j<ty_:j>=ny-ty_));
-      if(ten)TA.push({x:GEO.anc(model.Bx,nx,sx,i),y:GEO.anc(model.By,ny,sy,j),T:FA.length?FA[j*nx+i]:1});
+      var ten=Tforces.length?Tforces[j*nx+i]>1e-6:((hs_=='l'?i<tx_:i>=nx-tx_)&&(vs_=='t'?j<ty_:j>=ny-ty_));
+      if(ten)TA.push({x:GEO.anc(model.Bx,nx,sx,i),y:GEO.anc(model.By,ny,sy,j),T:Tforces.length?Tforces[j*nx+i]:1});
     }
   })();
   var Tt=TA.reduce(function(s,a){return s+a.T},0);
@@ -488,14 +488,17 @@ function calcInteraction(model){
   return {bN:bN,bV:bV,intS:intS,intC:intC};
 }
 
-function calculateDesignLegacy(){
-syncEngineeringGeometry();solveLoadTransfer();
-var fck=v("fck"),hef=v("hef"),gm=v("gm")||1.5,NEd=v("NEd"),VEd=v("VEd");
+function calculateDesignLegacy(loads,transfer){
+syncEngineeringGeometry();
+transfer=transfer||solveLoadTransfer(loads);
+if($("useF").checked)renderLoadTransfer(transfer);
+var fck=v("fck"),hef=v("hef"),gm=v("gm")||1.5,NEd=transfer.NEd,VEd=transfer.VEd;
+var psecG=transfer.psec,SIG=transfer.SIG,FA=transfer.T,txT=transfer.tx,tyT=transfer.ty,hsT=transfer.hs,vsT=transfer.vs;
 var cracked=$("cr").value==="1",cast=$("type").value==="c";
 var nx=+$("nx").value,ny=+$("ny").value,sx=v("sx"),sy=v("sy");
 var cb=calcConcreteBreakout({
   fck:fck,hef:hef,gm:gm,cracked:cracked,cast:cast,nx:nx,ny:ny,sx:sx,sy:sy,
-  tx:+$("tx").value,ty:+$("ty").value,hs:$("hs").value,vs:$("vs").value,
+  tx:txT,ty:tyT,hs:hsT,vs:vsT,
   cl:v("cl"),cr:v("cr2"),ct:v("ct"),cb:v("cb"),dense:$("dense").checked,psecG:psecG
 });
 var k1=cb.k1,N0=cb.N0,h15=cb.h15,scr=cb.scr,A0=cb.A0,psire=cb.psire;
@@ -508,7 +511,7 @@ var sr=calcSupplementaryReinforcement({
   ds:v("dvb"),fyk:v("fyk"),eta:+$("eta").value,amp:v("amp")||1,Hb:v("hb"),cv:v("cv"),
   fck:fck,hef:hef,NEd:NEd,nx:nx,ny:ny,sx:sx,sy:sy,
   dst:v("dst"),kre:v("kre"),dsh:v("dsh"),tx:+$("tx").value,ty:+$("ty").value,
-  hs:$("hs").value,vs:$("vs").value,Bx:v("Bx"),By:v("By"),reOn:$("usere").checked
+  hs:hsT,vs:vsT,Bx:v("Bx"),By:v("By"),reOn:$("usere").checked,T:FA
 });
 var ds=sr.ds,fyk=sr.fyk,eta=sr.eta,amp=sr.amp,Hb=sr.Hb,cv=sr.cv,As=sr.As;
 var fctm=sr.fctm,fctd=sr.fctd,fbd=sr.fbd,fsd=sr.fsd,Fs=sr.Fs,lbd=sr.lbd,al1=sr.al1,lbmin=sr.lbmin,lbdes=sr.lbdes;

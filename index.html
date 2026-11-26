@@ -865,7 +865,7 @@ $("lugf").hidden=!$("lug").checked;$("lugnote").style.color=($("lug").checked&&!
   MANC.vb=0;cage();LC[cur]=readCase();refreshLC();hideTip();
   var on=$("useF").checked,multi=on&&LC.length>1,all=[];
   $("lcnote").textContent=(!on&&LC.length>1)?"Load cases need the rigid-plate analysis. Tick it to check all cases.":"";
-  if(multi){LC.forEach(function(c){var out=ENGINE.calculate({N:+c.Nc,Vx:+c.Vx,Vy:+c.Vy,My:+c.My,Mx:+c.Mx,Mz:+c.Mz});all.push(out&&out.transfer?out.transfer:RES.slice());});}
+  if(multi){LC.forEach(function(c){ENGINE.calculate({N:+c.Nc,Vx:+c.Vx,Vy:+c.Vy,My:+c.My,Mx:+c.Mx,Mz:+c.Mz});all.push(RES.slice());}}
   ENGINE.calculate({N:+LC[cur].Nc,Vx:+LC[cur].Vx,Vy:+LC[cur].Vy,My:+LC[cur].My,Mx:+LC[cur].Mx,Mz:+LC[cur].Mz});
   window.MAN={vb:Math.ceil(MANC.vb/5)*5};
   renderSum(multi?all:null);

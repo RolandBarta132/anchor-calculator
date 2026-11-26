@@ -16,7 +16,7 @@ const sig=x=>typeof x!=='number'?x:!isFinite(x)?String(x):Number(x.toPrecision(6
 
 function run(c){
   const errors=[],vc=new VirtualConsole();
-  try{new Function(html);}catch(e){errors.push('syntax check: '+e.message);}
+  try{const js=[...html.matchAll(/<script[^>]*>([\\s\\S]*?)<\\/script>/gi)].map(m=>m[1]).join('\\n');new Function(js);}catch(e){errors.push('syntax check: '+e.message);}
   vc.on('jsdomError',e=>errors.push('script error: '+e.message));
   const d=new JSDOM(html,{runScripts:'dangerously',virtualConsole:vc}),w=d.window,D=w.document;
   const el=id=>{const e=D.getElementById(id);if(!e)throw new Error('unknown input id "'+id+'" in cases.json');return e};

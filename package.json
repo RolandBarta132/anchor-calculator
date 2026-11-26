@@ -1,0 +1,11 @@
+{
+  "name": "anchor-calculator",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run.js",
+    "test:update": "node tests/run.js --update"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.0"
+  }
+}

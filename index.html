@@ -226,7 +226,7 @@ body>*:not(#rep){display:none!important}body{background:#fff}#rep{display:block!
 <div hidden><input id="amp" value="1"></div>
 <label class="chk"><input id="usere" type="checkbox" checked> Use supplementary reinforcement instead of concrete breakout in the interaction check</label>
 </div>
-<p class="note">Legs must be ribbed, ≤ 20 mm, placed within about 0.75·h<sub>ef</sub> of the anchor axis and anchored on both sides of the cone. Legs are counted automatically: vertical cage bars within the distance factor of a tension anchor that cross the cone. The force of each tension anchor is shared only among the legs within its reach, weighted by distance with the length d₀ (an assumption, not an EN rule). A leg serving two anchors carries both shares, and every leg is checked against its own steel, upper anchorage and lower anchorage. A tension anchor with no leg in reach gives zero reinforcement resistance. When supplementary reinforcement is selected, the unreinforced concrete-cone result is retained as a reference result; the active tension load path is the reinforcement, subject to its steel and anchorage resistance.</p></section>
+<p class="note">Legs must be ribbed, ≤ 16 mm, placed within about 0.75·h<sub>ef</sub> of the anchor axis and anchored on both sides of the cone. Legs are counted automatically: vertical cage bars within the distance factor of a tension anchor that cross the cone. The force of each tension anchor is shared only among the legs within its reach, weighted by distance with the length d₀ (an assumption, not an EN rule). A leg serving two anchors carries both shares, and every leg is checked against its own steel, upper anchorage and lower anchorage. A tension anchor with no leg in reach gives zero reinforcement resistance. When supplementary reinforcement is selected, the unreinforced concrete-cone result is retained as a reference result; the active tension load path is the reinforcement, subject to its steel and anchorage resistance.</p></section>
 </div>
 
 <div>
@@ -395,6 +395,7 @@ function calcConcreteBreakout(model){
 
 function calcSupplementaryReinforcement(model){
   need("calcSupplementaryReinforcement",model,["Bx","By","Hb","NEd","amp","cv","ds","dst","eta","fck","fyk","hef","hs","kre","nx","ny","reOn","sx","sy","tx","ty","vs"]);
+  if(model.ds>16)throw new Error("calcSupplementaryReinforcement: supplementary reinforcement diameter must be ≤ 16 mm per EN 1992-4");
   var ds=model.ds,fyk=model.fyk,eta=model.eta,amp=model.amp,Hb=model.Hb,cv=model.cv;
   var fck=model.fck,hef=model.hef,NEd=model.NEd,nx=model.nx,ny=model.ny,sx=model.sx,sy=model.sy;
   var As=Math.PI*ds*ds/4;

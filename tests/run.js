@@ -56,6 +56,7 @@ function checkInvariants(name,c,r){
       if(actual.length!==target.length)f.push('independent '+k+' length = '+actual.length+', expected '+target.length);
       else actual.forEach((v,i)=>{if(Math.abs(v-target[i])>Math.max(1e-6,Math.abs(target[i])*tol/100))f.push('independent '+k+'['+i+'] = '+v+', expected '+target[i]+' ('+c.independent.source+')');});
     }
+  }
     if(c.independent.results){
       for(const id of Object.keys(c.independent.results)){
         const actual=r.res.find(x=>x.id===id),target=c.independent.results[id];
@@ -63,7 +64,6 @@ function checkInvariants(name,c,r){
         else if(typeof actual.u!=='number'||Math.abs(actual.u-target)>Math.max(1e-6,Math.abs(target)*tol/100))f.push('independent result '+id+' = '+actual.u+', expected '+target+' ('+c.independent.source+')');
       }
     }
-  }
   if(c.multiLoad&&c.assert){}
   (c.assert||[]).forEach(a=>{
     const near=(x,t,p)=>Math.abs(x-t)<=Math.max(1e-6,Math.abs(t)*p/100);
